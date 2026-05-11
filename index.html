@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Musician's Friend">
+  <meta name="theme-color" content="#7F77DD">
+  <title>Musician's Friend</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <div class="header">
+      <div class="logo">
+        <div class="logo-mark"><i class="ti ti-music"></i></div>
+        <div>
+          <div class="logo-text">Musician's Friend</div>
+          <div class="logo-sub">Your personal music manager</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="sync-status">
+          <div class="sync-dot" id="sync-dot"></div>
+          <span id="sync-label">Ready</span>
+        </div>
+      </div>
+    </div>
+
+    <nav class="nav-tabs">
+      <button class="nav-tab active" onclick="switchTab('dashboard',this)"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></button>
+      <button class="nav-tab" onclick="switchTab('chat',this)"><i class="ti ti-message"></i><span>Chat</span></button>
+      <button class="nav-tab" onclick="switchTab('calendar',this)"><i class="ti ti-calendar"></i><span>Calendar</span></button>
+      <button class="nav-tab" onclick="switchTab('earnings',this)"><i class="ti ti-coin"></i><span>Earnings</span></button>
+    </nav>
+
+    <div class="content">
+      <div class="loading-screen" id="loading-screen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading your gigs...</div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card accent">
+            <div class="stat-label">Next gig</div>
+            <div class="stat-value" id="s-next">—</div>
+            <div class="stat-sub" id="s-next-d">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Gigs this month</div>
+            <div class="stat-value" id="s-count">—</div>
+            <div class="stat-sub" id="s-month-label">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Monthly earnings</div>
+            <div class="stat-value" id="s-earn">—</div>
+            <div class="stat-sub">All gigs</div>
+          </div>
+        </div>
+        <div class="section-tabs">
+          <button class="sec-tab active" id="tab-upcoming" onclick="showSection('upcoming')">Upcoming</button>
+          <button class="sec-tab" id="tab-completed" onclick="showSection('completed')">Completed</button>
+        </div>
+        <div id="list-upcoming"></div>
+        <div id="list-completed" style="display:none"></div>
+      </div>
+
+      <!-- CHAT -->
+      <div class="panel" id="panel-chat">
+        <div class="chat-wrap">
+          <div class="chat-msgs" id="chat-msgs">
+            <div class="msg bot">
+              <div class="av"><i class="ti ti-music"></i></div>
+              <div class="bub">Hey! I'm your Musician's Friend 🎵 Ask me anything about your gigs, earnings, or schedule.</div>
+            </div>
+          </div>
+          <div class="msg bot typing-row" style="padding:0;flex-shrink:0;">
+            <div class="av"><i class="ti ti-music"></i></div>
+            <div class="typing-dots" id="tdots"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>
+          </div>
+          <div class="inp-row">
+            <textarea class="cin" id="cin" placeholder="e.g. How much did I make this month?" rows="1"></textarea>
+            <button class="sbtn" id="send-btn"><i class="ti ti-send"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CALENDAR -->
+      <div class="panel" id="panel-calendar">
+        <div class="cal-head">
+          <div class="cal-title" id="cal-title">May 2026</div>
+          <div class="cal-nav">
+            <button class="cnb" id="cal-prev"><i class="ti ti-chevron-left"></i></button>
+            <button class="cnb" id="cal-next"><i class="ti ti-chevron-right"></i></button>
+          </div>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <div class="cal-leg">
+          <div class="li"><div class="ld confirmed-dot"></div> Confirmed</div>
+          <div class="li"><div class="ld tentative-dot"></div> Tentative</div>
+        </div>
+        <div class="mstats">
+          <div class="mstat"><div class="mstat-l">Gigs</div><div class="mstat-v" id="cc">—</div></div>
+          <div class="mstat"><div class="mstat-l">Confirmed</div><div class="mstat-v" id="ccf">—</div></div>
+          <div class="mstat"><div class="mstat-l">Earnings</div><div class="mstat-v" id="ce">—</div></div>
+        </div>
+        <div class="agenda" id="agenda"></div>
+        <div class="preview-card" id="preview">
+          <button class="pv-close" id="pv-close">×</button>
+          <div class="pv-artist" id="pv-artist"></div>
+          <div class="pv-row"><span class="badge" id="pv-badge"></span><span id="pv-city" style="margin-left:4px"></span></div>
+          <div class="pv-row"><i class="ti ti-calendar" style="font-size:12px"></i> <span id="pv-date"></span></div>
+          <div class="pv-pay" id="pv-pay"></div>
+          <button class="pv-edit" id="pv-edit"><i class="ti ti-edit"></i> Open & edit</button>
+        </div>
+      </div>
+
+      <!-- EARNINGS -->
+      <div class="panel" id="panel-earnings">
+        <div class="earn-stats">
+          <div class="stat-card">
+            <div class="stat-label">Total earned (2026)</div>
+            <div class="stat-value" id="e-total">—</div>
+            <div class="stat-sub" id="e-count">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Average per gig</div>
+            <div class="stat-value" id="e-avg">—</div>
+            <div class="stat-sub">All gigs</div>
+          </div>
+        </div>
+        <div class="sec-label">By gig</div>
+        <div id="earn-list"></div>
+      </div>
+
+      <!-- FAB -->
+      <button class="fab" id="fab"><i class="ti ti-plus"></i> Add Gig</button>
+
+      <!-- CONFIRM POPUP -->
+      <div class="confirm-popup" id="confirm-popup">
+        <div class="confirm-msg" id="confirm-msg"></div>
+        <div class="confirm-btns">
+          <button class="confirm-yes" id="confirm-yes">Confirm</button>
+          <button class="confirm-no" id="confirm-no">Cancel</button>
+        </div>
+      </div>
+
+      <!-- BOTTOM SHEET -->
+      <div class="overlay" id="overlay">
+        <div class="sheet" id="sheet">
+          <div class="handle"></div>
+          <div class="sheet-title" id="sheet-title">Add a new gig</div>
+          <div class="form-grid">
+            <div class="fg"><label class="flabel">Artist / Client name</label><input class="fin" id="fa" placeholder="e.g. Priya Chakravarti" type="text"></div>
+            <div class="fg"><label class="flabel">Gig type</label>
+              <select class="fin" id="ft">
+                <option value="wedding">Wedding</option>
+                <option value="pub">Pub</option>
+                <option value="corporate">Corporate</option>
+                <option value="college">College</option>
+                <option value="festival">Festival</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel">Date</label><input class="fin" id="fd" type="date"></div>
+            <div class="fg"><label class="flabel">City</label><input class="fin" id="fc" placeholder="e.g. Mumbai" type="text"></div>
+            <div class="fg"><label class="flabel">Payment (₹)</label><input class="fin" id="fp" placeholder="e.g. 50000" type="number"></div>
+            <div class="fg"><label class="flabel">Show status</label>
+              <div class="tog-row">
+                <button class="tog-btn sel-c" id="bc">✓ Confirmed</button>
+                <button class="tog-btn" id="bt">⏰ Tentative</button>
+              </div>
+            </div>
+            <div class="fg"><label class="flabel">Payment received?</label>
+              <div class="pay-tog-row">
+                <button class="pay-tog" id="bp-paid">✓ Paid</button>
+                <button class="pay-tog sel-pending" id="bp-pending">⏰ Pending</button>
+              </div>
+            </div>
+            <div class="fg full"><label class="flabel">Notes</label><input class="fin" id="fn" placeholder="Soundcheck time, contact person..." type="text"></div>
+          </div>
+          <label class="cal-row-label"><input type="checkbox" id="cs" checked> Sync to Google Calendar</label>
+          <button class="save-btn" id="save-btn">💾 Save Gig</button>
+          <div id="delete-wrap"></div>
+          <div class="toast" id="toast"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
