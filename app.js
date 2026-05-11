@@ -1,5 +1,5 @@
 // ── CONFIG ──
-const DRIVE_FILE_ID = '12xR-tHn8ViEQQqHVKcm0mzSZ3Lbihdv2';
+const DRIVE_FILE_ID = '12KAxWAthAe2DatdFS41r6g6MVIvWNvDE';
 const ANTHROPIC_API = 'https://api.anthropic.com/v1/messages';
 const MODEL = 'claude-sonnet-4-20250514';
 const CALENDAR_MCP = { type: 'url', url: 'https://calendarmcp.googleapis.com/mcp/v1', name: 'google-calendar' };
