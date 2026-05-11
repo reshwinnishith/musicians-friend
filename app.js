@@ -2,6 +2,8 @@
 const DRIVE_FILE_ID = '12xR-tHn8ViEQQqHVKcm0mzSZ3Lbihdv2';
 const ANTHROPIC_API = 'https://api.anthropic.com/v1/messages';
 const MODEL = 'claude-sonnet-4-20250514';
+const CALENDAR_MCP = { type: 'url', url: 'https://calendarmcp.googleapis.com/mcp/v1', name: 'google-calendar' };
+const DRIVE_MCP = { type: 'url', url: 'https://drivemcp.googleapis.com/mcp/v1', name: 'google-drive' };
 
 // ── STATE ──
 const today = new Date();
@@ -44,7 +46,7 @@ async function loadFromDrive() {
         max_tokens: 8000,
         system: 'You are a data retrieval assistant. Use the Google Drive MCP tool to download the specified file. Return ONLY the raw JSON content — no explanation, no markdown, no code fences. Just the JSON object.',
         messages: [{ role: 'user', content: `Download Google Drive file ID: ${DRIVE_FILE_ID} and return only its raw JSON content.` }],
-        mcp_servers: [{ type: 'url', url: 'https://drivemcp.googleapis.com/mcp/v1', name: 'google-drive' }]
+        mcp_servers: [DRIVE_MCP]
       })
     });
     const data = await res.json();
@@ -79,7 +81,7 @@ async function saveToDrive() {
           max_tokens: 200,
           system: 'You are a file update assistant. Use the Google Drive MCP tool to update the specified file with the given JSON content. Reply with just "saved".',
           messages: [{ role: 'user', content: `Update Google Drive file ID ${DRIVE_FILE_ID} with this exact content:\n${payload}` }],
-          mcp_servers: [{ type: 'url', url: 'https://drivemcp.googleapis.com/mcp/v1', name: 'google-drive' }]
+          mcp_servers: [DRIVE_MCP]
         })
       });
       setSyncStatus('saved', 'Saved');
@@ -88,6 +90,120 @@ async function saveToDrive() {
       setSyncStatus('error', 'Save failed');
     }
   }, 1500);
+}
+
+// ── CALENDAR: HELPERS ──
+function gigToCalTitle(s) {
+  return `🎵 ${cap(s.type)} Gig — ${s.artist}`;
+}
+function gigToCalDescription(s) {
+  return [
+    `<b>Artist / Client:</b> ${s.artist}`,
+    `<b>Gig type:</b> ${cap(s.type)}`,
+    `<b>City:</b> ${s.city}`,
+    `<b>Payment:</b> ${fmt(s.pay)}`,
+    `<b>Status:</b> ${cap(s.status)}`,
+    s.notes ? `<b>Notes:</b> ${s.notes}` : '',
+    `<br><i>Managed by Musician's Friend</i>`
+  ].filter(Boolean).join('<br>');
+}
+function gigToDateString(s) {
+  // Returns ISO date string YYYY-MM-DD
+  return `${s.year}-${String(s.month + 1).padStart(2,'0')}-${String(s.day).padStart(2,'0')}`;
+}
+
+// ── CALENDAR: CREATE EVENT ──
+async function createCalendarEvent(s) {
+  try {
+    const dateStr = gigToDateString(s);
+    // All-day event: start = date, end = next day
+    const startTime = `${dateStr}T00:00:00`;
+    const endTime = `${dateStr}T23:59:00`;
+    const res = await fetch(ANTHROPIC_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: 500,
+        system: `You are a calendar assistant. Use the Google Calendar MCP tool to create an event with these exact details and return ONLY the event ID from the result — nothing else, just the raw event ID string.`,
+        messages: [{
+          role: 'user',
+          content: `Create a Google Calendar event with:
+- Title: "${gigToCalTitle(s)}"
+- Start: ${startTime}
+- End: ${endTime}
+- Location: ${s.city}, India
+- Description: ${gigToCalDescription(s)}
+- TimeZone: Asia/Kolkata
+- Color: 9 (Blueberry)
+Return only the event ID.`
+        }],
+        mcp_servers: [CALENDAR_MCP]
+      })
+    });
+    const data = await res.json();
+    const text = data.content.filter(b => b.type === 'text').map(b => b.text).join('').trim();
+    // Extract just the event ID — it's typically a long alphanumeric string
+    const match = text.match(/[a-z0-9]{20,}/i);
+    return match ? match[0] : null;
+  } catch(e) {
+    console.error('Calendar create error:', e);
+    return null;
+  }
+}
+
+// ── CALENDAR: UPDATE EVENT ──
+async function updateCalendarEvent(s) {
+  if (!s.calEventId) return;
+  try {
+    const dateStr = gigToDateString(s);
+    const startTime = `${dateStr}T00:00:00`;
+    const endTime = `${dateStr}T23:59:00`;
+    await fetch(ANTHROPIC_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: 200,
+        system: 'You are a calendar assistant. Use the Google Calendar MCP tool to update the event. Reply with just "updated".',
+        messages: [{
+          role: 'user',
+          content: `Update Google Calendar event ID "${s.calEventId}" with:
+- Title: "${gigToCalTitle(s)}"
+- Start: ${startTime}
+- End: ${endTime}
+- Location: ${s.city}, India
+- Description: ${gigToCalDescription(s)}`
+        }],
+        mcp_servers: [CALENDAR_MCP]
+      })
+    });
+  } catch(e) {
+    console.error('Calendar update error:', e);
+  }
+}
+
+// ── CALENDAR: DELETE EVENT ──
+async function deleteCalendarEvent(calEventId) {
+  if (!calEventId) return;
+  try {
+    await fetch(ANTHROPIC_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: 200,
+        system: 'You are a calendar assistant. Use the Google Calendar MCP tool to delete the event. Reply with just "deleted".',
+        messages: [{
+          role: 'user',
+          content: `Delete Google Calendar event with ID: "${calEventId}"`
+        }],
+        mcp_servers: [CALENDAR_MCP]
+      })
+    });
+  } catch(e) {
+    console.error('Calendar delete error:', e);
+  }
 }
 
 // ── TAB NAVIGATION ──
@@ -297,43 +413,78 @@ function closeSheet() {
   document.getElementById('overlay').classList.remove('show');
 }
 
-function saveShow() {
+async function saveShow() {
   const artist = document.getElementById('fa').value.trim();
   const type = document.getElementById('ft').value;
   const date = document.getElementById('fd').value;
   const city = document.getElementById('fc').value.trim();
   const pay = parseInt(document.getElementById('fp').value) || 0;
   const notes = document.getElementById('fn').value.trim();
+  const calSync = document.getElementById('cs').checked;
   if (!artist || !date) { alert('Please enter at least a name and date.'); return; }
   const d = new Date(date + 'T00:00:00');
   const mo = d.getMonth(), dy = d.getDate(), yr = d.getFullYear();
   const isUpcoming = new Date(yr, mo, dy) >= new Date(today.getFullYear(), today.getMonth(), today.getDate());
   const computedPayStatus = isUpcoming && selPaySt === 'pending' ? 'upcoming' : selPaySt;
+
   if (editingId) {
     const idx = shows.findIndex(s => s.id === editingId);
-    shows[idx] = { id: editingId, year: yr, month: mo, day: dy, artist, type, city, pay, status: selSt, payStatus: computedPayStatus, notes };
+    const existingCalEventId = shows[idx].calEventId || null;
+    const updated = { id: editingId, year: yr, month: mo, day: dy, artist, type, city, pay, status: selSt, payStatus: computedPayStatus, notes, calEventId: existingCalEventId };
+    shows[idx] = updated;
     showToast('Changes saved!');
+    rebuildDashboard();
+    saveToDrive();
+    // Update calendar event in background if it exists
+    if (calSync && existingCalEventId) {
+      updateCalendarEvent(updated);
+    } else if (calSync && !existingCalEventId) {
+      // Wasn't synced before — create now
+      setSyncStatus('saving', 'Syncing calendar...');
+      const eventId = await createCalendarEvent(updated);
+      if (eventId) { shows[idx].calEventId = eventId; saveToDrive(); }
+      setSyncStatus('saved', 'Saved');
+    }
   } else {
-    shows.push({ id: nextId++, year: yr, month: mo, day: dy, artist, type, city, pay, status: selSt, payStatus: computedPayStatus, notes });
+    const newGig = { id: nextId++, year: yr, month: mo, day: dy, artist, type, city, pay, status: selSt, payStatus: computedPayStatus, notes, calEventId: null };
+    shows.push(newGig);
     showToast('Gig saved!');
+    rebuildDashboard();
+    saveToDrive();
+    // Create calendar event in background
+    if (calSync) {
+      setSyncStatus('saving', 'Syncing calendar...');
+      const eventId = await createCalendarEvent(newGig);
+      if (eventId) {
+        const idx = shows.findIndex(s => s.id === newGig.id);
+        if (idx > -1) { shows[idx].calEventId = eventId; saveToDrive(); }
+        setSyncStatus('saved', 'Calendar synced ✓');
+      } else {
+        setSyncStatus('saved', 'Saved (calendar skipped)');
+      }
+    }
   }
-  rebuildDashboard();
-  saveToDrive();
+
   setTimeout(() => {
     closeSheet();
     if (document.getElementById('panel-calendar').classList.contains('active')) renderCal();
   }, 1400);
 }
 
-function deleteShow() {
+async function deleteShow() {
   if (!editingId) return;
   if (!confirm('Delete this gig? This cannot be undone.')) return;
   const idx = shows.findIndex(s => s.id === editingId);
-  if (idx > -1) shows.splice(idx, 1);
-  rebuildDashboard();
-  saveToDrive();
-  closeSheet();
-  if (document.getElementById('panel-calendar').classList.contains('active')) renderCal();
+  if (idx > -1) {
+    const calEventId = shows[idx].calEventId;
+    shows.splice(idx, 1);
+    rebuildDashboard();
+    saveToDrive();
+    closeSheet();
+    if (document.getElementById('panel-calendar').classList.contains('active')) renderCal();
+    // Delete calendar event in background
+    if (calEventId) deleteCalendarEvent(calEventId);
+  }
 }
 
 function showToast(msg) {
