@@ -86,56 +86,11 @@ async function getUserEmail() {
   return null;
 }
 
-// ── DRIVE: FIND OR CREATE DATA FILE ──
-const DRIVE_FILE_NAME = 'musicians-friend-data.json';
-let driveFileId = localStorage.getItem('mf_file_id') || '1atsjQojZtle3UEuSsS3zWLFWh93iJ871';
+// ── DRIVE: FILE ID (fixed — always use this file) ──
+const DRIVE_FILE_ID_FIXED = '1atsjQojZtle3UEuSsS3zWLFWh93iJ871';
 
 async function findOrCreateDriveFile() {
-  const token = getToken();
-  if (!token) return null;
-
-  // If we have a cached file ID, verify it still exists
-  if (driveFileId) {
-    try {
-      const check = await fetch(`https://www.googleapis.com/drive/v3/files/${driveFileId}?fields=id,name`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (check.ok) return driveFileId;
-    } catch(e) {}
-  }
-
-  // Search for existing file
-  try {
-    const search = await fetch(
-      `https://www.googleapis.com/drive/v3/files?q=name='${DRIVE_FILE_NAME}'+and+trashed=false&fields=files(id,name)`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    const data = await search.json();
-    if (data.files && data.files.length > 0) {
-      driveFileId = data.files[0].id;
-      localStorage.setItem('mf_file_id', driveFileId);
-      return driveFileId;
-    }
-  } catch(e) {}
-
-  // Create new file
-  try {
-    const create = await fetch('https://www.googleapis.com/drive/v3/files', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ name: DRIVE_FILE_NAME, mimeType: 'application/json' })
-    });
-    const file = await create.json();
-    driveFileId = file.id;
-    localStorage.setItem('mf_file_id', driveFileId);
-    return driveFileId;
-  } catch(e) {
-    console.error('Failed to create Drive file:', e);
-    return null;
-  }
+  return DRIVE_FILE_ID_FIXED;
 }
 
 // ── DRIVE: LOAD DATA ──
