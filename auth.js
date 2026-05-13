@@ -68,8 +68,56 @@ async function getUserEmail() {
   return null;
 }
 
-const DRIVE_FILE_ID_FIXED = '1De2UnGb763QAr5HBJOxN5HGplqzw2dqw';
-async function findOrCreateDriveFile() { return DRIVE_FILE_ID_FIXED; }
+// Canonical data file — 55 gigs, most recent, correct owner
+const CANONICAL_FILE_ID = '1De2UnGb763QAr5HBJOxN5HGplqzw2dqw';
+const DRIVE_FILE_NAME = 'musicians-friend-data.json';
+
+async function findOrCreateDriveFile() {
+  const token = getToken(); if (!token) return null;
+
+  // Use cached ID if available
+  const cached = localStorage.getItem('mf_drive_file_id') || CANONICAL_FILE_ID;
+
+  // Verify it's accessible with current token
+  try {
+    const check = await fetch(
+      `https://www.googleapis.com/drive/v3/files/${cached}?fields=id`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    if (check.ok) {
+      localStorage.setItem('mf_drive_file_id', cached);
+      return cached;
+    }
+  } catch(e) {}
+
+  // Fallback: search for any musicians-friend file
+  try {
+    const q = encodeURIComponent(`name='${DRIVE_FILE_NAME}' and trashed=false`);
+    const search = await fetch(
+      `https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name,modifiedTime)&orderBy=modifiedTime+desc`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    const data = await search.json();
+    if (data.files && data.files.length > 0) {
+      const id = data.files[0].id;
+      localStorage.setItem('mf_drive_file_id', id);
+      return id;
+    }
+  } catch(e) { console.error('Drive search error:', e); }
+
+  // Last resort: create a new file
+  try {
+    const create = await fetch('https://www.googleapis.com/drive/v3/files', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: DRIVE_FILE_NAME, mimeType: 'application/json' })
+    });
+    const file = await create.json();
+    if (file.id) { localStorage.setItem('mf_drive_file_id', file.id); return file.id; }
+  } catch(e) { console.error('Drive create error:', e); }
+
+  return null;
+}
 
 async function loadFromDrive() {
   const token = getToken(); if (!token) return null;

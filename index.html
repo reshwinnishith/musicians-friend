@@ -230,8 +230,11 @@
       <!-- BOTTOM SHEET -->
       <div class="overlay" id="overlay">
         <div class="sheet" id="sheet">
-          <div class="handle"></div>
-          <div class="sheet-title" id="sheet-title">Add a new gig</div>
+          <div class="sheet-top-row">
+            <div class="handle-inline"></div>
+            <div class="sheet-title" id="sheet-title">Add a new gig</div>
+            <button class="sheet-close-btn" id="sheet-close-btn" aria-label="Close"><i class="ti ti-x"></i></button>
+          </div>
           <div class="form-grid">
 
             <!-- Client -->
@@ -288,20 +291,22 @@
           </div>
 
           <!-- More details collapsible -->
-          <button class="more-details-btn" id="more-details-btn" onclick="toggleMoreDetails()">
-            <i class="ti ti-chevron-down" id="more-details-icon"></i> More details
+          <button class="more-details-btn" id="more-details-btn" type="button">
+            <i class="ti ti-chevron-down" id="more-details-icon"></i> <span id="more-details-label">More details</span>
           </button>
           <div class="more-details-body" id="more-details-body">
             <div class="fg full" style="margin-top:10px;">
               <label class="flabel">Notes</label>
               <input class="fin" id="fn" placeholder="Soundcheck time, contact person, setlist notes..." type="text">
             </div>
-            <label class="cal-row-label" style="margin-top:10px;">
-              <input type="checkbox" id="cs" checked>
-              <i class="ti ti-calendar" style="color:var(--accent);font-size:14px"></i>
-              Sync to Google Calendar
-            </label>
           </div>
+
+          <!-- Calendar sync — always visible -->
+          <label class="cal-row-label" style="margin-top:12px;">
+            <input type="checkbox" id="cs" checked>
+            <i class="ti ti-calendar" style="color:var(--accent);font-size:14px"></i>
+            Sync to Google Calendar
+          </label>
 
           <button class="save-btn" id="save-btn">💾 Save Gig</button>
           <div id="delete-wrap"></div>

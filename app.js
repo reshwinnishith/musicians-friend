@@ -349,8 +349,12 @@ function initAutocompletes() {
 // ── MORE DETAILS TOGGLE ──
 function toggleMoreDetails() {
   moreDetailsOpen = !moreDetailsOpen;
-  document.getElementById('more-details-body').style.display = moreDetailsOpen ? 'block' : 'none';
-  document.getElementById('more-details-icon').className = moreDetailsOpen ? 'ti ti-chevron-up' : 'ti ti-chevron-down';
+  const body = document.getElementById('more-details-body');
+  const icon = document.getElementById('more-details-icon');
+  const label = document.getElementById('more-details-label');
+  if (body) body.style.display = moreDetailsOpen ? 'block' : 'none';
+  if (icon) icon.className = moreDetailsOpen ? 'ti ti-chevron-up' : 'ti ti-chevron-down';
+  if (label) label.textContent = moreDetailsOpen ? 'Hide details' : 'More details';
 }
 
 // ── SHEET ──
@@ -372,6 +376,8 @@ function openAdd(prefillDate) {
   moreDetailsOpen=false;
   document.getElementById('more-details-body').style.display='none';
   document.getElementById('more-details-icon').className='ti ti-chevron-down';
+  const lbl = document.getElementById('more-details-label');
+  if (lbl) lbl.textContent='More details';
   openSheet();
 }
 function openEdit(showId) {
@@ -392,7 +398,7 @@ function openEdit(showId) {
   document.getElementById('toast').classList.remove('show');
   // Show more details if notes exist
   if (s.notes) { moreDetailsOpen=true; document.getElementById('more-details-body').style.display='block'; document.getElementById('more-details-icon').className='ti ti-chevron-up'; }
-  else { moreDetailsOpen=false; document.getElementById('more-details-body').style.display='none'; document.getElementById('more-details-icon').className='ti ti-chevron-down'; }
+  else { moreDetailsOpen=false; document.getElementById('more-details-body').style.display='none'; document.getElementById('more-details-icon').className='ti ti-chevron-down'; const lbl2=document.getElementById('more-details-label');if(lbl2)lbl2.textContent='More details'; }
   openSheet();
 }
 function openEditFromPreview() { const id=previewShowId; closePreview(); openEdit(id); }
@@ -541,5 +547,8 @@ function setupEventListeners() {
   document.getElementById('send-btn').addEventListener('click',sendMsg);
   document.getElementById('cin').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
   document.getElementById('cin').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px';});
-  document.getElementById('more-details-btn').addEventListener('click',toggleMoreDetails);
+  const moreBtn = document.getElementById('more-details-btn');
+  if (moreBtn) moreBtn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); toggleMoreDetails(); });
+  const closeBtn = document.getElementById('sheet-close-btn');
+  if (closeBtn) closeBtn.addEventListener('click', e => { e.preventDefault(); closeSheet(); });
 }
