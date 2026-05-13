@@ -184,55 +184,52 @@ function makeShowRow(s) {
 
   // ── SWIPE LOGIC ──
   const DELETE_WIDTH = 76;
-  const SNAP_THRESHOLD = 40;
+  const SNAP_THRESHOLD = 38;
   let txStart = 0, tyStart = 0, dragging = false, revealed = false;
 
+  // Inject delete bg immediately — hidden via opacity:0, never causes layout shift
+  const bg = document.createElement('div');
+  bg.className = 'swipe-delete-bg';
+  bg.style.width = DELETE_WIDTH + 'px';
+  bg.style.opacity = '0';
+  bg.innerHTML = `<button class="swipe-delete-btn"><i class="ti ti-trash"></i><span>Delete</span></button>`;
+  row.appendChild(bg);
+  bg.querySelector('.swipe-delete-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (confirm(`Delete "${s.artist}"?`)) {
+      const idx = shows.findIndex(x => x.id === s.id);
+      if (idx > -1) {
+        const calId = shows[idx].calEventId;
+        shows.splice(idx, 1);
+        rebuildDashboard(); saveData();
+        if (document.getElementById('panel-calendar').classList.contains('active')) renderCal();
+        if (calId) deleteCalendarEventNative(calId);
+      }
+    } else { closeSwipe(row); }
+  });
+
   function revealDelete() {
-    // Close any other open rows first
     document.querySelectorAll('.show-row[data-swiped="true"]').forEach(r => {
       if (r !== row) closeSwipe(r);
     });
-    cardInner.style.transition = 'transform 0.18s ease';
+    cardInner.style.transition = 'transform 0.2s ease';
     cardInner.style.transform = `translateX(-${DELETE_WIDTH}px)`;
+    bg.style.transition = 'opacity 0.2s ease';
+    bg.style.opacity = '1';
     row.dataset.swiped = 'true';
     revealed = true;
-    // Inject delete button if not already there
-    if (!row.querySelector('.swipe-delete-bg')) {
-      const bg = document.createElement('div');
-      bg.className = 'swipe-delete-bg';
-      bg.innerHTML = `<button class="swipe-delete-btn"><i class="ti ti-trash"></i><span>Delete</span></button>`;
-      bg.style.width = DELETE_WIDTH + 'px';
-      row.appendChild(bg);
-      bg.querySelector('.swipe-delete-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (confirm(`Delete "${s.artist}"?`)) {
-          const idx = shows.findIndex(x => x.id === s.id);
-          if (idx > -1) {
-            const calId = shows[idx].calEventId;
-            shows.splice(idx, 1);
-            rebuildDashboard(); saveData();
-            if (document.getElementById('panel-calendar').classList.contains('active')) renderCal();
-            if (calId) deleteCalendarEventNative(calId);
-          }
-        } else { closeSwipe(row); }
-      });
-    }
   }
 
   function closeSwipe(r) {
     const ci = r.querySelector('.swipe-card-inner');
-    if (ci) { ci.style.transition = 'transform 0.18s ease'; ci.style.transform = 'translateX(0)'; }
+    const rbg = r.querySelector('.swipe-delete-bg');
+    if (ci) { ci.style.transition = 'transform 0.2s ease'; ci.style.transform = 'translateX(0)'; }
+    if (rbg) { rbg.style.transition = 'opacity 0.2s ease'; rbg.style.opacity = '0'; }
     r.dataset.swiped = 'false';
     if (r === row) revealed = false;
-    // Remove delete bg after animation
-    setTimeout(() => {
-      const bg = r.querySelector('.swipe-delete-bg');
-      if (bg) bg.remove();
-    }, 200);
   }
 
   row.addEventListener('touchstart', (e) => {
-    // If another row is open, close it
     document.querySelectorAll('.show-row[data-swiped="true"]').forEach(r => {
       if (r !== row) closeSwipe(r);
     });
@@ -240,23 +237,26 @@ function makeShowRow(s) {
     tyStart = e.touches[0].clientY;
     dragging = false;
     cardInner.style.transition = 'none';
+    bg.style.transition = 'none';
   }, { passive: true });
 
   row.addEventListener('touchmove', (e) => {
     const dx = e.touches[0].clientX - txStart;
     const dy = e.touches[0].clientY - tyStart;
-    // Ignore if mostly vertical
     if (!dragging && Math.abs(dy) > Math.abs(dx) + 4) return;
-    if (dx < -6) {
+    if (dx < -6 || (dragging && dx <= 0)) {
       dragging = true;
       const base = revealed ? -DELETE_WIDTH : 0;
       const clamped = Math.max(Math.min(base + dx, 0), -DELETE_WIDTH);
       cardInner.style.transform = `translateX(${clamped}px)`;
+      // Fade in proportionally as card slides
+      bg.style.opacity = String(Math.min(Math.abs(clamped) / DELETE_WIDTH, 1));
       e.preventDefault();
-    } else if (dx > 6 && dragging) {
+    } else if (dx > 0 && dragging) {
       const base = revealed ? -DELETE_WIDTH : 0;
       const clamped = Math.max(Math.min(base + dx, 0), -DELETE_WIDTH);
       cardInner.style.transform = `translateX(${clamped}px)`;
+      bg.style.opacity = String(Math.min(Math.abs(clamped) / DELETE_WIDTH, 1));
     }
   }, { passive: false });
 
@@ -271,7 +271,6 @@ function makeShowRow(s) {
     }
   });
 
-  // Tap outside to close
   document.addEventListener('touchstart', (e) => {
     if (row.dataset.swiped === 'true' && !row.contains(e.target)) closeSwipe(row);
   }, { passive: true });

@@ -514,13 +514,14 @@ select.fin {
 .show-row {
   position: relative;
   overflow: hidden;
-  /* No border/padding — handled by swipe-card-inner */
   border: none !important;
   background: transparent !important;
   padding: 0 !important;
   margin-bottom: 7px;
+  /* Fixed height container — prevents any size changes during swipe */
+  min-height: 64px;
 }
-/* Inner card — full styled card that slides */
+/* Inner card — slides left, stays full size */
 .swipe-card-inner {
   display: flex;
   align-items: center;
@@ -534,11 +535,14 @@ select.fin {
   z-index: 1;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  /* Ensure card never shrinks */
+  width: 100%;
+  box-sizing: border-box;
 }
 .swipe-card-inner:active { background: var(--raised); }
 .show-row.past .swipe-card-inner { opacity: 0.78; }
 
-/* Delete bg — injected dynamically, hidden until swiped */
+/* Delete bg — sits underneath, fades in as card slides */
 .swipe-delete-bg {
   position: absolute;
   right: 0; top: 0; bottom: 0;
@@ -546,6 +550,12 @@ select.fin {
   display: flex; align-items: center; justify-content: center;
   border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
   z-index: 0;
+  /* Fade in smoothly as card reveals it */
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.show-row[data-swiped="true"] .swipe-delete-bg {
+  opacity: 1;
 }
 .swipe-delete-btn {
   background: none; border: none; color: #fff;
@@ -553,6 +563,14 @@ select.fin {
   display: flex; flex-direction: column; align-items: center; gap: 3px;
   padding: 10px 16px;
   -webkit-tap-highlight-color: transparent;
+  /* Fade in slightly after bg */
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.15s ease 0.05s, transform 0.15s ease 0.05s;
+}
+.show-row[data-swiped="true"] .swipe-delete-btn {
+  opacity: 1;
+  transform: scale(1);
 }
 .swipe-delete-btn i { font-size: 18px; }
 .swipe-delete-btn span { font-size: 10px; font-weight: 500; letter-spacing: 0.3px; }
