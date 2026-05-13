@@ -466,3 +466,31 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
   from { opacity: 0; transform: translateY(-6px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* ── DATE INPUT MOBILE FIX ── */
+input[type="date"].fin {
+  -webkit-appearance: none;
+  appearance: none;
+  min-height: 42px;
+  height: 42px;
+  line-height: 1.4;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+/* Ensure all .fin inputs have consistent height */
+.fin {
+  min-height: 42px;
+  height: 42px;
+  padding: 10px 12px;
+  line-height: 1.4;
+}
+select.fin {
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+}
