@@ -551,4 +551,43 @@ function setupEventListeners() {
   if (moreBtn) moreBtn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); toggleMoreDetails(); });
   const closeBtn = document.getElementById('sheet-close-btn');
   if (closeBtn) closeBtn.addEventListener('click', e => { e.preventDefault(); closeSheet(); });
+
+  // ── AUTO-REFRESH ON APP FOCUS ──
+  let lastFetchTime = Date.now();
+  const MIN_REFETCH_INTERVAL = 30000;
+
+  async function refreshIfStale() {
+    if (document.getElementById('overlay').classList.contains('show')) return;
+    if (Date.now() - lastFetchTime < MIN_REFETCH_INTERVAL) return;
+    lastFetchTime = Date.now();
+    try {
+      setSyncStatus('saving', 'Syncing...');
+      const data = await loadFromDrive();
+      if (data && data.shows) {
+        shows = data.shows;
+        nextId = shows.length > 0 ? Math.max(...shows.map(s => s.id)) + 1 : 1;
+        rebuildDashboard();
+        if (document.getElementById('panel-calendar').classList.contains('active')) renderCal();
+        if (document.getElementById('panel-earnings').classList.contains('active')) rebuildEarnings();
+        setSyncStatus('saved', 'Synced ✓');
+      }
+    } catch(e) { setSyncStatus('error', 'Sync failed'); }
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') refreshIfStale();
+  });
+  window.addEventListener('focus', () => refreshIfStale());
+
+  // Manual refresh button
+  const refreshBtn = document.getElementById('manual-refresh-btn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', async () => {
+      if (refreshBtn.classList.contains('spinning')) return;
+      refreshBtn.classList.add('spinning');
+      lastFetchTime = 0; // force re-fetch regardless of interval
+      await refreshIfStale();
+      setTimeout(() => refreshBtn.classList.remove('spinning'), 600);
+    });
+  }
 }
