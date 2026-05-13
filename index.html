@@ -140,40 +140,21 @@
         </div>
       </div>
 
-      <!-- EARNINGS ANALYTICS -->
+      <!-- EARNINGS -->
       <div class="panel" id="panel-earnings">
-        <!-- This month breakdown -->
-        <div class="earn-section-title">This Month — <span id="earn-month-name">May 2026</span></div>
+        <div class="earn-section-title">This Month — <span id="earn-month-name"></span></div>
         <div class="earn-month-grid">
-          <div class="earn-card">
-            <div class="earn-card-label">Earned so far</div>
-            <div class="earn-card-val teal" id="e-earned">—</div>
-          </div>
-          <div class="earn-card">
-            <div class="earn-card-label">Total projected</div>
-            <div class="earn-card-val" id="e-projected">—</div>
-          </div>
-          <div class="earn-card">
-            <div class="earn-card-label">Confirmed</div>
-            <div class="earn-card-val accent" id="e-confirmed">—</div>
-          </div>
-          <div class="earn-card">
-            <div class="earn-card-label">Tentative</div>
-            <div class="earn-card-val gold" id="e-tentative">—</div>
-          </div>
+          <div class="earn-card"><div class="earn-card-label">Earned so far</div><div class="earn-card-val teal" id="e-earned">—</div></div>
+          <div class="earn-card"><div class="earn-card-label">Projected total</div><div class="earn-card-val" id="e-projected">—</div></div>
+          <div class="earn-card"><div class="earn-card-label">Confirmed</div><div class="earn-card-val accent" id="e-confirmed">—</div></div>
+          <div class="earn-card"><div class="earn-card-label">Tentative</div><div class="earn-card-val gold" id="e-tentative">—</div></div>
         </div>
-
-        <!-- Bar chart -->
         <div class="earn-section-title" style="margin-top:20px;">Monthly earnings — 2026</div>
         <div class="bar-legend">
           <div class="bar-legend-item"><div class="bar-legend-dot conf"></div> Confirmed</div>
           <div class="bar-legend-item"><div class="bar-legend-dot tent"></div> Tentative</div>
         </div>
-        <div class="bar-chart-wrap">
-          <div class="bar-chart" id="e-bar-chart"></div>
-        </div>
-
-        <!-- Year summary -->
+        <div class="bar-chart-wrap"><div class="bar-chart" id="e-bar-chart"></div></div>
         <div class="earn-section-title" style="margin-top:20px;">Year summary — 2026</div>
         <div class="year-grid">
           <div class="year-card"><div class="year-label">Total projected</div><div class="year-val" id="e-year-total">—</div></div>
@@ -182,13 +163,11 @@
           <div class="year-card"><div class="year-label">Gigs</div><div class="year-val" id="e-gig-count">—</div></div>
           <div class="year-card"><div class="year-label">Avg per gig</div><div class="year-val" id="e-avg">—</div></div>
         </div>
-
-        <!-- Gig type breakdown -->
         <div class="earn-section-title" style="margin-top:20px;">By gig type</div>
         <div id="e-type-list"></div>
       </div>
 
-      <!-- FAB -->
+      <!-- FAB — only on dashboard and calendar -->
       <button class="fab" id="fab"><i class="ti ti-plus"></i> Add Gig</button>
 
       <!-- CONFIRM POPUP -->
@@ -206,35 +185,76 @@
           <div class="handle"></div>
           <div class="sheet-title" id="sheet-title">Add a new gig</div>
           <div class="form-grid">
-            <div class="fg"><label class="flabel">Artist / Client name</label><input class="fin" id="fa" placeholder="e.g. Indosoul" type="text"></div>
-            <div class="fg"><label class="flabel">Gig type</label>
-              <select class="fin" id="ft">
-                <option value="wedding">Wedding</option>
-                <option value="pub">Pub</option>
-                <option value="corporate">Corporate</option>
-                <option value="college">College</option>
-                <option value="festival">Festival</option>
-                <option value="other">Other</option>
-              </select>
+
+            <!-- Client -->
+            <div class="fg full">
+              <label class="flabel">Client / Artist name</label>
+              <div class="autocomplete-wrap" id="client-wrap">
+                <input class="fin" id="fa" placeholder="Search or add client..." type="text" autocomplete="off">
+                <div class="ac-dropdown" id="client-dropdown"></div>
+              </div>
             </div>
-            <div class="fg"><label class="flabel">Date</label><input class="fin" id="fd" type="date"></div>
-            <div class="fg"><label class="flabel">City</label><input class="fin" id="fc" placeholder="e.g. Chennai" type="text"></div>
-            <div class="fg"><label class="flabel">Payment (₹)</label><input class="fin" id="fp" placeholder="e.g. 25000" type="number"></div>
-            <div class="fg"><label class="flabel">Show status</label>
+
+            <!-- Date + City on same row -->
+            <div class="fg">
+              <label class="flabel">Date</label>
+              <input class="fin" id="fd" type="date">
+            </div>
+            <div class="fg">
+              <label class="flabel">City</label>
+              <div class="autocomplete-wrap" id="city-wrap">
+                <input class="fin" id="fc" placeholder="Search or add city..." type="text" autocomplete="off">
+                <div class="ac-dropdown" id="city-dropdown"></div>
+              </div>
+            </div>
+
+            <!-- Gig type + Payment on same row -->
+            <div class="fg">
+              <label class="flabel">Gig type</label>
+              <div class="autocomplete-wrap" id="type-wrap">
+                <input class="fin" id="ft-input" placeholder="e.g. Wedding..." type="text" autocomplete="off">
+                <input type="hidden" id="ft" value="wedding">
+                <div class="ac-dropdown" id="type-dropdown"></div>
+              </div>
+            </div>
+            <div class="fg">
+              <label class="flabel">Payment (₹)</label>
+              <input class="fin" id="fp" placeholder="e.g. 25000" type="number">
+            </div>
+
+            <!-- Show status + Payment status on same row -->
+            <div class="fg">
+              <label class="flabel">Show status</label>
               <div class="tog-row">
                 <button class="tog-btn sel-c" id="bc">✓ Confirmed</button>
                 <button class="tog-btn" id="bt">⏰ Tentative</button>
               </div>
             </div>
-            <div class="fg"><label class="flabel">Payment received?</label>
+            <div class="fg">
+              <label class="flabel">Payment status</label>
               <div class="pay-tog-row">
                 <button class="pay-tog" id="bp-paid">✓ Paid</button>
                 <button class="pay-tog sel-pending" id="bp-pending">⏰ Pending</button>
               </div>
             </div>
-            <div class="fg full"><label class="flabel">Notes</label><input class="fin" id="fn" placeholder="Soundcheck time, contact person..." type="text"></div>
           </div>
-          <label class="cal-row-label"><input type="checkbox" id="cs" checked> <i class="ti ti-calendar" style="color:var(--accent);font-size:14px"></i> Sync to Google Calendar</label>
+
+          <!-- More details collapsible -->
+          <button class="more-details-btn" id="more-details-btn" onclick="toggleMoreDetails()">
+            <i class="ti ti-chevron-down" id="more-details-icon"></i> More details
+          </button>
+          <div class="more-details-body" id="more-details-body">
+            <div class="fg full" style="margin-top:10px;">
+              <label class="flabel">Notes</label>
+              <input class="fin" id="fn" placeholder="Soundcheck time, contact person, setlist notes..." type="text">
+            </div>
+            <label class="cal-row-label" style="margin-top:10px;">
+              <input type="checkbox" id="cs" checked>
+              <i class="ti ti-calendar" style="color:var(--accent);font-size:14px"></i>
+              Sync to Google Calendar
+            </label>
+          </div>
+
           <button class="save-btn" id="save-btn">💾 Save Gig</button>
           <div id="delete-wrap"></div>
           <div class="toast" id="toast"></div>
@@ -245,12 +265,5 @@
 
   <script src="auth.js"></script>
   <script src="app.js"></script>
-  <script>
-    // Set earnings month name on load
-    document.addEventListener('DOMContentLoaded', () => {
-      const mn = document.getElementById('earn-month-name');
-      if (mn) { const t = new Date(); mn.textContent = ['January','February','March','April','May','June','July','August','September','October','November','December'][t.getMonth()] + ' ' + t.getFullYear(); }
-    });
-  </script>
 </body>
 </html>

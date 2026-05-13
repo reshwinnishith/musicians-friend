@@ -337,3 +337,46 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 .show-row.clickable:hover .show-artist {
   color: var(--accent-d);
 }
+
+/* ── AUTOCOMPLETE ── */
+.autocomplete-wrap { position: relative; }
+.ac-dropdown { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--surface); border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); z-index: 100; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+.ac-item { padding: 9px 12px; font-size: 13px; color: var(--ink); cursor: pointer; }
+.ac-item:hover { background: var(--raised); }
+.ac-add { color: var(--accent); font-weight: 500; border-top: 0.5px solid var(--border); display: flex; align-items: center; gap: 6px; }
+
+/* ── MORE DETAILS ── */
+.more-details-btn { width: 100%; margin-top: 12px; padding: 8px; background: transparent; border: 0.5px dashed var(--border-mid); border-radius: var(--radius-sm); font-size: 13px; color: var(--muted); cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.12s; }
+.more-details-btn:hover { background: var(--raised); color: var(--ink); }
+.more-details-body { display: none; }
+
+/* ── STATUS COLOURS ── */
+/* Confirmed = green pip, Tentative = amber pip, Completed = grey pip */
+.date-pip.status-confirmed { background: var(--teal-l); }
+.date-pip.status-confirmed .mo { color: var(--teal); }
+.date-pip.status-confirmed .dy { color: #085041; }
+.date-pip.status-tentative { background: var(--gold-l); }
+.date-pip.status-tentative .mo { color: var(--gold); }
+.date-pip.status-tentative .dy { color: #633806; }
+.date-pip.status-completed { background: var(--raised); }
+.date-pip.status-completed .mo { color: var(--muted); }
+.date-pip.status-completed .dy { color: var(--ink); }
+
+/* PAYMENT PILLS */
+.pay-marker { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 500; margin-top: 4px; padding: 3px 8px; border-radius: 20px; border: none; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.pill-paid { background: #DBEAFE; color: #185FA5; }
+.pill-paid:hover { background: #B5D4F4; }
+.pill-pending { background: var(--red-l); color: var(--red); }
+.pill-pending:hover { background: #f7c8c8; }
+.pill-tentative { background: var(--gold-l); color: var(--gold); }
+.pill-upcoming { background: var(--teal-l); color: var(--teal); border: 0.5px solid var(--teal); }
+.pill-upcoming:hover { background: #9FE1CB; }
+
+/* ── DATE INPUT ICON ── */
+input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.4) sepia(1) saturate(3) hue-rotate(210deg); cursor: pointer; opacity: 0.7; }
+input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+
+/* ── CLICKABLE ROWS ── */
+.show-row.clickable { cursor: pointer; transition: border-color 0.12s, background 0.12s; }
+.show-row.clickable:hover { border-color: var(--accent); background: var(--accent-l); }
+.show-row.clickable:hover .show-artist { color: var(--accent-d); }
