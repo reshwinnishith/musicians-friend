@@ -514,39 +514,13 @@ select.fin {
 .show-row {
   position: relative;
   overflow: hidden;
-  padding: 0 !important;
-  background: transparent !important;
+  /* No border/padding — handled by swipe-card-inner */
   border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin-bottom: 7px;
 }
-.show-row.clickable:active .swipe-card-inner {
-  background: var(--raised);
-}
-/* Delete action sits behind the card */
-.swipe-delete-bg {
-  position: absolute;
-  right: 0; top: 0; bottom: 0;
-  width: 80px;
-  background: var(--red);
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-}
-.swipe-delete-btn {
-  background: none;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  font-size: 18px;
-  -webkit-tap-highlight-color: transparent;
-  padding: 8px;
-}
-.swipe-delete-btn span {
-  font-size: 10px;
-  font-weight: 500;
-  font-family: inherit;
-  letter-spacing: 0.3px;
-}
-/* Inner card sits on top, slides left to reveal delete */
+/* Inner card — full styled card that slides */
 .swipe-card-inner {
   display: flex;
   align-items: center;
@@ -559,10 +533,29 @@ select.fin {
   position: relative;
   z-index: 1;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
-.show-row.past .swipe-card-inner {
-  opacity: 0.78;
+.swipe-card-inner:active { background: var(--raised); }
+.show-row.past .swipe-card-inner { opacity: 0.78; }
+
+/* Delete bg — injected dynamically, hidden until swiped */
+.swipe-delete-bg {
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  background: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  z-index: 0;
 }
+.swipe-delete-btn {
+  background: none; border: none; color: #fff;
+  cursor: pointer; font-family: inherit;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 10px 16px;
+  -webkit-tap-highlight-color: transparent;
+}
+.swipe-delete-btn i { font-size: 18px; }
+.swipe-delete-btn span { font-size: 10px; font-weight: 500; letter-spacing: 0.3px; }
 
 /* ── BAR CHART TOOLTIP ── */
 .bar-tooltip {
