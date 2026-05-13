@@ -13,20 +13,42 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="app">
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen">
+    <div class="login-card">
+      <div class="login-logo-mark"><i class="ti ti-music"></i></div>
+      <h1 class="login-title">Musician's Friend</h1>
+      <p class="login-sub">Your personal music manager</p>
+      <button class="google-btn" id="signin-btn">
+        <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
+          <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/>
+          <path d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z" fill="#FBBC05"/>
+          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
+        </svg>
+        Sign in with Google
+      </button>
+      <p class="login-note">Your data stays in your Google Drive.<br>We never store it on our servers.</p>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="app" style="display:none;">
     <div class="header">
       <div class="logo">
         <div class="logo-mark"><i class="ti ti-music"></i></div>
         <div>
           <div class="logo-text">Musician's Friend</div>
-          <div class="logo-sub">Your personal music manager</div>
+          <div class="logo-sub" id="user-email">Your personal music manager</div>
         </div>
       </div>
       <div class="header-right">
         <div class="sync-status">
           <div class="sync-dot" id="sync-dot"></div>
-          <span id="sync-label">Ready</span>
+          <span id="sync-label">Loading...</span>
         </div>
+        <button class="signout-btn" id="signout-btn" title="Sign out"><i class="ti ti-logout"></i></button>
       </div>
     </div>
 
@@ -79,7 +101,7 @@
               <div class="bub">Hey! I'm your Musician's Friend 🎵 Ask me anything about your gigs, earnings, or schedule.</div>
             </div>
           </div>
-          <div class="msg bot typing-row" style="padding:0;flex-shrink:0;">
+          <div class="msg bot" style="padding:0;flex-shrink:0;">
             <div class="av"><i class="ti ti-music"></i></div>
             <div class="typing-dots" id="tdots"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>
           </div>
@@ -156,7 +178,7 @@
           <div class="handle"></div>
           <div class="sheet-title" id="sheet-title">Add a new gig</div>
           <div class="form-grid">
-            <div class="fg"><label class="flabel">Artist / Client name</label><input class="fin" id="fa" placeholder="e.g. Priya Chakravarti" type="text"></div>
+            <div class="fg"><label class="flabel">Artist / Client name</label><input class="fin" id="fa" placeholder="e.g. Indosoul" type="text"></div>
             <div class="fg"><label class="flabel">Gig type</label>
               <select class="fin" id="ft">
                 <option value="wedding">Wedding</option>
@@ -168,8 +190,8 @@
               </select>
             </div>
             <div class="fg"><label class="flabel">Date</label><input class="fin" id="fd" type="date"></div>
-            <div class="fg"><label class="flabel">City</label><input class="fin" id="fc" placeholder="e.g. Mumbai" type="text"></div>
-            <div class="fg"><label class="flabel">Payment (₹)</label><input class="fin" id="fp" placeholder="e.g. 50000" type="number"></div>
+            <div class="fg"><label class="flabel">City</label><input class="fin" id="fc" placeholder="e.g. Chennai" type="text"></div>
+            <div class="fg"><label class="flabel">Payment (₹)</label><input class="fin" id="fp" placeholder="e.g. 25000" type="number"></div>
             <div class="fg"><label class="flabel">Show status</label>
               <div class="tog-row">
                 <button class="tog-btn sel-c" id="bc">✓ Confirmed</button>
@@ -193,6 +215,7 @@
     </div>
   </div>
 
+  <script src="auth.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
