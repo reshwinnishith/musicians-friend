@@ -166,6 +166,33 @@ function makeShowRow(s) {
     </div>`;
   row.addEventListener('click', () => openEdit(s.id));
   row.querySelector('.pay-marker').addEventListener('click', function(e) { e.stopPropagation(); togglePayment(s.id, this); });
+
+  // Long-press to delete
+  let pressTimer = null;
+  const startPress = (e) => {
+    pressTimer = setTimeout(() => {
+      pressTimer = null;
+      if (confirm(`Delete "${s.artist}"? This cannot be undone.`)) {
+        const idx = shows.findIndex(x => x.id === s.id);
+        if (idx > -1) {
+          const calId = shows[idx].calEventId;
+          shows.splice(idx, 1);
+          rebuildDashboard();
+          saveData();
+          if (document.getElementById('panel-calendar').classList.contains('active')) renderCal();
+          if (calId) deleteCalendarEventNative(calId);
+        }
+      }
+    }, 600);
+  };
+  const cancelPress = () => { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } };
+  row.addEventListener('touchstart', startPress, { passive: true });
+  row.addEventListener('touchend', cancelPress);
+  row.addEventListener('touchmove', cancelPress);
+  row.addEventListener('mousedown', startPress);
+  row.addEventListener('mouseup', cancelPress);
+  row.addEventListener('mouseleave', cancelPress);
+
   return row;
 }
 
@@ -254,6 +281,10 @@ function rebuildEarnings() {
   const maxVal = Math.max(...monthlyTotals, 1);
   const barChart = document.getElementById('e-bar-chart');
   barChart.innerHTML = '';
+  // Clear any existing tooltip
+  const existingTip = document.getElementById('bar-tooltip');
+  if (existingTip) existingTip.remove();
+
   monthlyTotals.forEach((val, i) => {
     const conf = monthlyConfirmed[i]; const tent = monthlyTentative[i];
     const confH = Math.round((conf/maxVal)*100); const tentH = Math.round((tent/maxVal)*100);
@@ -261,7 +292,40 @@ function rebuildEarnings() {
     const col = document.createElement('div');
     col.className = 'bar-col'+(isNow?' bar-now':'');
     col.innerHTML = `<div class="bar-wrap"><div class="bar-tent" style="height:${tentH}%"></div><div class="bar-conf" style="height:${confH}%"></div></div><div class="bar-label">${MS[i]}</div>`;
-    col.title = `${MO[i]}: ${fmt(val)}`;
+
+    if (val > 0) {
+      col.style.cursor = 'pointer';
+      col.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Remove existing tooltip
+        const old = document.getElementById('bar-tooltip');
+        if (old) { old.remove(); if (old._col === col) return; }
+        // Build tooltip
+        const tip = document.createElement('div');
+        tip.id = 'bar-tooltip';
+        tip._col = col;
+        tip.className = 'bar-tooltip';
+        tip.innerHTML = `<div class="bar-tip-month">${MO[i]}</div>
+          <div class="bar-tip-row"><span>Confirmed</span><span>${fmt(conf)}</span></div>
+          ${tent > 0 ? `<div class="bar-tip-row tentative"><span>Tentative</span><span>${fmt(tent)}</span></div>` : ''}
+          <div class="bar-tip-total"><span>Total</span><span>${fmt(val)}</span></div>`;
+        // Position above the bar column
+        const chartRect = barChart.getBoundingClientRect();
+        const colRect = col.getBoundingClientRect();
+        barChart.style.position = 'relative';
+        tip.style.position = 'absolute';
+        const colLeft = colRect.left - chartRect.left;
+        tip.style.left = Math.max(0, Math.min(colLeft - 40, chartRect.width - 160)) + 'px';
+        tip.style.bottom = '100%';
+        tip.style.marginBottom = '6px';
+        barChart.appendChild(tip);
+        // Close on outside click
+        setTimeout(() => {
+          const close = (ev) => { if (!tip.contains(ev.target)) { tip.remove(); document.removeEventListener('click', close); } };
+          document.addEventListener('click', close);
+        }, 10);
+      });
+    }
     barChart.appendChild(col);
   });
 

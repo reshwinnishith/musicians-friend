@@ -159,7 +159,7 @@ async function createCalendarEventNative(show) {
         description: `Artist: ${show.artist}\nType: ${cap(show.type)}\nCity: ${show.city}\nPayment: ₹${Number(show.pay).toLocaleString('en-IN')}\nStatus: ${cap(show.status)}${show.notes ? '\nNotes: ' + show.notes : ''}\n\nManaged by Musician's Friend`,
         start: { date: dateStr },
         end: { date: dateStr },
-        colorId: '9'
+        colorId: show.status === 'tentative' ? '6' : '11'
       })
     });
     const data = await res.json();
@@ -181,7 +181,7 @@ async function updateCalendarEventNative(show) {
         description: `Artist: ${show.artist}\nType: ${cap(show.type)}\nCity: ${show.city}\nPayment: ₹${Number(show.pay).toLocaleString('en-IN')}\nStatus: ${cap(show.status)}${show.notes ? '\nNotes: ' + show.notes : ''}\n\nManaged by Musician's Friend`,
         start: { date: dateStr },
         end: { date: dateStr },
-        colorId: '9'
+        colorId: show.status === 'tentative' ? '6' : '11'
       })
     });
   } catch(e) {}
