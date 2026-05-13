@@ -87,7 +87,7 @@ async function getUserEmail() {
 }
 
 // ── DRIVE: FILE ID (fixed — always use this file) ──
-const DRIVE_FILE_ID_FIXED = '1atsjQojZtle3UEuSsS3zWLFWh93iJ871';
+const DRIVE_FILE_ID_FIXED = '1De2UnGb763QAr5HBJOxN5HGplqzw2dqw';
 
 async function findOrCreateDriveFile() {
   return DRIVE_FILE_ID_FIXED;
