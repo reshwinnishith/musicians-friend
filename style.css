@@ -510,11 +510,32 @@ select.fin {
 .sec-tab-refresh.spinning i { animation: spin 0.6s linear; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── LONG PRESS VISUAL CUE ── */
+/* ── SWIPE TO DELETE ── */
+.show-row {
+  position: relative;
+  overflow: hidden;
+  will-change: transform;
+}
 .show-row.clickable:active {
   background: var(--raised);
-  border-color: var(--red);
-  transition: border-color 0.4s, background 0.4s;
+}
+.swipe-delete-btn {
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 80px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  transform: translateX(100%);
+  transition: none;
+  -webkit-tap-highlight-color: transparent;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+.show-row[data-swiped="true"] .swipe-delete-btn {
+  transform: translateX(0);
 }
 
 /* ── BAR CHART TOOLTIP ── */

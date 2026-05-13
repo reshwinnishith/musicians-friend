@@ -163,16 +163,64 @@ function makeShowRow(s) {
     <div class="show-right">
       <div class="pay-amount">${fmt(s.pay)}</div>
       <button class="pay-marker ${pc}">${pl}</button>
-    </div>`;
+    </div>
+    <button class="swipe-delete-btn" aria-label="Delete gig"><i class="ti ti-trash"></i></button>`;
   row.addEventListener('click', () => openEdit(s.id));
   row.querySelector('.pay-marker').addEventListener('click', function(e) { e.stopPropagation(); togglePayment(s.id, this); });
 
-  // Long-press to delete
-  let pressTimer = null;
-  const startPress = (e) => {
-    pressTimer = setTimeout(() => {
-      pressTimer = null;
-      if (confirm(`Delete "${s.artist}"? This cannot be undone.`)) {
+  // Swipe-left to reveal delete
+  const inner = row;
+  let touchStartX = 0, touchStartY = 0, swiped = false;
+
+  inner.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    swiped = false;
+  }, { passive: true });
+
+  inner.addEventListener('touchmove', (e) => {
+    const dx = e.touches[0].clientX - touchStartX;
+    const dy = e.touches[0].clientY - touchStartY;
+    if (Math.abs(dy) > Math.abs(dx)) return; // vertical scroll — ignore
+    if (dx < -40) {
+      swiped = true;
+      const clamped = Math.max(dx, -80);
+      inner.style.transform = `translateX(${clamped}px)`;
+      inner.style.transition = 'none';
+      e.preventDefault();
+    } else if (dx > 10 && swiped) {
+      inner.style.transform = 'translateX(0)';
+      swiped = false;
+    }
+  }, { passive: false });
+
+  inner.addEventListener('touchend', () => {
+    if (swiped) {
+      const currentX = parseFloat(inner.style.transform.replace('translateX(', '')) || 0;
+      if (currentX < -50) {
+        // Snap open to show delete button
+        inner.style.transition = 'transform 0.18s ease';
+        inner.style.transform = 'translateX(-80px)';
+        inner.dataset.swiped = 'true';
+      } else {
+        snapBack(inner);
+      }
+    }
+  });
+
+  // Close swipe if user taps elsewhere
+  document.addEventListener('touchstart', (e) => {
+    if (inner.dataset.swiped === 'true' && !inner.contains(e.target)) {
+      snapBack(inner);
+    }
+  }, { passive: true });
+
+  // Delete button
+  const delBtn = row.querySelector('.swipe-delete-btn');
+  if (delBtn) {
+    delBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (confirm(`Delete "${s.artist}"?`)) {
         const idx = shows.findIndex(x => x.id === s.id);
         if (idx > -1) {
           const calId = shows[idx].calEventId;
@@ -182,16 +230,11 @@ function makeShowRow(s) {
           if (document.getElementById('panel-calendar').classList.contains('active')) renderCal();
           if (calId) deleteCalendarEventNative(calId);
         }
+      } else {
+        snapBack(inner);
       }
-    }, 600);
-  };
-  const cancelPress = () => { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } };
-  row.addEventListener('touchstart', startPress, { passive: true });
-  row.addEventListener('touchend', cancelPress);
-  row.addEventListener('touchmove', cancelPress);
-  row.addEventListener('mousedown', startPress);
-  row.addEventListener('mouseup', cancelPress);
-  row.addEventListener('mouseleave', cancelPress);
+    });
+  }
 
   return row;
 }
@@ -588,6 +631,13 @@ async function sendMsg() {
     b.innerHTML=`<div class="av"><i class="ti ti-music"></i></div><div class="bub">Sorry, had a hiccup! Try again.</div>`;
     msgs.appendChild(b);
   }
+}
+
+// ── SNAP BACK HELPER ──
+function snapBack(el) {
+  el.style.transition = 'transform 0.2s ease';
+  el.style.transform = 'translateX(0)';
+  el.dataset.swiped = 'false';
 }
 
 // ── EVENT LISTENERS ──
