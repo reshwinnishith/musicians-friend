@@ -122,7 +122,7 @@ function togglePayment(showId, btn) {
 function makeShowRow(s) {
   const past = isPast(s);
   const row = document.createElement('div');
-  row.className = 'show-row' + (past ? ' past' : '');
+  row.className = 'show-row clickable' + (past ? ' past' : '');
   const tentTag = s.status === 'tentative' ? `<span class="tentative-tag">· tentative</span>` : '';
   const pc = pillClass(s); const pl = pillLabel(s);
   row.innerHTML = `
@@ -137,6 +137,7 @@ function makeShowRow(s) {
       <div class="pay-amount">${fmt(s.pay)}</div>
       <button class="pay-marker ${pc}">${pl}</button>
     </div>`;
+  row.addEventListener('click', () => openEdit(s.id));
   row.querySelector('.pay-marker').addEventListener('click', function(e) { e.stopPropagation(); togglePayment(s.id, this); });
   return row;
 }

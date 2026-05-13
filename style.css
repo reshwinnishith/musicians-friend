@@ -314,3 +314,26 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Sego
 .type-bar-wrap { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
 .type-bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s ease; }
 .type-amt { font-size: 12px; font-weight: 600; color: var(--ink); min-width: 70px; text-align: right; }
+
+/* ── DATE INPUT ICON COLOUR ── */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.4) sepia(1) saturate(3) hue-rotate(210deg);
+  cursor: pointer;
+  opacity: 0.7;
+}
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* ── CLICKABLE SHOW ROWS ── */
+.show-row.clickable {
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+}
+.show-row.clickable:hover {
+  border-color: var(--accent);
+  background: var(--accent-l);
+}
+.show-row.clickable:hover .show-artist {
+  color: var(--accent-d);
+}
