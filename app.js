@@ -148,70 +148,81 @@ function togglePayment(showId, btn) {
 function makeShowRow(s) {
   const past = isPast(s);
   const row = document.createElement('div');
-  row.className = 'show-row clickable' + (past ? ' past' : '');
+  row.className = 'show-row' + (past ? ' past' : '');
   const tentTag = s.status === 'tentative' ? `<span class="tentative-tag">· tentative</span>` : '';
   const pc = pillClass(s); const pl = pillLabel(s);
   const sc = gigStatusClass(s);
   row.innerHTML = `
-    <div class="date-pip ${sc}">
-      <div class="mo">${MS[s.month]}</div><div class="dy">${s.day}</div>
+    <div class="swipe-delete-bg">
+      <button class="swipe-delete-btn" aria-label="Delete gig">
+        <i class="ti ti-trash"></i><span>Delete</span>
+      </button>
     </div>
-    <div class="show-body">
-      <div class="artist-line"><span class="show-artist">${s.artist}</span>${tentTag}</div>
-      <div class="show-meta"><span class="badge ${BC[s.type]||'other'}">${cap(s.type)}</span><span class="mdot">·</span><span>${s.city}</span></div>
-    </div>
-    <div class="show-right">
-      <div class="pay-amount">${fmt(s.pay)}</div>
-      <button class="pay-marker ${pc}">${pl}</button>
-    </div>
-    <button class="swipe-delete-btn" aria-label="Delete gig"><i class="ti ti-trash"></i></button>`;
-  row.addEventListener('click', () => openEdit(s.id));
+    <div class="swipe-card-inner">
+      <div class="date-pip ${sc}">
+        <div class="mo">${MS[s.month]}</div><div class="dy">${s.day}</div>
+      </div>
+      <div class="show-body">
+        <div class="artist-line"><span class="show-artist">${s.artist}</span>${tentTag}</div>
+        <div class="show-meta"><span class="badge ${BC[s.type]||'other'}">${cap(s.type)}</span><span class="mdot">·</span><span>${s.city}</span></div>
+      </div>
+      <div class="show-right">
+        <div class="pay-amount">${fmt(s.pay)}</div>
+        <button class="pay-marker ${pc}">${pl}</button>
+      </div>
+    </div>`;
+  row.addEventListener('click', (e) => {
+    if (row.dataset.swiped === 'true') { snapBack(row); return; }
+    if (!e.target.closest('.swipe-delete-btn') && !e.target.closest('.pay-marker')) openEdit(s.id);
+  });
   row.querySelector('.pay-marker').addEventListener('click', function(e) { e.stopPropagation(); togglePayment(s.id, this); });
 
-  // Swipe-left to reveal delete
-  const inner = row;
-  let touchStartX = 0, touchStartY = 0, swiped = false;
+  // Swipe-left to reveal delete — only inner card slides
+  const cardInner = row.querySelector('.swipe-card-inner');
+  let touchStartX = 0, touchStartY = 0, isSwiping = false;
+  const SNAP_THRESHOLD = 50;
+  const DELETE_WIDTH = 80;
 
-  inner.addEventListener('touchstart', (e) => {
+  row.addEventListener('touchstart', (e) => {
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
-    swiped = false;
+    isSwiping = false;
+    cardInner.style.transition = 'none';
   }, { passive: true });
 
-  inner.addEventListener('touchmove', (e) => {
+  row.addEventListener('touchmove', (e) => {
     const dx = e.touches[0].clientX - touchStartX;
     const dy = e.touches[0].clientY - touchStartY;
-    if (Math.abs(dy) > Math.abs(dx)) return; // vertical scroll — ignore
-    if (dx < -40) {
-      swiped = true;
-      const clamped = Math.max(dx, -80);
-      inner.style.transform = `translateX(${clamped}px)`;
-      inner.style.transition = 'none';
+    if (!isSwiping && Math.abs(dy) > Math.abs(dx)) return;
+    if (dx < -8) {
+      isSwiping = true;
+      const clamped = Math.max(dx, -DELETE_WIDTH);
+      cardInner.style.transform = `translateX(${clamped}px)`;
       e.preventDefault();
-    } else if (dx > 10 && swiped) {
-      inner.style.transform = 'translateX(0)';
-      swiped = false;
+    } else if (dx > 4 && isSwiping) {
+      cardInner.style.transform = 'translateX(0)';
     }
   }, { passive: false });
 
-  inner.addEventListener('touchend', () => {
-    if (swiped) {
-      const currentX = parseFloat(inner.style.transform.replace('translateX(', '')) || 0;
-      if (currentX < -50) {
-        // Snap open to show delete button
-        inner.style.transition = 'transform 0.18s ease';
-        inner.style.transform = 'translateX(-80px)';
-        inner.dataset.swiped = 'true';
-      } else {
-        snapBack(inner);
-      }
+  row.addEventListener('touchend', () => {
+    if (!isSwiping) return;
+    const currentX = parseFloat(cardInner.style.transform.replace('translateX(', '')) || 0;
+    cardInner.style.transition = 'transform 0.2s ease';
+    if (currentX < -SNAP_THRESHOLD) {
+      cardInner.style.transform = `translateX(-${DELETE_WIDTH}px)`;
+      row.dataset.swiped = 'true';
+    } else {
+      cardInner.style.transform = 'translateX(0)';
+      row.dataset.swiped = 'false';
     }
   });
 
-  // Close swipe if user taps elsewhere
+  // Close if user taps elsewhere
   document.addEventListener('touchstart', (e) => {
-    if (inner.dataset.swiped === 'true' && !inner.contains(e.target)) {
-      snapBack(inner);
+    if (row.dataset.swiped === 'true' && !row.contains(e.target)) {
+      cardInner.style.transition = 'transform 0.2s ease';
+      cardInner.style.transform = 'translateX(0)';
+      row.dataset.swiped = 'false';
     }
   }, { passive: true });
 
@@ -231,7 +242,9 @@ function makeShowRow(s) {
           if (calId) deleteCalendarEventNative(calId);
         }
       } else {
-        snapBack(inner);
+        cardInner.style.transition = 'transform 0.2s ease';
+        cardInner.style.transform = 'translateX(0)';
+        row.dataset.swiped = 'false';
       }
     });
   }
@@ -634,10 +647,12 @@ async function sendMsg() {
 }
 
 // ── SNAP BACK HELPER ──
-function snapBack(el) {
-  el.style.transition = 'transform 0.2s ease';
-  el.style.transform = 'translateX(0)';
-  el.dataset.swiped = 'false';
+function snapBack(row) {
+  const inner = row.querySelector ? row.querySelector('.swipe-card-inner') : row;
+  const target = inner || row;
+  target.style.transition = 'transform 0.2s ease';
+  target.style.transform = 'translateX(0)';
+  row.dataset.swiped = 'false';
 }
 
 // ── EVENT LISTENERS ──

@@ -514,28 +514,54 @@ select.fin {
 .show-row {
   position: relative;
   overflow: hidden;
-  will-change: transform;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
 }
-.show-row.clickable:active {
+.show-row.clickable:active .swipe-card-inner {
   background: var(--raised);
 }
-.swipe-delete-btn {
+/* Delete action sits behind the card */
+.swipe-delete-bg {
   position: absolute;
   right: 0; top: 0; bottom: 0;
   width: 80px;
   background: var(--red);
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
   display: flex; align-items: center; justify-content: center;
-  transform: translateX(100%);
-  transition: none;
-  -webkit-tap-highlight-color: transparent;
   border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
 }
-.show-row[data-swiped="true"] .swipe-delete-btn {
-  transform: translateX(0);
+.swipe-delete-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-size: 18px;
+  -webkit-tap-highlight-color: transparent;
+  padding: 8px;
+}
+.swipe-delete-btn span {
+  font-size: 10px;
+  font-weight: 500;
+  font-family: inherit;
+  letter-spacing: 0.3px;
+}
+/* Inner card sits on top, slides left to reveal delete */
+.swipe-card-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 13px;
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  will-change: transform;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+}
+.show-row.past .swipe-card-inner {
+  opacity: 0.78;
 }
 
 /* ── BAR CHART TOOLTIP ── */
