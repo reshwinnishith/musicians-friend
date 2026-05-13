@@ -142,29 +142,77 @@
 
       <!-- EARNINGS -->
       <div class="panel" id="panel-earnings">
-        <div class="earn-section-title">This Month — <span id="earn-month-name"></span></div>
-        <div class="earn-month-grid">
-          <div class="earn-card"><div class="earn-card-label">Earned so far</div><div class="earn-card-val teal" id="e-earned">—</div></div>
-          <div class="earn-card"><div class="earn-card-label">Projected total</div><div class="earn-card-val" id="e-projected">—</div></div>
-          <div class="earn-card"><div class="earn-card-label">Confirmed</div><div class="earn-card-val accent" id="e-confirmed">—</div></div>
-          <div class="earn-card"><div class="earn-card-label">Tentative</div><div class="earn-card-val gold" id="e-tentative">—</div></div>
+
+        <!-- SECTION 1: CURRENT EARNINGS -->
+        <div class="earn-section-block">
+          <div class="earn-section-header">
+            <div class="earn-section-icon teal"><i class="ti ti-circle-check"></i></div>
+            <div>
+              <div class="earn-section-title-lg">Current Earnings</div>
+              <div class="earn-section-desc">Money already received — gigs marked as Paid</div>
+            </div>
+          </div>
+          <div class="earn-hero teal" id="e-current-total">—</div>
+          <div class="earn-row-stats">
+            <div class="earn-row-stat">
+              <div class="earn-row-label">This month</div>
+              <div class="earn-row-val" id="e-current-month">—</div>
+            </div>
+            <div class="earn-row-stat">
+              <div class="earn-row-label">This year</div>
+              <div class="earn-row-val" id="e-current-year">—</div>
+            </div>
+            <div class="earn-row-stat">
+              <div class="earn-row-label">Gigs paid</div>
+              <div class="earn-row-val" id="e-current-count">—</div>
+            </div>
+          </div>
         </div>
-        <div class="earn-section-title" style="margin-top:20px;">Monthly earnings — 2026</div>
+
+        <div class="earn-divider"></div>
+
+        <!-- SECTION 2: PROJECTED EARNINGS -->
+        <div class="earn-section-block">
+          <div class="earn-section-header">
+            <div class="earn-section-icon accent"><i class="ti ti-clock"></i></div>
+            <div>
+              <div class="earn-section-title-lg">Projected Earnings</div>
+              <div class="earn-section-desc">Expected income from upcoming unpaid gigs</div>
+            </div>
+          </div>
+          <div class="earn-hero accent" id="e-proj-total">—</div>
+          <div class="earn-row-stats">
+            <div class="earn-row-stat">
+              <div class="earn-row-label">Confirmed</div>
+              <div class="earn-row-val accent" id="e-proj-confirmed">—</div>
+            </div>
+            <div class="earn-row-stat earn-row-stat-tentative">
+              <div class="earn-row-label">Tentative <span class="earn-tent-tag">unconfirmed</span></div>
+              <div class="earn-row-val gold" id="e-proj-tentative">—</div>
+            </div>
+            <div class="earn-row-stat">
+              <div class="earn-row-label">Pending payment</div>
+              <div class="earn-row-val red" id="e-proj-pending">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="earn-divider"></div>
+
+        <!-- BAR CHART -->
+        <div class="earn-section-title" style="margin-bottom:8px;">Monthly overview — 2026</div>
         <div class="bar-legend">
           <div class="bar-legend-item"><div class="bar-legend-dot conf"></div> Confirmed</div>
           <div class="bar-legend-item"><div class="bar-legend-dot tent"></div> Tentative</div>
         </div>
         <div class="bar-chart-wrap"><div class="bar-chart" id="e-bar-chart"></div></div>
-        <div class="earn-section-title" style="margin-top:20px;">Year summary — 2026</div>
-        <div class="year-grid">
-          <div class="year-card"><div class="year-label">Total projected</div><div class="year-val" id="e-year-total">—</div></div>
-          <div class="year-card"><div class="year-label">Paid out</div><div class="year-val teal" id="e-year-paid">—</div></div>
-          <div class="year-card"><div class="year-label">Pending</div><div class="year-val red" id="e-year-pending">—</div></div>
-          <div class="year-card"><div class="year-label">Gigs</div><div class="year-val" id="e-gig-count">—</div></div>
-          <div class="year-card"><div class="year-label">Avg per gig</div><div class="year-val" id="e-avg">—</div></div>
-        </div>
-        <div class="earn-section-title" style="margin-top:20px;">By gig type</div>
+
+        <div class="earn-divider"></div>
+
+        <!-- BY GIG TYPE -->
+        <div class="earn-section-title" style="margin-bottom:8px;">By gig type</div>
         <div id="e-type-list"></div>
+
       </div>
 
       <!-- FAB — only on dashboard and calendar -->
@@ -190,7 +238,7 @@
             <div class="fg full">
               <label class="flabel">Client / Artist name</label>
               <div class="autocomplete-wrap" id="client-wrap">
-                <input class="fin" id="fa" placeholder="Search or add client..." type="text" autocomplete="off">
+                <input class="fin fin-combo" id="fa" placeholder="Tap to select or add client..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <div class="ac-dropdown" id="client-dropdown"></div>
               </div>
             </div>
@@ -203,7 +251,7 @@
             <div class="fg">
               <label class="flabel">City</label>
               <div class="autocomplete-wrap" id="city-wrap">
-                <input class="fin" id="fc" placeholder="Search or add city..." type="text" autocomplete="off">
+                <input class="fin fin-combo" id="fc" placeholder="Tap to select or add city..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <div class="ac-dropdown" id="city-dropdown"></div>
               </div>
             </div>
@@ -212,7 +260,7 @@
             <div class="fg">
               <label class="flabel">Gig type</label>
               <div class="autocomplete-wrap" id="type-wrap">
-                <input class="fin" id="ft-input" placeholder="e.g. Wedding..." type="text" autocomplete="off">
+                <input class="fin fin-combo" id="ft-input" placeholder="Tap to select gig type..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <input type="hidden" id="ft" value="wedding">
                 <div class="ac-dropdown" id="type-dropdown"></div>
               </div>

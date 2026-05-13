@@ -214,23 +214,43 @@ function rebuildDashboard() {
 // ── EARNINGS ──
 function rebuildEarnings() {
   const yr = today.getFullYear();
-  const tmShows = shows.filter(isThisMonth);
-  const tmEarned = tmShows.filter(s => isPast(s) && s.payStatus==='paid').reduce((a,s)=>a+s.pay,0);
-  const tmProjected = tmShows.reduce((a,s)=>a+s.pay,0);
-  const tmConfirmed = tmShows.filter(s=>s.status==='confirmed').reduce((a,s)=>a+s.pay,0);
-  const tmTentative = tmShows.filter(s=>s.status==='tentative').reduce((a,s)=>a+s.pay,0);
-  document.getElementById('e-earned').textContent = fmt(tmEarned);
-  document.getElementById('e-projected').textContent = fmt(tmProjected);
-  document.getElementById('e-confirmed').textContent = fmt(tmConfirmed);
-  document.getElementById('e-tentative').textContent = fmt(tmTentative);
-  const monthlyTotals = Array(12).fill(0);
+
+  // ── SECTION 1: CURRENT EARNINGS = paid gigs only ──
+  const paidShows = shows.filter(s => s.payStatus === 'paid');
+  const paidThisMonth = paidShows.filter(isThisMonth).reduce((a,s)=>a+s.pay,0);
+  const paidThisYear = paidShows.filter(s=>s.year===yr).reduce((a,s)=>a+s.pay,0);
+  const paidCount = paidShows.length;
+
+  document.getElementById('e-current-total').textContent = fmt(paidThisYear);
+  document.getElementById('e-current-month').textContent = fmt(paidThisMonth);
+  document.getElementById('e-current-year').textContent = fmt(paidThisYear);
+  document.getElementById('e-current-count').textContent = paidCount + ' gig' + (paidCount !== 1 ? 's' : '');
+
+  // ── SECTION 2: PROJECTED EARNINGS = upcoming unpaid gigs ──
+  // Confirmed upcoming not yet paid
+  const projConfirmed = shows.filter(s => !isPast(s) && s.status === 'confirmed' && s.payStatus !== 'paid');
+  const projTentative = shows.filter(s => !isPast(s) && s.status === 'tentative' && s.payStatus !== 'paid');
+  // Past gigs with pending payment also count as projected
+  const projPending = shows.filter(s => isPast(s) && s.payStatus === 'pending');
+
+  const projConfTotal = projConfirmed.reduce((a,s)=>a+s.pay,0);
+  const projTentTotal = projTentative.reduce((a,s)=>a+s.pay,0);
+  const projPendTotal = projPending.reduce((a,s)=>a+s.pay,0);
+  const projGrandTotal = projConfTotal + projTentTotal + projPendTotal;
+
+  document.getElementById('e-proj-total').textContent = fmt(projGrandTotal);
+  document.getElementById('e-proj-confirmed').textContent = fmt(projConfTotal);
+  document.getElementById('e-proj-tentative').textContent = fmt(projTentTotal);
+  document.getElementById('e-proj-pending').textContent = fmt(projPendTotal);
+
+  // ── BAR CHART ──
   const monthlyConfirmed = Array(12).fill(0);
   const monthlyTentative = Array(12).fill(0);
   shows.filter(s=>s.year===yr).forEach(s => {
-    monthlyTotals[s.month] += s.pay;
     if (s.status==='confirmed') monthlyConfirmed[s.month]+=s.pay;
     else monthlyTentative[s.month]+=s.pay;
   });
+  const monthlyTotals = monthlyConfirmed.map((v,i)=>v+monthlyTentative[i]);
   const maxVal = Math.max(...monthlyTotals, 1);
   const barChart = document.getElementById('e-bar-chart');
   barChart.innerHTML = '';
@@ -244,6 +264,8 @@ function rebuildEarnings() {
     col.title = `${MO[i]}: ${fmt(val)}`;
     barChart.appendChild(col);
   });
+
+  // ── GIG TYPE BREAKDOWN ──
   const typeMap = {};
   shows.forEach(s => { typeMap[s.type]=(typeMap[s.type]||0)+s.pay; });
   const typeList = document.getElementById('e-type-list'); typeList.innerHTML = '';
@@ -255,14 +277,6 @@ function rebuildEarnings() {
     row.innerHTML = `<div class="type-dot" style="background:${typeColors[type]||'#6b7280'}"></div><span class="type-name">${cap(type)}</span><div class="type-bar-wrap"><div class="type-bar-fill" style="width:${pct}%;background:${typeColors[type]||'#6b7280'}"></div></div><span class="type-amt">${fmt(amt)}</span>`;
     typeList.appendChild(row);
   });
-  const yearTotal = shows.filter(s=>s.year===yr).reduce((a,s)=>a+s.pay,0);
-  const yearPaid = shows.filter(s=>s.year===yr&&s.payStatus==='paid').reduce((a,s)=>a+s.pay,0);
-  const yrGigs = shows.filter(s=>s.year===yr).length;
-  document.getElementById('e-year-total').textContent = fmt(yearTotal);
-  document.getElementById('e-year-paid').textContent = fmt(yearPaid);
-  document.getElementById('e-year-pending').textContent = fmt(yearTotal-yearPaid);
-  document.getElementById('e-gig-count').textContent = yrGigs;
-  document.getElementById('e-avg').textContent = fmt(yrGigs?Math.round(yearTotal/yrGigs):0);
 }
 
 // ── AUTOCOMPLETE ──
@@ -272,29 +286,53 @@ function setupAutocomplete(inputId, dropdownId, getOptions, onSelect, allowCreat
   if (!input || !dropdown) return;
 
   function showDropdown(query) {
-    const opts = getOptions().filter(o => o.toLowerCase().includes(query.toLowerCase()));
+    const all = getOptions();
+    const q = query.trim().toLowerCase();
+    // Show all when empty, filter when typing
+    const opts = q ? all.filter(o => o.toLowerCase().includes(q)) : all;
     dropdown.innerHTML = '';
-    if (!opts.length && !allowCreate) { dropdown.style.display='none'; return; }
-    opts.slice(0,8).forEach(opt => {
+    opts.slice(0, 10).forEach(opt => {
       const item = document.createElement('div');
       item.className = 'ac-item';
-      item.textContent = opt;
-      item.addEventListener('mousedown', e => { e.preventDefault(); onSelect(opt); input.value = opt; dropdown.style.display='none'; });
+      // Bold matching portion
+      if (q) {
+        const idx = opt.toLowerCase().indexOf(q);
+        item.innerHTML = opt.slice(0, idx) + '<strong>' + opt.slice(idx, idx + q.length) + '</strong>' + opt.slice(idx + q.length);
+      } else {
+        item.textContent = opt;
+      }
+      item.addEventListener('mousedown', e => {
+        e.preventDefault();
+        onSelect(opt);
+        input.value = opt;
+        dropdown.style.display = 'none';
+      });
       dropdown.appendChild(item);
     });
-    if (allowCreate && query && !opts.find(o=>o.toLowerCase()===query.toLowerCase())) {
+    // Show "+ Add" only when typed value doesn't match any existing option exactly
+    if (allowCreate && q && !all.find(o => o.toLowerCase() === q)) {
       const addItem = document.createElement('div');
       addItem.className = 'ac-item ac-add';
-      addItem.innerHTML = `<i class="ti ti-plus" style="font-size:12px"></i> ${createLabel}: "${query}"`;
-      addItem.addEventListener('mousedown', e => { e.preventDefault(); onSelect(query, true); input.value = query; dropdown.style.display='none'; });
+      addItem.innerHTML = `<i class="ti ti-plus" style="font-size:12px"></i> ${createLabel}: "<strong>${query}</strong>"`;
+      addItem.addEventListener('mousedown', e => {
+        e.preventDefault();
+        onSelect(query, true);
+        input.value = query;
+        dropdown.style.display = 'none';
+      });
       dropdown.appendChild(addItem);
     }
     dropdown.style.display = dropdown.children.length ? 'block' : 'none';
   }
 
-  input.addEventListener('input', () => showDropdown(input.value));
-  input.addEventListener('focus', () => showDropdown(input.value));
-  input.addEventListener('blur', () => setTimeout(()=>dropdown.style.display='none', 150));
+  // Open with all options on tap/focus
+  input.addEventListener('focus', () => { showDropdown(input.value); });
+  // Filter live as user types
+  input.addEventListener('input', () => { showDropdown(input.value); });
+  // Close on blur with small delay to allow mousedown to fire
+  input.addEventListener('blur', () => setTimeout(() => { dropdown.style.display = 'none'; }, 180));
+  // Reopen if user taps an already-focused field (mobile tap)
+  input.addEventListener('click', () => { if (dropdown.style.display === 'none') showDropdown(input.value); });
 }
 
 function initAutocompletes() {
