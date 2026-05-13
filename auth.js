@@ -155,8 +155,8 @@ async function createCalendarEventNative(show) {
         summary: `🎵 ${cap(show.type)} Gig — ${show.artist}`,
         location: `${show.city}, India`,
         description: `Artist: ${show.artist}\nType: ${cap(show.type)}\nCity: ${show.city}\nPayment: ₹${Number(show.pay).toLocaleString('en-IN')}\nStatus: ${cap(show.status)}\n${show.notes ? 'Notes: ' + show.notes : ''}\n\nManaged by Musician's Friend`,
-        start: { dateTime: `${dateStr}T00:00:00`, timeZone: 'Asia/Kolkata' },
-        end: { dateTime: `${dateStr}T23:59:00`, timeZone: 'Asia/Kolkata' },
+        start: { date: dateStr },
+        end: { date: dateStr },
         colorId: '9'
       })
     });
@@ -185,8 +185,8 @@ async function updateCalendarEventNative(show) {
         summary: `🎵 ${cap(show.type)} Gig — ${show.artist}`,
         location: `${show.city}, India`,
         description: `Artist: ${show.artist}\nType: ${cap(show.type)}\nCity: ${show.city}\nPayment: ₹${Number(show.pay).toLocaleString('en-IN')}\nStatus: ${cap(show.status)}\n${show.notes ? 'Notes: ' + show.notes : ''}\n\nManaged by Musician's Friend`,
-        start: { dateTime: `${dateStr}T00:00:00`, timeZone: 'Asia/Kolkata' },
-        end: { dateTime: `${dateStr}T23:59:00`, timeZone: 'Asia/Kolkata' },
+        start: { date: dateStr },
+        end: { date: dateStr },
         colorId: '9'
       })
     });

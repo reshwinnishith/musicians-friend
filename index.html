@@ -14,7 +14,6 @@
 </head>
 <body>
 
-  <!-- LOGIN SCREEN -->
   <div id="login-screen">
     <div class="login-card">
       <div class="login-logo-mark"><i class="ti ti-music"></i></div>
@@ -33,7 +32,6 @@
     </div>
   </div>
 
-  <!-- MAIN APP -->
   <div id="app" style="display:none;">
     <div class="header">
       <div class="logo">
@@ -56,7 +54,7 @@
       <button class="nav-tab active" onclick="switchTab('dashboard',this)"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></button>
       <button class="nav-tab" onclick="switchTab('chat',this)"><i class="ti ti-message"></i><span>Chat</span></button>
       <button class="nav-tab" onclick="switchTab('calendar',this)"><i class="ti ti-calendar"></i><span>Calendar</span></button>
-      <button class="nav-tab" onclick="switchTab('earnings',this)"><i class="ti ti-coin"></i><span>Earnings</span></button>
+      <button class="nav-tab" onclick="switchTab('earnings',this)"><i class="ti ti-chart-bar"></i><span>Earnings</span></button>
     </nav>
 
     <div class="content">
@@ -74,12 +72,12 @@
             <div class="stat-sub" id="s-next-d">—</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Gigs this month</div>
+            <div class="stat-label">Upcoming gigs</div>
             <div class="stat-value" id="s-count">—</div>
             <div class="stat-sub" id="s-month-label">—</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Monthly earnings</div>
+            <div class="stat-label">Projected this month</div>
             <div class="stat-value" id="s-earn">—</div>
             <div class="stat-sub">All gigs</div>
           </div>
@@ -142,22 +140,52 @@
         </div>
       </div>
 
-      <!-- EARNINGS -->
+      <!-- EARNINGS ANALYTICS -->
       <div class="panel" id="panel-earnings">
-        <div class="earn-stats">
-          <div class="stat-card">
-            <div class="stat-label">Total earned (2026)</div>
-            <div class="stat-value" id="e-total">—</div>
-            <div class="stat-sub" id="e-count">—</div>
+        <!-- This month breakdown -->
+        <div class="earn-section-title">This Month — <span id="earn-month-name">May 2026</span></div>
+        <div class="earn-month-grid">
+          <div class="earn-card">
+            <div class="earn-card-label">Earned so far</div>
+            <div class="earn-card-val teal" id="e-earned">—</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-label">Average per gig</div>
-            <div class="stat-value" id="e-avg">—</div>
-            <div class="stat-sub">All gigs</div>
+          <div class="earn-card">
+            <div class="earn-card-label">Total projected</div>
+            <div class="earn-card-val" id="e-projected">—</div>
+          </div>
+          <div class="earn-card">
+            <div class="earn-card-label">Confirmed</div>
+            <div class="earn-card-val accent" id="e-confirmed">—</div>
+          </div>
+          <div class="earn-card">
+            <div class="earn-card-label">Tentative</div>
+            <div class="earn-card-val gold" id="e-tentative">—</div>
           </div>
         </div>
-        <div class="sec-label">By gig</div>
-        <div id="earn-list"></div>
+
+        <!-- Bar chart -->
+        <div class="earn-section-title" style="margin-top:20px;">Monthly earnings — 2026</div>
+        <div class="bar-legend">
+          <div class="bar-legend-item"><div class="bar-legend-dot conf"></div> Confirmed</div>
+          <div class="bar-legend-item"><div class="bar-legend-dot tent"></div> Tentative</div>
+        </div>
+        <div class="bar-chart-wrap">
+          <div class="bar-chart" id="e-bar-chart"></div>
+        </div>
+
+        <!-- Year summary -->
+        <div class="earn-section-title" style="margin-top:20px;">Year summary — 2026</div>
+        <div class="year-grid">
+          <div class="year-card"><div class="year-label">Total projected</div><div class="year-val" id="e-year-total">—</div></div>
+          <div class="year-card"><div class="year-label">Paid out</div><div class="year-val teal" id="e-year-paid">—</div></div>
+          <div class="year-card"><div class="year-label">Pending</div><div class="year-val red" id="e-year-pending">—</div></div>
+          <div class="year-card"><div class="year-label">Gigs</div><div class="year-val" id="e-gig-count">—</div></div>
+          <div class="year-card"><div class="year-label">Avg per gig</div><div class="year-val" id="e-avg">—</div></div>
+        </div>
+
+        <!-- Gig type breakdown -->
+        <div class="earn-section-title" style="margin-top:20px;">By gig type</div>
+        <div id="e-type-list"></div>
       </div>
 
       <!-- FAB -->
@@ -206,7 +234,7 @@
             </div>
             <div class="fg full"><label class="flabel">Notes</label><input class="fin" id="fn" placeholder="Soundcheck time, contact person..." type="text"></div>
           </div>
-          <label class="cal-row-label"><input type="checkbox" id="cs" checked> Sync to Google Calendar</label>
+          <label class="cal-row-label"><input type="checkbox" id="cs" checked> <i class="ti ti-calendar" style="color:var(--accent);font-size:14px"></i> Sync to Google Calendar</label>
           <button class="save-btn" id="save-btn">💾 Save Gig</button>
           <div id="delete-wrap"></div>
           <div class="toast" id="toast"></div>
@@ -217,5 +245,12 @@
 
   <script src="auth.js"></script>
   <script src="app.js"></script>
+  <script>
+    // Set earnings month name on load
+    document.addEventListener('DOMContentLoaded', () => {
+      const mn = document.getElementById('earn-month-name');
+      if (mn) { const t = new Date(); mn.textContent = ['January','February','March','April','May','June','July','August','September','October','November','December'][t.getMonth()] + ' ' + t.getFullYear(); }
+    });
+  </script>
 </body>
 </html>

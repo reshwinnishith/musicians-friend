@@ -265,3 +265,52 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Sego
 
 /* ── LOADING SCREEN HIDDEN STATE ── */
 .loading-screen.hidden { display: none; }
+
+/* ── MONTH GROUP HEADERS ── */
+.month-group-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0 6px; margin-top: 8px; border-bottom: 0.5px solid var(--border); }
+.month-group-header:first-child { margin-top: 0; }
+.month-group-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.month-group-total { font-size: 13px; font-weight: 600; color: var(--accent-d); }
+
+/* ── EARNINGS ANALYTICS ── */
+.earn-section-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+
+.earn-month-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 4px; }
+.earn-card { background: var(--raised); border-radius: var(--radius); padding: 12px 14px; }
+.earn-card-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.earn-card-val { font-size: 18px; font-weight: 700; color: var(--ink); }
+.earn-card-val.teal { color: var(--teal); }
+.earn-card-val.accent { color: var(--accent-d); }
+.earn-card-val.gold { color: var(--gold); }
+
+/* BAR CHART */
+.bar-legend { display: flex; gap: 14px; margin-bottom: 8px; }
+.bar-legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+.bar-legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+.bar-legend-dot.conf { background: var(--accent); }
+.bar-legend-dot.tent { background: var(--gold-l); border: 1px solid var(--gold); }
+.bar-chart-wrap { background: var(--raised); border-radius: var(--radius); padding: 16px 12px 8px; }
+.bar-chart { display: flex; align-items: flex-end; gap: 4px; height: 100px; }
+.bar-col { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 4px; cursor: default; }
+.bar-col.bar-now .bar-label { color: var(--accent-d); font-weight: 700; }
+.bar-wrap { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; width: 100%; height: 80px; gap: 1px; }
+.bar-conf { width: 100%; background: var(--accent); border-radius: 3px 3px 0 0; min-height: 2px; transition: height 0.3s ease; }
+.bar-tent { width: 100%; background: var(--gold-l); border: 1px solid var(--gold); border-radius: 3px 3px 0 0; min-height: 0; transition: height 0.3s ease; }
+.bar-label { font-size: 9px; color: var(--muted); text-align: center; }
+
+/* YEAR SUMMARY */
+.year-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.year-card { background: var(--raised); border-radius: var(--radius-sm); padding: 10px 12px; }
+.year-label { font-size: 10px; color: var(--muted); margin-bottom: 3px; }
+.year-val { font-size: 15px; font-weight: 700; color: var(--ink); }
+.year-val.teal { color: var(--teal); }
+.year-val.red { color: var(--red); }
+
+/* GIG TYPE BREAKDOWN */
+.type-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 0.5px solid var(--border); }
+.type-row:last-child { border-bottom: none; }
+.type-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.type-name { font-size: 13px; color: var(--ink); min-width: 70px; font-weight: 500; }
+.type-bar-wrap { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.type-bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s ease; }
+.type-amt { font-size: 12px; font-weight: 600; color: var(--ink); min-width: 70px; text-align: right; }
