@@ -11,6 +11,25 @@ let confirmCallback = null;
 let saveTimer = null;
 let moreDetailsOpen = false;
 let showRehearsals = localStorage.getItem('mf_show_rehearsals') !== 'false'; // default true
+let privacyMode = localStorage.getItem('mf_privacy') === 'true';
+
+function applyPrivacyMode() {
+  const els = document.querySelectorAll('.financial-value');
+  els.forEach(el => {
+    if (privacyMode) el.classList.add('privacy-hidden');
+    else el.classList.remove('privacy-hidden');
+  });
+  const icon = document.getElementById('privacy-icon');
+  const btn = document.getElementById('privacy-btn');
+  if (icon) icon.className = privacyMode ? 'ti ti-eye-off' : 'ti ti-eye';
+  if (btn) btn.classList.toggle('active', privacyMode);
+}
+
+function togglePrivacy() {
+  privacyMode = !privacyMode;
+  localStorage.setItem('mf_privacy', privacyMode);
+  applyPrivacyMode();
+}
 
 const MO = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -58,6 +77,7 @@ async function initApp() {
   document.getElementById('loading-screen').classList.add('hidden');
   rebuildDashboard();
   setupEventListeners();
+  applyPrivacyMode();
 }
 
 async function saveData() {
@@ -221,7 +241,7 @@ function makeShowRow(s) {
           ${rhChip}
         </div>
         <div class="show-right">
-          <div class="pay-amount">${fmt(s.pay)}</div>
+          <div class="pay-amount financial-value">${fmt(s.pay)}</div>
           <button class="pay-marker ${pc}">${pl}</button>
         </div>
       </div>`;
@@ -328,12 +348,14 @@ function rebuildDashboard() {
   const next = upcomingGigs[0];
   document.getElementById('s-count').textContent = upcomingGigs.length || '0';
   document.getElementById('s-earn').textContent = fmt(projectedThisMonth);
+  document.getElementById('s-earn').className = 'stat-value financial-value';
   document.getElementById('s-month-label').textContent = MO[today.getMonth()] + ' ' + today.getFullYear();
   if (next) { document.getElementById('s-next').textContent = MS[next.month]+' '+next.day; document.getElementById('s-next-d').textContent = next.artist.split(' ')[0]+' · '+next.city; }
   else { document.getElementById('s-next').textContent = '—'; document.getElementById('s-next-d').textContent = 'No upcoming gigs'; }
   renderGroupedList(document.getElementById('list-upcoming'), upcoming, 'No upcoming gigs — tap Add Gig');
   renderGroupedList(document.getElementById('list-completed'), completed, 'No completed gigs yet');
   updateRehearsalToggleBtn();
+  applyPrivacyMode();
 }
 
 // ── EARNINGS ──
@@ -391,6 +413,14 @@ function rebuildEarnings() {
   setEl('e-year-pending', fmt(yearTotal-yearPaid));
   setEl('e-gig-count', yrGigs);
   setEl('e-avg', fmt(yrGigs?Math.round(yearTotal/yrGigs):0));
+  const monetaryIds = ['e-earned','e-projected','e-confirmed','e-tentative','e-proj-total','e-proj-confirmed','e-proj-tentative','e-proj-pending','e-current-total','e-current-month','e-current-year','e-year-total','e-year-paid','e-year-pending','e-avg'];
+  monetaryIds.forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('financial-value'); });
+  const barWrap = document.querySelector('.bar-chart-wrap');
+  if (barWrap) {
+    if (privacyMode) barWrap.classList.add('privacy-hidden');
+    else barWrap.classList.remove('privacy-hidden');
+  }
+  applyPrivacyMode();
 }
 
 // ── AUTOCOMPLETE ──
@@ -878,6 +908,7 @@ function setupEventListeners() {
   initAutocompletes();
 
   // FAB → action sheet
+  document.getElementById('privacy-btn')?.addEventListener('click', togglePrivacy);
   document.getElementById('fab').addEventListener('click', (e) => { e.stopPropagation(); openFabMenu(); });
   document.getElementById('fab-add-gig').addEventListener('click', () => openAdd());
   document.getElementById('fab-add-rehearsal').addEventListener('click', () => openAddRehearsal());
