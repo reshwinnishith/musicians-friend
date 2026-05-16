@@ -784,28 +784,40 @@ function renderCal() {
   }
   const ag=document.getElementById('agenda');ag.innerHTML='';
   if(ms.length){
-    const h=document.createElement('div');h.className='sec-label';h.style.marginTop='14px';h.textContent='This month';ag.appendChild(h);
-    [...ms].sort((a,b)=>a.day-b.day).forEach(s=>{
-      const row=document.createElement('div');row.className='agenda-item';
-      if(isRehearsal(s)){
-        row.innerHTML=`<span class="ag-date">${MS[s.month]} ${s.day}</span><span class="ag-artist">${s.jampad||'Rehearsal'}</span><span class="badge rehearsal-badge" style="font-size:10px">🥁 Rehearsal</span><span class="ag-pay" style="visibility:hidden">—</span>`;
-        row.addEventListener('click',()=>openEditRehearsal(s.id));
+    const h = document.createElement('div');
+    h.className = 'sec-label';
+    h.style.marginTop = '14px';
+    h.textContent = 'This month';
+    ag.appendChild(h);
+
+    const allItems = [...ms].sort((a,b) => a.day - b.day);
+    const PREVIEW_COUNT = 3;
+
+    allItems.forEach((s, idx) => {
+      const row = document.createElement('div');
+      row.className = 'agenda-item';
+      if (idx >= PREVIEW_COUNT) row.classList.add('agenda-hidden');
+      if (isRehearsal(s)) {
+        row.innerHTML = `<span class="ag-date">${MS[s.month]} ${s.day}</span><span class="ag-artist">${s.jampad||'Rehearsal'}</span><span class="badge rehearsal-badge" style="font-size:10px">🥁 Rehearsal</span><span class="ag-pay" style="visibility:hidden">—</span>`;
+        row.addEventListener('click', () => openEditRehearsal(s.id));
       } else {
         row.innerHTML = `<span class="ag-date">${MS[s.month]} ${s.day}</span><span class="ag-artist">${s.artist}</span><span class="badge ${BC[s.type]||'other'}" style="font-size:10px">${cap(s.type)}</span><span class="ag-pay">${fmt(s.pay)}</span>`;
-        row.addEventListener('click',()=>openEdit(s.id));
+        row.addEventListener('click', () => openEdit(s.id));
       }
       ag.appendChild(row);
     });
-    const scrollHint = document.createElement('div');
-    scrollHint.className = 'agenda-scroll-hint';
-    scrollHint.id = 'agenda-scroll-hint';
-    scrollHint.innerHTML = '<i class="ti ti-chevron-down"></i>';
-    ag.appendChild(scrollHint);
-    const agEl = document.getElementById('agenda');
-    agEl.addEventListener('scroll', () => {
-      const hint = document.getElementById('agenda-scroll-hint');
-      if (hint) hint.classList.add('hidden');
-    }, { once: true });
+
+    if (allItems.length > PREVIEW_COUNT) {
+      const remaining = allItems.length - PREVIEW_COUNT;
+      const showMoreBtn = document.createElement('button');
+      showMoreBtn.className = 'agenda-show-more';
+      showMoreBtn.innerHTML = `<i class="ti ti-chevron-down"></i> Show ${remaining} more`;
+      showMoreBtn.addEventListener('click', () => {
+        ag.querySelectorAll('.agenda-hidden').forEach(r => r.classList.remove('agenda-hidden'));
+        showMoreBtn.remove();
+      });
+      ag.appendChild(showMoreBtn);
+    }
   }
 }
 
