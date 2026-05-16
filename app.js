@@ -193,7 +193,6 @@ function makeShowRow(s) {
     const linkTag = linkedGig ? `<div class="rh-link-tag"><i class="ti ti-arrow-right"></i> ${linkedGig.artist}, ${MS[linkedGig.month]} ${linkedGig.day}</div>` : '';
     const artistLine = s.artist ? `<span class="rh-artist-name">${s.artist}</span>` : '';
     row.innerHTML = `
-      <div class="swipe-delete-bg"><button class="swipe-delete-btn"><i class="ti ti-trash"></i><span>Delete</span></button></div>
       <div class="swipe-card-inner">
         <div class="date-pip ${sc}">
           <div class="mo">${MS[s.month]}</div><div class="dy">${s.day}</div>
@@ -212,7 +211,6 @@ function makeShowRow(s) {
     const linkedRh = getLinkedRehearsals(s.id);
     const rhChip = linkedRh.length > 0 ? `<div class="rh-count-chip"><i class="ti ti-microphone-2"></i> ${linkedRh.length} rehearsal${linkedRh.length>1?'s':''}</div>` : '';
     row.innerHTML = `
-      <div class="swipe-delete-bg"><button class="swipe-delete-btn"><i class="ti ti-trash"></i><span>Delete</span></button></div>
       <div class="swipe-card-inner">
         <div class="date-pip ${sc}">
           <div class="mo">${MS[s.month]}</div><div class="dy">${s.day}</div>
@@ -231,78 +229,70 @@ function makeShowRow(s) {
   }
 
   const cardInner = row.querySelector('.swipe-card-inner');
-  cardInner.addEventListener('click', () => {
+
+  // Tap to edit
+  cardInner.addEventListener('click', (e) => {
+    if (e.target.closest('.pay-marker')) return;
     if (isRehearsal(s)) openEditRehearsal(s.id);
     else openEdit(s.id);
   });
 
-  // Swipe-to-delete
-  const bg = row.querySelector('.swipe-delete-bg');
-  const DELETE_WIDTH = 82, SNAP_THRESHOLD = 40;
-  let txStart = 0, tyStart = 0, dragging = false, revealed = false;
-  const GAP = 8;
-  bg.style.width = (DELETE_WIDTH - GAP) + 'px';
-  bg.style.marginLeft = GAP + 'px';
-  bg.style.opacity = '0';
-  bg.querySelector('.swipe-delete-btn').addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (confirm(`Delete "${isRehearsal(s) ? (s.jampad || 'Rehearsal') : s.artist}"?`)) {
-      const idx = shows.findIndex(x => x.id === s.id);
-      if (idx > -1) {
-        const calId = shows[idx].calEventId;
-        shows.splice(idx, 1); rebuildDashboard(); saveData();
-        if (document.getElementById('panel-calendar').classList.contains('active')) renderCal();
-        if (calId) deleteCalendarEventNative(calId);
-      }
-    } else { closeSwipe(row); }
-  });
+  // ── SWIPE → MODAL ──
+  const SWIPE_THRESHOLD = 55;
+  let txStart = 0, tyStart = 0, dragging = false;
 
-  function revealDelete() {
-    document.querySelectorAll('.show-row[data-swiped="true"]').forEach(r => { if (r !== row) closeSwipe(r); });
-    cardInner.style.transition = 'transform 0.2s ease';
-    cardInner.style.transform = `translateX(-${DELETE_WIDTH}px)`;
-    bg.style.transition = 'opacity 0.2s ease';
-    bg.style.opacity = '1';
-    row.dataset.swiped = 'true'; revealed = true;
-  }
-  function closeSwipe(r) {
-    const ci = r.querySelector('.swipe-card-inner');
-    const rbg = r.querySelector('.swipe-delete-bg');
-    if (ci) { ci.style.transition = 'transform 0.2s ease'; ci.style.transform = 'translateX(0)'; }
-    if (rbg) { rbg.style.transition = 'opacity 0.2s ease'; rbg.style.opacity = '0'; }
-    r.dataset.swiped = 'false'; if (r === row) revealed = false;
-  }
   row.addEventListener('touchstart', (e) => {
-    document.querySelectorAll('.show-row[data-swiped="true"]').forEach(r => { if (r !== row) closeSwipe(r); });
-    txStart = e.touches[0].clientX; tyStart = e.touches[0].clientY;
-    dragging = false; cardInner.style.transition = 'none'; bg.style.transition = 'none';
+    txStart = e.touches[0].clientX;
+    tyStart = e.touches[0].clientY;
+    dragging = false;
+    cardInner.style.transition = 'none';
   }, { passive: true });
+
   row.addEventListener('touchmove', (e) => {
     const dx = e.touches[0].clientX - txStart;
     const dy = e.touches[0].clientY - tyStart;
     if (!dragging && Math.abs(dy) > Math.abs(dx) + 4) return;
-    if (dx < -6 || (dragging && dx <= 0)) {
+    if (dx < -6) {
       dragging = true;
-      const base = revealed ? -DELETE_WIDTH : 0;
-      const clamped = Math.max(Math.min(base + dx, 0), -DELETE_WIDTH);
-      cardInner.style.transform = `translateX(${clamped}px)`;
-      bg.style.opacity = String(Math.min(Math.abs(clamped) / DELETE_WIDTH, 1));
+      // Follow finger — max 40px, stays readable
+      cardInner.style.transform = `translateX(${Math.max(dx, -40)}px)`;
       e.preventDefault();
-    } else if (dx > 0 && dragging) {
-      const base = revealed ? -DELETE_WIDTH : 0;
-      const clamped = Math.max(Math.min(base + dx, 0), -DELETE_WIDTH);
-      cardInner.style.transform = `translateX(${clamped}px)`;
-      bg.style.opacity = String(Math.min(Math.abs(clamped) / DELETE_WIDTH, 1));
     }
   }, { passive: false });
+
   row.addEventListener('touchend', () => {
-    if (!dragging) return; dragging = false;
+    if (!dragging) return;
+    dragging = false;
     const currentX = new DOMMatrix(getComputedStyle(cardInner).transform).m41;
-    if (currentX < -SNAP_THRESHOLD) revealDelete(); else closeSwipe(row);
+    if (currentX < -SWIPE_THRESHOLD) {
+      // Swiped far enough — snap slightly left then show modal
+      cardInner.style.transition = 'transform 0.15s ease';
+      cardInner.style.transform = 'translateX(-20px)';
+      const name = isRehearsal(s) ? (s.jampad || 'Rehearsal') : s.artist;
+      showDeleteModal(name, isRehearsal(s), () => {
+        const idx = shows.findIndex(x => x.id === s.id);
+        if (idx > -1) {
+          const calId = shows[idx].calEventId;
+          shows.splice(idx, 1); rebuildDashboard(); saveData();
+          if (document.getElementById('panel-calendar').classList.contains('active')) renderCal();
+          if (calId) deleteCalendarEventNative(calId);
+        }
+      });
+      // Reset card on any modal close
+      const resetCard = () => {
+        cardInner.style.transition = 'transform 0.2s ease';
+        cardInner.style.transform = 'translateX(0)';
+      };
+      ['delete-modal-cancel','delete-modal-confirm'].forEach(id => {
+        document.getElementById(id)?.addEventListener('click', resetCard, { once: true });
+      });
+      document.getElementById('delete-modal-backdrop')?.addEventListener('click', resetCard, { once: true });
+    } else {
+      // Not far enough — snap back
+      cardInner.style.transition = 'transform 0.2s ease';
+      cardInner.style.transform = 'translateX(0)';
+    }
   });
-  document.addEventListener('touchstart', (e) => {
-    if (row.dataset.swiped === 'true' && !row.contains(e.target)) closeSwipe(row);
-  }, { passive: true });
 
   return row;
 }
@@ -887,6 +877,14 @@ function setupEventListeners() {
   const closeBtn=document.getElementById('sheet-close-btn');
   if(closeBtn) closeBtn.addEventListener('click',e=>{e.preventDefault();closeSheet();});
   document.getElementById('rehearsal-toggle-btn').addEventListener('click', toggleRehearsalVisibility);
+  document.getElementById('delete-modal-confirm').addEventListener('click', () => {
+    if (deleteModalCallback) deleteModalCallback();
+    closeDeleteModal();
+  });
+  document.getElementById('delete-modal-cancel').addEventListener('click', closeDeleteModal);
+  document.getElementById('delete-modal-backdrop').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('delete-modal-backdrop')) closeDeleteModal();
+  });
   document.getElementById('manual-refresh-btn').addEventListener('click', async () => {
     const btn=document.getElementById('manual-refresh-btn');
     if(btn.classList.contains('spinning')) return;

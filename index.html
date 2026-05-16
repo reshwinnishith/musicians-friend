@@ -37,7 +37,7 @@
       <div class="logo">
         <div class="logo-mark"><i class="ti ti-music"></i></div>
         <div>
-          <div class="logo-text">Musician's Friend <span class="app-version">v3.6.1</span></div>
+          <div class="logo-text">Musician's Friend <span class="app-version">v3.7.1</span></div>
           <div class="logo-sub" id="user-email">Your personal music manager</div>
         </div>
       </div>
@@ -238,12 +238,25 @@
         </button>
       </div>
 
-      <!-- CONFIRM POPUP -->
+      <!-- CONFIRM POPUP (payment toggle) -->
       <div class="confirm-popup" id="confirm-popup">
         <div class="confirm-msg" id="confirm-msg"></div>
         <div class="confirm-btns">
           <button class="confirm-yes" id="confirm-yes">Confirm</button>
           <button class="confirm-no" id="confirm-no">Cancel</button>
+        </div>
+      </div>
+
+      <!-- DELETE CONFIRMATION MODAL -->
+      <div class="delete-modal-backdrop" id="delete-modal-backdrop">
+        <div class="delete-modal" id="delete-modal">
+          <div class="delete-modal-icon"><i class="ti ti-trash"></i></div>
+          <div class="delete-modal-title" id="delete-modal-title">Delete gig?</div>
+          <div class="delete-modal-sub" id="delete-modal-sub">This cannot be undone.</div>
+          <div class="delete-modal-btns">
+            <button class="delete-modal-cancel" id="delete-modal-cancel">Cancel</button>
+            <button class="delete-modal-confirm" id="delete-modal-confirm">Delete</button>
+          </div>
         </div>
       </div>
 
