@@ -796,6 +796,16 @@ function renderCal() {
       }
       ag.appendChild(row);
     });
+    const scrollHint = document.createElement('div');
+    scrollHint.className = 'agenda-scroll-hint';
+    scrollHint.id = 'agenda-scroll-hint';
+    scrollHint.innerHTML = '<i class="ti ti-chevron-down"></i>';
+    ag.appendChild(scrollHint);
+    const agEl = document.getElementById('agenda');
+    agEl.addEventListener('scroll', () => {
+      const hint = document.getElementById('agenda-scroll-hint');
+      if (hint) hint.classList.add('hidden');
+    }, { once: true });
   }
 }
 

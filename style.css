@@ -177,7 +177,23 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Sego
 .mstat { background: var(--raised); border-radius: var(--radius-sm); padding: 10px 12px; }
 .mstat-l { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
 .mstat-v { font-size: 15px; font-weight: 600; color: var(--ink); }
-.agenda { margin-top: 14px; overflow-y: auto; max-height: 200px; border-top: 0.5px solid var(--color-border-tertiary); }
+.agenda { margin-top: 14px; overflow-y: auto; max-height: 200px; border-top: 0.5px solid var(--color-border-tertiary); position: relative; }
+.agenda-scroll-hint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 0 2px;
+  opacity: 0.35;
+  animation: bounceDown 1.5s ease-in-out infinite;
+  pointer-events: none;
+  font-size: 16px;
+  color: var(--color-text-secondary);
+}
+.agenda-scroll-hint.hidden { display: none; }
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
 .agenda::after {
   content: '';
   position: sticky;
