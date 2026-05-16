@@ -545,7 +545,7 @@ select.fin {
 /* Delete bg — sits underneath, fades in as card slides */
 .swipe-delete-bg {
   position: absolute;
-  right: 2px; top: 4px; bottom: 4px;
+  right: 6px; top: 4px; bottom: 4px;
   background: var(--red);
   display: flex; align-items: center; justify-content: center;
   border-radius: 12px;

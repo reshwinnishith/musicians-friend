@@ -238,7 +238,7 @@ function makeShowRow(s) {
 
   // Swipe-to-delete
   const bg = row.querySelector('.swipe-delete-bg');
-  const DELETE_WIDTH = 76, SNAP_THRESHOLD = 38;
+  const DELETE_WIDTH = 82, SNAP_THRESHOLD = 40;
   let txStart = 0, tyStart = 0, dragging = false, revealed = false;
   bg.style.width = DELETE_WIDTH + 'px';
   bg.style.opacity = '0';
