@@ -240,7 +240,9 @@ function makeShowRow(s) {
   const bg = row.querySelector('.swipe-delete-bg');
   const DELETE_WIDTH = 82, SNAP_THRESHOLD = 40;
   let txStart = 0, tyStart = 0, dragging = false, revealed = false;
-  bg.style.width = DELETE_WIDTH + 'px';
+  const GAP = 8;
+  bg.style.width = (DELETE_WIDTH - GAP) + 'px';
+  bg.style.marginLeft = GAP + 'px';
   bg.style.opacity = '0';
   bg.querySelector('.swipe-delete-btn').addEventListener('click', (e) => {
     e.stopPropagation();

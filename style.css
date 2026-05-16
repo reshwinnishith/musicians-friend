@@ -535,8 +535,8 @@ select.fin {
   z-index: 1;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  /* Ensure card never shrinks */
-  width: 100%;
+  /* Card width leaves an 8px right margin so delete panel never touches it */
+  width: calc(100% - 8px);
   box-sizing: border-box;
 }
 .swipe-card-inner:active { background: var(--raised); }
@@ -545,7 +545,7 @@ select.fin {
 /* Delete bg — sits underneath, fades in as card slides */
 .swipe-delete-bg {
   position: absolute;
-  right: 6px; top: 4px; bottom: 4px;
+  right: 0; top: 4px; bottom: 4px;
   background: var(--red);
   display: flex; align-items: center; justify-content: center;
   border-radius: 12px;
@@ -793,4 +793,14 @@ select.fin {
 }
 .fab {
   transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease;
+}
+
+/* ── APP VERSION ── */
+.app-version {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--color-text-tertiary);
+  letter-spacing: 0.3px;
+  margin-left: 4px;
+  vertical-align: middle;
 }
