@@ -234,7 +234,7 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Sego
 .fab:active { transform: scale(0.96); }
 
 /* BOTTOM SHEET */
-.overlay { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.25); z-index: 40; align-items: flex-end; }
+.overlay { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.45); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); z-index: 40; align-items: flex-end; }
 .overlay.show { display: flex; }
 .sheet { background: var(--surface); border-radius: 20px 20px 0 0; width: 100%; padding: 16px 20px 24px; max-height: 90%; overflow-y: auto; animation: up 0.22s ease; -webkit-overflow-scrolling: touch; }
 @keyframes up { from{transform:translateY(40px);opacity:0} to{transform:translateY(0);opacity:1} }

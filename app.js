@@ -491,6 +491,7 @@ function openAdd(prefillDate) {
   const rhSec = document.getElementById('gig-rehearsal-section');
   if (rhSec) rhSec.style.display = 'none';
   document.getElementById('fa').value=''; document.getElementById('fc').value='';
+  document.getElementById('fv').value='';
   document.getElementById('ft-input').value=''; document.getElementById('ft').value='wedding';
   document.getElementById('fp').value=''; document.getElementById('fn').value='';
   document.getElementById('fd').value=prefillDate||'';
@@ -512,7 +513,7 @@ function openEdit(showId) {
   document.getElementById('fa').value=s.artist;
   document.getElementById('ft-input').value=cap(s.type); document.getElementById('ft').value=s.type;
   document.getElementById('fd').value=`${s.year}-${String(s.month+1).padStart(2,'0')}-${String(s.day).padStart(2,'0')}`;
-  document.getElementById('fc').value=s.city; document.getElementById('fp').value=s.pay||''; document.getElementById('fn').value=s.notes||'';
+  document.getElementById('fc').value=s.city; document.getElementById('fv').value=s.venue||''; document.getElementById('fp').value=s.pay||''; document.getElementById('fn').value=s.notes||'';
   setSt(s.status); setPaySt(s.payStatus==='upcoming'?'pending':s.payStatus);
   document.getElementById('save-btn').textContent='✓ Save changes';
   document.getElementById('delete-wrap').innerHTML='<button class="del-btn" id="del-btn">🗑 Delete gig</button>';
@@ -566,7 +567,8 @@ async function saveShow() {
   const type=document.getElementById('ft').value||typeRaw.toLowerCase()||'other';
   const date=document.getElementById('fd').value;
   const city=document.getElementById('fc').value.trim();
-  const pay=parseInt(document.getElementById('fp').value)||0;
+  const venue=document.getElementById('fv').value.trim();
+  const pay=parseInt(document.getElementById('fp').value.replace(/,/g,''))||0;
   const notes=document.getElementById('fn').value.trim();
   const calSync=document.getElementById('cs').checked;
   if(!artist||!date){alert('Please enter at least a name and date.');return;}
@@ -577,12 +579,12 @@ async function saveShow() {
   if(editingId){
     const idx=shows.findIndex(s=>s.id===editingId);
     const existingCalId=shows[idx].calEventId||null;
-    const updated={id:editingId,eventType:'gig',year:yr,month:mo,day:dy,artist,type,city,pay,status:selSt,payStatus:computedPayStatus,notes,calEventId:existingCalId};
+    const updated={id:editingId,eventType:'gig',year:yr,month:mo,day:dy,artist,type,city,venue,pay,status:selSt,payStatus:computedPayStatus,notes,calEventId:existingCalId};
     shows[idx]=updated; rebuildDashboard(); saveData();
     if(calSync&&existingCalId) updateCalendarEventNative(updated);
     else if(calSync&&!existingCalId){const eid=await createCalendarEventNative(updated);if(eid){shows[idx].calEventId=eid;saveData();}}
   } else {
-    const newGig={id:nextId++,eventType:'gig',year:yr,month:mo,day:dy,artist,type,city,pay,status:selSt,payStatus:computedPayStatus,notes,calEventId:null};
+    const newGig={id:nextId++,eventType:'gig',year:yr,month:mo,day:dy,artist,type,city,venue,pay,status:selSt,payStatus:computedPayStatus,notes,calEventId:null};
     shows.push(newGig); rebuildDashboard(); saveData();
     if(calSync){const eid=await createCalendarEventNative(newGig);if(eid){const idx=shows.findIndex(s=>s.id===newGig.id);if(idx>-1){shows[idx].calEventId=eid;saveData();}}}
   }
@@ -883,6 +885,16 @@ function setupEventListeners() {
   document.getElementById('fab-backdrop')?.addEventListener('click', closeFabMenu);
 
   // Gig sheet
+  const fpInput = document.getElementById('fp');
+  if (fpInput) {
+    fpInput.addEventListener('blur', function() {
+      const raw = parseInt(this.value.replace(/,/g, '')) || 0;
+      if (raw > 0) this.value = raw.toLocaleString('en-IN');
+    });
+    fpInput.addEventListener('focus', function() {
+      this.value = this.value.replace(/,/g, '');
+    });
+  }
   document.getElementById('bc').addEventListener('click',()=>setSt('confirmed'));
   document.getElementById('bt').addEventListener('click',()=>setSt('tentative'));
   document.getElementById('bp-paid').addEventListener('click',()=>setPaySt('paid'));

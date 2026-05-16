@@ -37,7 +37,7 @@
       <div class="logo">
         <div class="logo-mark"><i class="ti ti-music"></i></div>
         <div>
-          <div class="logo-text">Musician's Friend <span class="app-version">v3.8.8</span></div>
+          <div class="logo-text">Musician's Friend <span class="app-version">v3.9.1</span></div>
           <div class="logo-sub" id="user-email">Your personal music manager</div>
         </div>
       </div>
@@ -261,7 +261,7 @@
             <div class="fg full">
               <label class="flabel">Client / Artist name</label>
               <div class="autocomplete-wrap" id="client-wrap">
-                <input class="fin fin-combo" id="fa" placeholder="Tap to select or add client..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+                <input class="fin fin-combo" id="fa" placeholder="Search or add client" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <div class="ac-dropdown" id="client-dropdown"></div>
               </div>
             </div>
@@ -274,16 +274,20 @@
             <div class="fg">
               <label class="flabel">City</label>
               <div class="autocomplete-wrap" id="city-wrap">
-                <input class="fin fin-combo" id="fc" placeholder="Tap to select or add city..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+                <input class="fin fin-combo" id="fc" placeholder="Search city" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <div class="ac-dropdown" id="city-dropdown"></div>
               </div>
+            </div>
+            <div class="fg">
+              <label class="flabel">Venue <span style="font-weight:400;color:var(--color-text-tertiary)">(optional)</span></label>
+              <input class="fin" id="fv" placeholder="e.g. Music Academy" type="text">
             </div>
 
             <!-- Gig type + Payment on same row -->
             <div class="fg">
               <label class="flabel">Gig type</label>
               <div class="autocomplete-wrap" id="type-wrap">
-                <input class="fin fin-combo" id="ft-input" placeholder="Tap to select gig type..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+                <input class="fin fin-combo" id="ft-input" placeholder="Search gig type" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <input type="hidden" id="ft" value="wedding">
                 <div class="ac-dropdown" id="type-dropdown"></div>
               </div>
@@ -369,7 +373,7 @@
             <div class="fg">
               <label class="flabel">Artist / Band</label>
               <div class="autocomplete-wrap">
-                <input class="fin fin-combo" id="rh-artist" placeholder="e.g. Indosoul..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+                <input class="fin fin-combo" id="rh-artist" placeholder="Search or add artist" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <div class="ac-dropdown" id="rh-artist-dropdown"></div>
               </div>
             </div>
@@ -381,14 +385,14 @@
             <div class="fg">
               <label class="flabel">Jampad / Venue</label>
               <div class="autocomplete-wrap">
-                <input class="fin fin-combo" id="rh-jampad" placeholder="Tap to select or add..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+                <input class="fin fin-combo" id="rh-jampad" placeholder="Search or add" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <div class="ac-dropdown" id="jampad-dropdown"></div>
               </div>
             </div>
             <div class="fg">
               <label class="flabel" style="color:var(--rehearsal,#B5860D);">Linked gig <span style="font-weight:400;color:var(--color-text-tertiary);">(optional)</span></label>
               <div class="autocomplete-wrap">
-                <input class="fin fin-combo" id="rh-linked-gig-input" placeholder="Link to a gig..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+                <input class="fin fin-combo" id="rh-linked-gig-input" placeholder="Search gigs" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <input type="hidden" id="rh-linked-gig-id" value="">
                 <div class="ac-dropdown" id="linked-gig-dropdown"></div>
               </div>
