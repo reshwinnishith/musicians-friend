@@ -807,12 +807,12 @@ select.fin {
 /* ── DELETE CONFIRMATION MODAL ── */
 .delete-modal-backdrop {
   display: none;
-  position: absolute; /* relative to #app, outside .content overflow */
+  position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.45);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
-  z-index: 200; /* above everything including overlays */
+  background: rgba(0,0,0,0.58);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 200;
   align-items: center;
   justify-content: center;
 }
@@ -822,22 +822,23 @@ select.fin {
 }
 .delete-modal {
   background: var(--color-background-primary);
-  border: 0.5px solid var(--color-border-secondary);
-  border-radius: 20px;
-  padding: 24px 20px 20px;
-  width: 80%;
-  max-width: 300px;
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: 22px;
+  padding: 26px 22px 20px;
+  width: 78%;
+  max-width: 290px;
   text-align: center;
   animation: popIn 0.18s ease;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
 }
 .delete-modal-icon {
-  width: 48px; height: 48px;
+  width: 46px; height: 46px;
   border-radius: 50%;
-  background: var(--color-background-danger, #FCEBEB);
-  color: var(--color-text-danger, #A32D2D);
+  background: #FEF2F2;
+  color: #B91C1C;
   display: flex; align-items: center; justify-content: center;
-  font-size: 22px;
-  margin: 0 auto 12px;
+  font-size: 20px;
+  margin: 0 auto 14px;
 }
 .delete-modal-title {
   font-size: 16px; font-weight: 500;
@@ -847,29 +848,32 @@ select.fin {
 .delete-modal-sub {
   font-size: 13px;
   color: var(--color-text-secondary);
-  margin-bottom: 20px;
-  line-height: 1.4;
+  margin-bottom: 22px;
+  line-height: 1.5;
 }
 .delete-modal-btns {
-  display: flex; gap: 10px;
+  display: flex; gap: 8px;
 }
 .delete-modal-cancel {
   flex: 1; padding: 11px;
   background: var(--color-background-secondary);
   border: 0.5px solid var(--color-border-secondary);
-  border-radius: var(--border-radius-md);
+  border-radius: 12px;
   font-size: 14px; font-weight: 500;
   color: var(--color-text-secondary);
   cursor: pointer; font-family: inherit;
+  transition: opacity 0.12s;
 }
 .delete-modal-confirm {
   flex: 1; padding: 11px;
-  background: #CC3B3B;
+  background: #DC2626;
   border: none;
-  border-radius: var(--border-radius-md);
+  border-radius: 12px;
   font-size: 14px; font-weight: 500;
   color: #fff;
   cursor: pointer; font-family: inherit;
+  transition: opacity 0.12s;
+  letter-spacing: 0.1px;
 }
-.delete-modal-cancel:active { opacity: 0.7; }
-.delete-modal-confirm:active { opacity: 0.85; }
+.delete-modal-cancel:active { opacity: 0.6; }
+.delete-modal-confirm:active { opacity: 0.8; }
