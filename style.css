@@ -668,8 +668,9 @@ select.fin {
 
 /* Rehearsal card inner accent */
 .rehearsal-row .swipe-card-inner {
-  border-color: var(--rehearsal-l);
-  background: color-mix(in srgb, var(--rehearsal-l) 20%, var(--surface));
+  border-color: var(--color-border-tertiary);
+  border-left: 2px solid #B5860D;
+  background: var(--color-background-primary);
 }
 
 /* Rehearsal save button */
