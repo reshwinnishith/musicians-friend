@@ -247,7 +247,24 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Sego
 .fin { padding: 10px 12px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); font-size: 14px; font-family: inherit; background: var(--surface); color: var(--ink); outline: none; -webkit-appearance: none; }
 .fin:focus { border-color: var(--accent); }
 .tog-row, .pay-tog-row { display: flex; gap: 8px; }
-.tog-btn, .pay-tog { flex: 1; padding: 10px 8px; border-radius: var(--radius-sm); border: 0.5px solid var(--border-mid); background: var(--surface); color: var(--muted); font-size: 13px; font-family: inherit; cursor: pointer; transition: all 0.12s; -webkit-tap-highlight-color: transparent; }
+.tog-btn, .pay-tog {
+  flex: 1;
+  padding: 10px 8px;
+  border-radius: var(--border-radius-md);
+  border: 0.5px solid var(--color-border-secondary);
+  background: var(--color-background-primary);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.12s;
+  text-align: center;
+  line-height: 1.2;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .tog-btn.sel-c { background: var(--teal-l); color: var(--teal); border-color: var(--teal); font-weight: 500; }
 .tog-btn.sel-t { background: var(--blue-l); color: var(--blue); border-color: var(--blue); font-weight: 500; }
 .pay-tog.sel-paid { background: var(--teal-l); color: var(--teal); border-color: var(--teal); font-weight: 500; }
