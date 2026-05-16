@@ -359,22 +359,24 @@ function rebuildEarnings() {
   const tmProjected = tmShows.reduce((a,s)=>a+s.pay,0);
   const tmConfirmed = tmShows.filter(s=>s.status==='confirmed').reduce((a,s)=>a+s.pay,0);
   const tmTentative = tmShows.filter(s=>s.status==='tentative').reduce((a,s)=>a+s.pay,0);
-  document.getElementById('e-earned').textContent = fmt(tmEarned);
-  document.getElementById('e-projected').textContent = fmt(tmProjected);
-  document.getElementById('e-confirmed').textContent = fmt(tmConfirmed);
-  document.getElementById('e-tentative').textContent = fmt(tmTentative);
+  // Set this-month stats safely — these IDs exist in current HTML
+  const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  setEl('e-earned', fmt(tmEarned));
+  setEl('e-projected', fmt(tmProjected));
+  setEl('e-confirmed', fmt(tmConfirmed));
+  setEl('e-tentative', fmt(tmTentative));
   const projConfirmed = gigs.filter(s => !isPast(s) && s.status==='confirmed' && s.payStatus!=='paid');
   const projTentative = gigs.filter(s => !isPast(s) && s.status==='tentative' && s.payStatus!=='paid');
   const projPending = gigs.filter(s => isPast(s) && s.payStatus==='pending');
-  document.getElementById('e-proj-total').textContent = fmt([...projConfirmed,...projTentative,...projPending].reduce((a,s)=>a+s.pay,0));
-  document.getElementById('e-proj-confirmed').textContent = fmt(projConfirmed.reduce((a,s)=>a+s.pay,0));
-  document.getElementById('e-proj-tentative').textContent = fmt(projTentative.reduce((a,s)=>a+s.pay,0));
-  document.getElementById('e-proj-pending').textContent = fmt(projPending.reduce((a,s)=>a+s.pay,0));
+  setEl('e-proj-total', fmt([...projConfirmed,...projTentative,...projPending].reduce((a,s)=>a+s.pay,0)));
+  setEl('e-proj-confirmed', fmt(projConfirmed.reduce((a,s)=>a+s.pay,0)));
+  setEl('e-proj-tentative', fmt(projTentative.reduce((a,s)=>a+s.pay,0)));
+  setEl('e-proj-pending', fmt(projPending.reduce((a,s)=>a+s.pay,0)));
   const paidShows = gigs.filter(s=>s.payStatus==='paid');
-  document.getElementById('e-current-total').textContent = fmt(paidShows.filter(s=>s.year===yr).reduce((a,s)=>a+s.pay,0));
-  document.getElementById('e-current-month').textContent = fmt(paidShows.filter(isThisMonth).reduce((a,s)=>a+s.pay,0));
-  document.getElementById('e-current-year').textContent = fmt(paidShows.filter(s=>s.year===yr).reduce((a,s)=>a+s.pay,0));
-  document.getElementById('e-current-count').textContent = paidShows.length + ' gig' + (paidShows.length!==1?'s':'');
+  setEl('e-current-total', fmt(paidShows.filter(s=>s.year===yr).reduce((a,s)=>a+s.pay,0)));
+  setEl('e-current-month', fmt(paidShows.filter(isThisMonth).reduce((a,s)=>a+s.pay,0)));
+  setEl('e-current-year', fmt(paidShows.filter(s=>s.year===yr).reduce((a,s)=>a+s.pay,0)));
+  setEl('e-current-count', paidShows.length + ' gig' + (paidShows.length!==1?'s':''));
   const monthlyConf = Array(12).fill(0), monthlyTent = Array(12).fill(0);
   gigs.filter(s=>s.year===yr).forEach(s => { if(s.status==='confirmed') monthlyConf[s.month]+=s.pay; else monthlyTent[s.month]+=s.pay; });
   const monthlyTotals = monthlyConf.map((v,i)=>v+monthlyTent[i]);
@@ -398,11 +400,11 @@ function rebuildEarnings() {
   const yearTotal=gigs.filter(s=>s.year===yr).reduce((a,s)=>a+s.pay,0);
   const yearPaid=gigs.filter(s=>s.year===yr&&s.payStatus==='paid').reduce((a,s)=>a+s.pay,0);
   const yrGigs=gigs.filter(s=>s.year===yr).length;
-  document.getElementById('e-year-total').textContent=fmt(yearTotal);
-  document.getElementById('e-year-paid').textContent=fmt(yearPaid);
-  document.getElementById('e-year-pending').textContent=fmt(yearTotal-yearPaid);
-  document.getElementById('e-gig-count').textContent=yrGigs;
-  document.getElementById('e-avg').textContent=fmt(yrGigs?Math.round(yearTotal/yrGigs):0);
+  setEl('e-year-total', fmt(yearTotal));
+  setEl('e-year-paid', fmt(yearPaid));
+  setEl('e-year-pending', fmt(yearTotal-yearPaid));
+  setEl('e-gig-count', yrGigs);
+  setEl('e-avg', fmt(yrGigs?Math.round(yearTotal/yrGigs):0));
 }
 
 // ── AUTOCOMPLETE ──

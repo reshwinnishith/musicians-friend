@@ -351,10 +351,19 @@
             <button class="sheet-close-btn" id="rh-close-btn" aria-label="Close"><i class="ti ti-x"></i></button>
           </div>
           <div class="form-grid">
+            <!-- Row 1: Artist + Date -->
+            <div class="fg">
+              <label class="flabel">Artist / Band</label>
+              <div class="autocomplete-wrap">
+                <input class="fin fin-combo" id="rh-artist" placeholder="e.g. Indosoul..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+                <div class="ac-dropdown" id="rh-artist-dropdown"></div>
+              </div>
+            </div>
             <div class="fg">
               <label class="flabel">Date</label>
               <input class="fin" id="rh-date" type="date">
             </div>
+            <!-- Row 2: Jampad + Linked Gig -->
             <div class="fg">
               <label class="flabel">Jampad / Venue</label>
               <div class="autocomplete-wrap">
@@ -362,28 +371,22 @@
                 <div class="ac-dropdown" id="jampad-dropdown"></div>
               </div>
             </div>
-            <div class="fg full">
-              <label class="flabel">Artist / Band</label>
+            <div class="fg">
+              <label class="flabel" style="color:var(--rehearsal,#B5860D);">Linked gig <span style="font-weight:400;color:var(--color-text-tertiary);">(optional)</span></label>
               <div class="autocomplete-wrap">
-                <input class="fin fin-combo" id="rh-artist" placeholder="Auto-filled from linked gig or enter manually..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
-                <div class="ac-dropdown" id="rh-artist-dropdown"></div>
-              </div>
-            </div>
-            <div class="fg full">
-              <label class="flabel" style="color:var(--rehearsal,#B5860D);">For which gig? <span style="color:var(--color-text-secondary,#6b7280);font-weight:400;">(optional)</span></label>
-              <div class="autocomplete-wrap">
-                <input class="fin fin-combo" id="rh-linked-gig-input" placeholder="Tap to link to a gig..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+                <input class="fin fin-combo" id="rh-linked-gig-input" placeholder="Link to a gig..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <input type="hidden" id="rh-linked-gig-id" value="">
                 <div class="ac-dropdown" id="linked-gig-dropdown"></div>
               </div>
             </div>
+            <!-- Row 3: Time + Notes -->
             <div class="fg">
               <label class="flabel">Time <span style="font-weight:400;color:var(--color-text-tertiary)">(optional)</span></label>
               <input class="fin" id="rh-time" type="time">
             </div>
-            <div class="fg full">
+            <div class="fg">
               <label class="flabel">Notes</label>
-              <input class="fin" id="rh-notes" placeholder="e.g. Learn chorus, run through setlist..." type="text">
+              <input class="fin" id="rh-notes" placeholder="Run through setlist..." type="text">
             </div>
           </div>
           <label class="cal-row-label" style="margin-top:12px;">
