@@ -238,59 +238,54 @@ function makeShowRow(s) {
   });
 
   // ── SWIPE → MODAL ──
-  const SWIPE_THRESHOLD = 55;
-  let txStart = 0, tyStart = 0, dragging = false, swipeDx = 0;
+  // Simplest possible implementation — pure variable tracking, no DOM reads
+  let _x0 = 0, _y0 = 0, _dx = 0, _swiping = false;
+  const THRESHOLD = 50;
 
   row.addEventListener('touchstart', (e) => {
-    txStart = e.touches[0].clientX;
-    tyStart = e.touches[0].clientY;
-    dragging = false;
-    swipeDx = 0;
+    _x0 = e.touches[0].clientX;
+    _y0 = e.touches[0].clientY;
+    _dx = 0;
+    _swiping = false;
     cardInner.style.transition = 'none';
   }, { passive: true });
 
   row.addEventListener('touchmove', (e) => {
-    const dx = e.touches[0].clientX - txStart;
-    const dy = e.touches[0].clientY - tyStart;
-    if (!dragging && Math.abs(dy) > Math.abs(dx) + 4) return;
-    if (dx < -6) {
-      dragging = true;
-      swipeDx = dx; // track distance directly
-      cardInner.style.transform = `translateX(${Math.max(dx, -40)}px)`;
+    _dx = e.touches[0].clientX - _x0;
+    const _dy = e.touches[0].clientY - _y0;
+    // Ignore vertical-dominant gestures
+    if (Math.abs(_dy) > Math.abs(_dx)) return;
+    if (_dx < 0) {
+      _swiping = true;
+      // Follow finger left, cap at 60px
+      const offset = Math.max(_dx, -60);
+      cardInner.style.transform = `translateX(${offset}px)`;
       e.preventDefault();
     }
   }, { passive: false });
 
   row.addEventListener('touchend', () => {
-    if (!dragging) return;
-    dragging = false;
-    if (swipeDx < -SWIPE_THRESHOLD) {
-      // Swiped far enough — hold slightly left, show modal
-      cardInner.style.transition = 'transform 0.15s ease';
-      cardInner.style.transform = 'translateX(-20px)';
-      const name = isRehearsal(s) ? (s.jampad || 'Rehearsal') : s.artist;
+    // Always snap card back
+    cardInner.style.transition = 'transform 0.22s ease';
+    cardInner.style.transform = 'translateX(0)';
+
+    if (!_swiping || _dx > -THRESHOLD) return;
+
+    // Threshold passed — show modal after snap animation
+    const name = isRehearsal(s) ? (s.jampad || 'Rehearsal') : s.artist;
+    setTimeout(() => {
       showDeleteModal(name, isRehearsal(s), () => {
         const idx = shows.findIndex(x => x.id === s.id);
         if (idx > -1) {
           const calId = shows[idx].calEventId;
-          shows.splice(idx, 1); rebuildDashboard(); saveData();
+          shows.splice(idx, 1);
+          rebuildDashboard();
+          saveData();
           if (document.getElementById('panel-calendar').classList.contains('active')) renderCal();
           if (calId) deleteCalendarEventNative(calId);
         }
       });
-      const resetCard = () => {
-        cardInner.style.transition = 'transform 0.2s ease';
-        cardInner.style.transform = 'translateX(0)';
-      };
-      ['delete-modal-cancel','delete-modal-confirm'].forEach(id => {
-        document.getElementById(id)?.addEventListener('click', resetCard, { once: true });
-      });
-      document.getElementById('delete-modal-backdrop')?.addEventListener('click', resetCard, { once: true });
-    } else {
-      cardInner.style.transition = 'transform 0.2s ease';
-      cardInner.style.transform = 'translateX(0)';
-    }
-    swipeDx = 0;
+    }, 180);
   });
 
   return row;
