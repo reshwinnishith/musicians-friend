@@ -219,6 +219,9 @@
 
       </div>
 
+      <!-- FAB BACKDROP -->
+      <div class="fab-backdrop" id="fab-backdrop"></div>
+
       <!-- FAB + ACTION SHEET -->
       <div class="fab-wrap" id="fab-wrap">
         <div class="fab-menu" id="fab-menu">
@@ -374,12 +377,9 @@
                 <div class="ac-dropdown" id="linked-gig-dropdown"></div>
               </div>
             </div>
-            <div class="fg full">
-              <label class="flabel">Status</label>
-              <div class="tog-row">
-                <button class="tog-btn sel-c" id="rh-status-confirmed">✓ Confirmed</button>
-                <button class="tog-btn" id="rh-status-tentative">⏰ Tentative</button>
-              </div>
+            <div class="fg">
+              <label class="flabel">Time <span style="font-weight:400;color:var(--color-text-tertiary)">(optional)</span></label>
+              <input class="fin" id="rh-time" type="time">
             </div>
             <div class="fg full">
               <label class="flabel">Notes</label>

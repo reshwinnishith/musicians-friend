@@ -113,14 +113,18 @@ function updateRehearsalToggleBtn() {
 function openFabMenu() {
   const menu = document.getElementById('fab-menu');
   const fab = document.getElementById('fab');
+  const backdrop = document.getElementById('fab-backdrop');
   if (menu) menu.classList.add('show');
   if (fab) fab.classList.add('fab-open');
+  if (backdrop) backdrop.classList.add('show');
 }
 function closeFabMenu() {
   const menu = document.getElementById('fab-menu');
   const fab = document.getElementById('fab');
+  const backdrop = document.getElementById('fab-backdrop');
   if (menu) menu.classList.remove('show');
   if (fab) fab.classList.remove('fab-open');
+  if (backdrop) backdrop.classList.remove('show');
 }
 
 // ── CONFIRM POPUP ──
@@ -145,7 +149,7 @@ function closeConfirm() {
 
 // ── STATUS COLOURS ──
 function pillClass(s) {
-  if (isRehearsal(s)) return 'pill-rehearsal';
+  if (isRehearsal(s)) return 'pill-rehearsal'; // rehearsals have no status
   if (s.payStatus === 'paid') return 'pill-paid';
   if (isPast(s)) return 'pill-pending';
   if (s.status === 'tentative') return 'pill-tentative';
@@ -609,10 +613,9 @@ function openAddRehearsal(prefillDate, prefillGigId) {
   closeFabMenu(); editingId=null;
   document.getElementById('rh-sheet-title').textContent='Add rehearsal';
   document.getElementById('rh-date').value=prefillDate||'';
+  document.getElementById('rh-time').value='';
   document.getElementById('rh-jampad').value='';
   document.getElementById('rh-notes').value='';
-  document.getElementById('rh-status-confirmed').className='tog-btn sel-c';
-  document.getElementById('rh-status-tentative').className='tog-btn';
   document.getElementById('rh-cs').checked=true;
   document.getElementById('rh-save-btn').textContent='💾 Save Rehearsal';
   document.getElementById('rh-delete-wrap').innerHTML='';
@@ -642,8 +645,7 @@ function openEditRehearsal(showId) {
   document.getElementById('rh-date').value=`${s.year}-${String(s.month+1).padStart(2,'0')}-${String(s.day).padStart(2,'0')}`;
   document.getElementById('rh-jampad').value=s.jampad||'';
   document.getElementById('rh-notes').value=s.notes||'';
-  document.getElementById('rh-status-confirmed').className='tog-btn'+(s.status==='confirmed'?' sel-c':'');
-  document.getElementById('rh-status-tentative').className='tog-btn'+(s.status==='tentative'?' sel-t':'');
+  document.getElementById('rh-time').value=s.time||'';
   document.getElementById('rh-cs').checked=true;
   document.getElementById('rh-save-btn').textContent='✓ Save changes';
   document.getElementById('rh-delete-wrap').innerHTML='<button class="del-btn" id="rh-del-btn">🗑 Delete rehearsal</button>';
@@ -681,12 +683,12 @@ async function saveRehearsal() {
   if(editingId){
     const idx=shows.findIndex(s=>s.id===editingId);
     const existingCalId=shows[idx].calEventId||null;
-    const updated={id:editingId,eventType:'rehearsal',year:yr,month:mo,day:dy,jampad,artist,notes,status,linkedGigId,calEventId:existingCalId};
+    const updated={id:editingId,eventType:'rehearsal',year:yr,month:mo,day:dy,jampad,artist,time,notes,linkedGigId,calEventId:existingCalId};
     shows[idx]=updated; rebuildDashboard(); saveData();
     if(calSync&&existingCalId) updateCalendarEventNative(updated);
     else if(calSync&&!existingCalId){const eid=await createRehearsalCalEvent(updated);if(eid){shows[idx].calEventId=eid;saveData();}}
   } else {
-    const newR={id:nextId++,eventType:'rehearsal',year:yr,month:mo,day:dy,jampad,artist,notes,status,linkedGigId,calEventId:null};
+    const newR={id:nextId++,eventType:'rehearsal',year:yr,month:mo,day:dy,jampad,artist,time,notes,linkedGigId,calEventId:null};
     shows.push(newR); rebuildDashboard(); saveData();
     if(calSync){const eid=await createRehearsalCalEvent(newR);if(eid){const idx=shows.findIndex(s=>s.id===newR.id);if(idx>-1){shows[idx].calEventId=eid;saveData();}}}
   }
@@ -849,6 +851,7 @@ function setupEventListeners() {
   document.getElementById('fab-add-gig').addEventListener('click', () => openAdd());
   document.getElementById('fab-add-rehearsal').addEventListener('click', () => openAddRehearsal());
   document.addEventListener('click', (e) => { if(!e.target.closest('#fab')&&!e.target.closest('#fab-menu')) closeFabMenu(); });
+  document.getElementById('fab-backdrop')?.addEventListener('click', closeFabMenu);
 
   // Gig sheet
   document.getElementById('bc').addEventListener('click',()=>setSt('confirmed'));
@@ -859,8 +862,6 @@ function setupEventListeners() {
   document.getElementById('gig-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('gig-overlay'))closeSheet();});
 
   // Rehearsal sheet
-  document.getElementById('rh-status-confirmed').addEventListener('click',()=>{document.getElementById('rh-status-confirmed').className='tog-btn sel-c';document.getElementById('rh-status-tentative').className='tog-btn';});
-  document.getElementById('rh-status-tentative').addEventListener('click',()=>{document.getElementById('rh-status-confirmed').className='tog-btn';document.getElementById('rh-status-tentative').className='tog-btn sel-t';});
   document.getElementById('rh-save-btn').addEventListener('click',saveRehearsal);
   document.getElementById('rehearsal-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('rehearsal-overlay'))closeSheet();});
   document.getElementById('rh-close-btn').addEventListener('click',closeSheet);
