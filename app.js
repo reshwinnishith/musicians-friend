@@ -815,9 +815,9 @@ function renderCal() {
   }
   const rem=(7-(first+dim)%7)%7;for(let i=1;i<=rem;i++){const e=document.createElement('div');e.className='cday other';e.innerHTML=`<div class="dnum">${i}</div>`;g.appendChild(e);}
   const gigMs=ms.filter(isGig);const conf=gigMs.filter(s=>s.status==='confirmed').length;const earn=gigMs.reduce((a,s)=>a+s.pay,0);
-  document.getElementById('cc').textContent=ms.length||'—';document.getElementById('ccf').textContent=conf||'—';document.getElementById('ce').textContent=gigMs.length?fmt(earn):'—';
+  document.getElementById('cc').textContent=ms.length||'—';document.getElementById('ccf').textContent=conf||'—';
   const ceEl = document.getElementById('ce');
-  if (ceEl) ceEl.classList.toggle('privacy-hidden', privacyMode);
+  if (ceEl) { ceEl.textContent = gigMs.length ? fmt(earn) : '—'; ceEl.classList.toggle('financial-value', true); }
   // Update calendar legend to show rehearsal dot if any rehearsals this month
   const hasRehearsal = ms.some(isRehearsal);
   const calLeg = document.querySelector('.cal-leg');
@@ -869,6 +869,7 @@ function renderCal() {
       ag.appendChild(showMoreBtn);
     }
   }
+  applyPrivacyMode();
 }
 
 // ── CHAT ──
