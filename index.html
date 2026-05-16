@@ -87,6 +87,7 @@
         <div class="section-tabs">
           <button class="sec-tab active" id="tab-upcoming" onclick="showSection('upcoming')">Upcoming</button>
           <button class="sec-tab" id="tab-completed" onclick="showSection('completed')">Completed</button>
+          <button class="sec-tab-refresh rehearsal-toggle-active" id="rehearsal-toggle-btn" title="Hide rehearsals" aria-label="Toggle rehearsals"><i class="ti ti-music-off"></i></button>
           <button class="sec-tab-refresh" id="manual-refresh-btn" title="Refresh from Drive" aria-label="Refresh"><i class="ti ti-refresh"></i></button>
         </div>
         <div id="list-upcoming"></div>
@@ -218,8 +219,18 @@
 
       </div>
 
-      <!-- FAB — only on dashboard and calendar -->
-      <button class="fab" id="fab"><i class="ti ti-plus"></i> Add Gig</button>
+      <!-- FAB + ACTION SHEET -->
+      <div class="fab-wrap">
+        <div class="fab-menu" id="fab-menu">
+          <button class="fab-menu-item fab-rehearsal" id="fab-add-rehearsal">
+            <i class="ti ti-microphone-2"></i> Add Rehearsal
+          </button>
+          <button class="fab-menu-item fab-gig" id="fab-add-gig">
+            <i class="ti ti-music"></i> Add Gig
+          </button>
+        </div>
+        <button class="fab" id="fab"><i class="ti ti-plus" id="fab-icon"></i></button>
+      </div>
 
       <!-- CONFIRM POPUP -->
       <div class="confirm-popup" id="confirm-popup">
@@ -231,7 +242,7 @@
       </div>
 
       <!-- BOTTOM SHEET -->
-      <div class="overlay" id="overlay">
+      <div class="overlay" id="gig-overlay">
         <div class="sheet" id="sheet">
           <div class="sheet-top-row">
             <div class="handle-inline"></div>
@@ -313,11 +324,67 @@
 
           <button class="save-btn" id="save-btn">💾 Save Gig</button>
           <div id="delete-wrap"></div>
+          <div id="gig-rehearsal-section" style="display:none;">
+            <div class="rh-divider"></div>
+            <div class="rh-section-title"><i class="ti ti-microphone-2"></i> <span id="rh-section-label">Rehearsals</span></div>
+            <div id="gig-rehearsal-list"></div>
+            <button class="add-rh-for-gig-btn" id="add-rh-for-gig-btn"><i class="ti ti-plus"></i> Add rehearsal for this gig</button>
+          </div>
           <div class="toast" id="toast"></div>
         </div>
       </div>
     </div>
   </div>
+
+      <!-- REHEARSAL SHEET -->
+      <div class="overlay" id="rehearsal-overlay">
+        <div class="sheet">
+          <div class="sheet-top-row">
+            <div class="handle-inline"></div>
+            <div class="sheet-title" id="rh-sheet-title">Add rehearsal</div>
+            <button class="sheet-close-btn" id="rh-close-btn" aria-label="Close"><i class="ti ti-x"></i></button>
+          </div>
+          <div class="form-grid">
+            <div class="fg">
+              <label class="flabel">Date</label>
+              <input class="fin" id="rh-date" type="date">
+            </div>
+            <div class="fg">
+              <label class="flabel">Jampad / Venue</label>
+              <div class="autocomplete-wrap">
+                <input class="fin fin-combo" id="rh-jampad" placeholder="Tap to select or add..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+                <div class="ac-dropdown" id="jampad-dropdown"></div>
+              </div>
+            </div>
+            <div class="fg full">
+              <label class="flabel" style="color:var(--rehearsal,#B5860D);">For which gig? <span style="color:var(--color-text-secondary,#6b7280);font-weight:400;">(optional)</span></label>
+              <div class="autocomplete-wrap">
+                <input class="fin fin-combo" id="rh-linked-gig-input" placeholder="Tap to link to a gig..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+                <input type="hidden" id="rh-linked-gig-id" value="">
+                <div class="ac-dropdown" id="linked-gig-dropdown"></div>
+              </div>
+            </div>
+            <div class="fg full">
+              <label class="flabel">Status</label>
+              <div class="tog-row">
+                <button class="tog-btn sel-c" id="rh-status-confirmed">✓ Confirmed</button>
+                <button class="tog-btn" id="rh-status-tentative">⏰ Tentative</button>
+              </div>
+            </div>
+            <div class="fg full">
+              <label class="flabel">Notes</label>
+              <input class="fin" id="rh-notes" placeholder="e.g. Learn chorus, run through setlist..." type="text">
+            </div>
+          </div>
+          <label class="cal-row-label" style="margin-top:12px;">
+            <input type="checkbox" id="rh-cs" checked>
+            <i class="ti ti-calendar" style="color:#B5860D;font-size:14px"></i>
+            Sync to Google Calendar
+          </label>
+          <button class="save-btn rehearsal-save-btn" id="rh-save-btn">💾 Save Rehearsal</button>
+          <div id="rh-delete-wrap"></div>
+        </div>
+      </div>
 
   <script src="auth.js"></script>
   <script src="app.js"></script>

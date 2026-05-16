@@ -606,3 +606,146 @@ select.fin {
   margin-top: 6px; padding-top: 6px;
 }
 .bar-col { position: relative; }
+
+/* ── REHEARSAL YELLOW IDENTITY ── */
+:root {
+  --rehearsal: #B5860D;
+  --rehearsal-l: #FEF3C7;
+  --rehearsal-d: #7C5A00;
+}
+
+/* Rehearsal date pip */
+.date-pip.status-rehearsal {
+  background: var(--rehearsal-l);
+}
+.date-pip.status-rehearsal .mo { color: var(--rehearsal); }
+.date-pip.status-rehearsal .dy { color: var(--rehearsal-d); }
+
+/* Rehearsal calendar dot */
+.sdot.rehearsal-dot { background: var(--rehearsal); }
+
+/* Rehearsal badge */
+.badge.rehearsal-badge {
+  background: var(--rehearsal-l);
+  color: var(--rehearsal-d);
+}
+
+/* Rehearsal pill */
+.pill-rehearsal {
+  background: var(--rehearsal-l);
+  color: var(--rehearsal-d);
+  border: 0.5px solid var(--rehearsal);
+  font-size: 10px; font-weight: 500;
+  padding: 3px 8px; border-radius: 20px;
+}
+
+/* Rehearsal card inner accent */
+.rehearsal-row .swipe-card-inner {
+  border-color: var(--rehearsal-l);
+  background: color-mix(in srgb, var(--rehearsal-l) 20%, var(--surface));
+}
+
+/* Rehearsal save button */
+.rehearsal-save-btn { background: var(--rehearsal) !important; }
+
+/* Rehearsal toggle active */
+.sec-tab-refresh.rehearsal-toggle-active {
+  color: var(--rehearsal);
+}
+
+/* ── FAB ACTION SHEET ── */
+.fab-wrap {
+  position: absolute;
+  bottom: 20px; right: 20px;
+  display: flex; flex-direction: column; align-items: flex-end;
+  gap: 10px; z-index: 10;
+}
+.fab-menu {
+  display: flex; flex-direction: column; align-items: flex-end;
+  gap: 8px;
+  opacity: 0; pointer-events: none;
+  transform: translateY(10px) scale(0.95);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.fab-menu.show {
+  opacity: 1; pointer-events: all;
+  transform: translateY(0) scale(1);
+}
+.fab-menu-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 16px; border-radius: 22px;
+  border: none; cursor: pointer; font-family: inherit;
+  font-size: 13px; font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  -webkit-tap-highlight-color: transparent;
+}
+.fab-gig {
+  background: var(--accent); color: #fff;
+}
+.fab-rehearsal {
+  background: var(--rehearsal); color: #fff;
+}
+.fab-menu-item i { font-size: 15px; }
+
+/* ── REHEARSAL LINK UI ── */
+.rh-count-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 500;
+  color: var(--rehearsal, #B5860D);
+  background: var(--rehearsal-l, #FEF3C7);
+  border: 0.5px solid var(--rehearsal, #B5860D);
+  border-radius: 20px; padding: 2px 7px;
+  margin-top: 3px;
+}
+.rh-count-chip i { font-size: 11px; }
+
+.rh-link-tag {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 10px; color: var(--rehearsal, #B5860D);
+  margin-top: 3px;
+}
+.rh-link-tag i { font-size: 11px; }
+
+/* Rehearsal section inside gig edit sheet */
+.rh-divider {
+  height: 0.5px; background: var(--color-border-tertiary, #e5e7eb);
+  margin: 14px 0;
+}
+.rh-section-title {
+  font-size: 11px; font-weight: 500;
+  color: var(--rehearsal, #B5860D);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  display: flex; align-items: center; gap: 5px;
+  margin-bottom: 8px;
+}
+.rh-section-title i { font-size: 13px; }
+
+.rh-linked-item {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 10px; margin-bottom: 5px;
+  background: color-mix(in srgb, var(--rehearsal-l, #FEF3C7) 40%, var(--color-background-primary));
+  border: 0.5px solid var(--rehearsal-l, #FEF3C7);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: border-color 0.12s;
+}
+.rh-linked-item:hover { border-color: var(--rehearsal, #B5860D); }
+.rh-linked-item i { color: var(--rehearsal, #B5860D); font-size: 13px; flex-shrink: 0; }
+.rh-linked-date { font-size: 12px; font-weight: 500; color: var(--rehearsal-d, #7C5A00); }
+.rh-linked-venue { font-size: 12px; color: var(--color-text-secondary); flex: 1; }
+.rh-linked-arrow { color: var(--color-border-secondary) !important; font-size: 12px !important; }
+
+.add-rh-for-gig-btn {
+  width: 100%; padding: 9px 12px; margin-top: 4px;
+  background: transparent;
+  border: 0.5px dashed var(--rehearsal, #B5860D);
+  border-radius: var(--border-radius-md);
+  font-size: 12px; font-weight: 500;
+  color: var(--rehearsal, #B5860D);
+  cursor: pointer; font-family: inherit;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: background 0.12s;
+  -webkit-tap-highlight-color: transparent;
+}
+.add-rh-for-gig-btn:hover { background: var(--rehearsal-l, #FEF3C7); }
