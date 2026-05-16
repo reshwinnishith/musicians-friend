@@ -807,18 +807,18 @@ select.fin {
 /* ── DELETE CONFIRMATION MODAL ── */
 .delete-modal-backdrop {
   display: none;
-  position: absolute;
+  position: absolute; /* relative to #app, outside .content overflow */
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.45);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
-  z-index: 60;
+  z-index: 200; /* above everything including overlays */
   align-items: center;
   justify-content: center;
-  animation: fadeIn 0.18s ease;
 }
 .delete-modal-backdrop.show {
   display: flex;
+  animation: fadeIn 0.18s ease;
 }
 .delete-modal {
   background: var(--color-background-primary);

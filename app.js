@@ -822,6 +822,25 @@ async function sendMsg() {
   }
 }
 
+// ── DELETE MODAL ──
+let deleteModalCallback = null;
+
+function showDeleteModal(name, isRehearsalItem, cb) {
+  deleteModalCallback = cb;
+  const title = document.getElementById('delete-modal-title');
+  const sub = document.getElementById('delete-modal-sub');
+  if (title) title.textContent = `Delete ${isRehearsalItem ? 'rehearsal' : 'gig'}?`;
+  if (sub) sub.textContent = `"${name}" will be permanently removed.`;
+  const backdrop = document.getElementById('delete-modal-backdrop');
+  if (backdrop) backdrop.classList.add('show');
+}
+
+function closeDeleteModal() {
+  const backdrop = document.getElementById('delete-modal-backdrop');
+  if (backdrop) backdrop.classList.remove('show');
+  deleteModalCallback = null;
+}
+
 // ── SNAP BACK HELPER ──
 function snapBack(row) {
   const inner=row.querySelector?row.querySelector('.swipe-card-inner'):row;
