@@ -15,7 +15,7 @@ function signInWithGoogle() {
     redirect_uri: REDIRECT_URI,
     response_type: 'token',
     scope: SCOPES,
-    prompt: 'consent',
+    prompt: 'select_account',
     include_granted_scopes: 'true'
   });
   window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
@@ -38,6 +38,41 @@ function getToken() {
     accessToken = stored; tokenExpiry = parseInt(expiry); return accessToken;
   }
   return null;
+}
+
+async function silentRefresh() {
+  return new Promise((resolve) => {
+    const params = new URLSearchParams({
+      client_id: '1028172379465-3uf6632ei464sv3fivgf7t99rvbhg2ln.apps.googleusercontent.com',
+      redirect_uri: 'https://musicians-friend.vercel.app',
+      response_type: 'token',
+      scope: 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email',
+      prompt: 'none',
+      include_granted_scopes: 'true'
+    });
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
+    iframe.onload = () => {
+      try {
+        const hash = iframe.contentWindow.location.hash.substring(1);
+        const p = new URLSearchParams(hash);
+        const token = p.get('access_token');
+        const expiresIn = p.get('expires_in');
+        if (token) {
+          accessToken = token;
+          tokenExpiry = Date.now() + (parseInt(expiresIn) * 1000) - 60000;
+          localStorage.setItem('mf_token', token);
+          localStorage.setItem('mf_expiry', tokenExpiry.toString());
+          resolve(true);
+        } else { resolve(false); }
+      } catch(e) { resolve(false); }
+      document.body.removeChild(iframe);
+    };
+    iframe.onerror = () => { resolve(false); document.body.removeChild(iframe); };
+    document.body.appendChild(iframe);
+    setTimeout(() => { try { document.body.removeChild(iframe); } catch(e){} resolve(false); }, 5000);
+  });
 }
 
 function handleOAuthCallback() {
@@ -200,7 +235,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('signin-btn')?.addEventListener('click', signInWithGoogle);
   document.getElementById('signout-btn')?.addEventListener('click', signOut);
   handleOAuthCallback();
-  const token = getToken();
+  let token = getToken();
+  if (!token) { token = await silentRefresh() ? getToken() : null; }
   if (token) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
