@@ -749,3 +749,21 @@ select.fin {
   -webkit-tap-highlight-color: transparent;
 }
 .add-rh-for-gig-btn:hover { background: var(--rehearsal-l, #FEF3C7); }
+
+/* ── FAB TRANSFORM ON OPEN ── */
+.fab .fab-icon-plus,
+.fab .fab-icon-x { transition: opacity 0.15s ease, transform 0.15s ease; position: absolute; }
+.fab { position: relative; display: flex; align-items: center; justify-content: center; }
+.fab .fab-icon-x { opacity: 0; transform: rotate(-90deg) scale(0.7); }
+.fab .fab-icon-plus { opacity: 1; transform: rotate(0deg) scale(1); }
+.fab.fab-open .fab-icon-plus { opacity: 0; transform: rotate(90deg) scale(0.7); }
+.fab.fab-open .fab-icon-x { opacity: 1; transform: rotate(0deg) scale(1); }
+.fab.fab-open { background: var(--color-text-secondary) !important; box-shadow: 0 4px 16px rgba(0,0,0,0.2) !important; }
+
+/* ── REHEARSAL ARTIST NAME ON CARD ── */
+.rh-artist-name {
+  font-size: 11px;
+  color: var(--rehearsal, #B5860D);
+  font-weight: 500;
+  margin-left: 6px;
+}

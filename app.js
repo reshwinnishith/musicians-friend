@@ -112,11 +112,15 @@ function updateRehearsalToggleBtn() {
 // ── FAB ACTION SHEET ──
 function openFabMenu() {
   const menu = document.getElementById('fab-menu');
+  const fab = document.getElementById('fab');
   if (menu) menu.classList.add('show');
+  if (fab) fab.classList.add('fab-open');
 }
 function closeFabMenu() {
   const menu = document.getElementById('fab-menu');
+  const fab = document.getElementById('fab');
   if (menu) menu.classList.remove('show');
+  if (fab) fab.classList.remove('fab-open');
 }
 
 // ── CONFIRM POPUP ──
@@ -183,6 +187,7 @@ function makeShowRow(s) {
     // Rehearsal card — simpler, no payment
     const linkedGig = s.linkedGigId ? shows.find(g => g.id === s.linkedGigId) : null;
     const linkTag = linkedGig ? `<div class="rh-link-tag"><i class="ti ti-arrow-right"></i> ${linkedGig.artist}, ${MS[linkedGig.month]} ${linkedGig.day}</div>` : '';
+    const artistLine = s.artist ? `<span class="rh-artist-name">${s.artist}</span>` : '';
     row.innerHTML = `
       <div class="swipe-delete-bg"><button class="swipe-delete-btn"><i class="ti ti-trash"></i><span>Delete</span></button></div>
       <div class="swipe-card-inner">
@@ -190,7 +195,7 @@ function makeShowRow(s) {
           <div class="mo">${MS[s.month]}</div><div class="dy">${s.day}</div>
         </div>
         <div class="show-body">
-          <div class="artist-line"><span class="show-artist">${s.jampad || 'Rehearsal'}</span></div>
+          <div class="artist-line"><span class="show-artist">${s.jampad || 'Rehearsal'}</span>${artistLine}</div>
           <div class="show-meta"><span class="badge rehearsal-badge"><i class="ti ti-microphone-2"></i> Rehearsal</span>${s.notes ? `<span class="mdot">·</span><span style="font-size:11px;color:var(--muted)">${s.notes}</span>` : ''}</div>
           ${linkTag}
         </div>
@@ -431,6 +436,7 @@ function initAutocompletes() {
   setupAutocomplete('fc','city-dropdown', getAllCities, (val,isNew)=>{ if(isNew){customCities.push(val);localStorage.setItem('mf_cities',JSON.stringify(customCities));} }, true, 'Add city');
   setupAutocomplete('ft-input','type-dropdown', getAllGigTypes, (val,isNew)=>{ if(isNew){customGigTypes.push(val);localStorage.setItem('mf_gig_types',JSON.stringify(customGigTypes));} document.getElementById('ft').value=val.toLowerCase(); }, true, 'Add type');
   setupAutocomplete('rh-jampad','jampad-dropdown', getAllJampads, ()=>{}, true, 'Add jampad');
+  setupAutocomplete('rh-artist','rh-artist-dropdown', getAllClients, ()=>{}, true, 'Add artist');
   // Linked gig autocomplete — shows upcoming gigs as options
   const linkedGigInput = document.getElementById('rh-linked-gig-input');
   const linkedGigDropdown = document.getElementById('linked-gig-dropdown');
@@ -457,6 +463,9 @@ function initAutocompletes() {
           linkedGigInput.value = `${g.artist} — ${MS[g.month]} ${g.day}`;
           linkedGigId.value = g.id;
           linkedGigDropdown.style.display = 'none';
+          // Auto-fill artist from linked gig
+          const artistField = document.getElementById('rh-artist');
+          if (artistField && !artistField.value) artistField.value = g.artist;
         });
         linkedGigDropdown.appendChild(item);
       });
@@ -610,15 +619,18 @@ function openAddRehearsal(prefillDate, prefillGigId) {
   // Pre-link to gig if coming from gig sheet
   const linkedInput = document.getElementById('rh-linked-gig-input');
   const linkedId = document.getElementById('rh-linked-gig-id');
+  const artistInput = document.getElementById('rh-artist');
   if (prefillGigId) {
     const gig = shows.find(s => s.id === prefillGigId);
     if (gig && linkedInput && linkedId) {
       linkedInput.value = `${gig.artist} — ${MS[gig.month]} ${gig.day}`;
       linkedId.value = prefillGigId;
+      if (artistInput) artistInput.value = gig.artist;
     }
   } else {
     if (linkedInput) linkedInput.value = '';
     if (linkedId) linkedId.value = '';
+    if (artistInput) artistInput.value = '';
   }
   document.getElementById('rehearsal-overlay').classList.add('show');
 }
@@ -636,18 +648,21 @@ function openEditRehearsal(showId) {
   document.getElementById('rh-save-btn').textContent='✓ Save changes';
   document.getElementById('rh-delete-wrap').innerHTML='<button class="del-btn" id="rh-del-btn">🗑 Delete rehearsal</button>';
   document.getElementById('rh-del-btn').addEventListener('click', deleteRehearsal);
-  // Populate linked gig
+  // Populate linked gig and artist
   const linkedInput = document.getElementById('rh-linked-gig-input');
   const linkedId = document.getElementById('rh-linked-gig-id');
+  const artistInput = document.getElementById('rh-artist');
   if (s.linkedGigId) {
     const gig = shows.find(g => g.id === s.linkedGigId);
     if (gig && linkedInput && linkedId) {
       linkedInput.value = `${gig.artist} — ${MS[gig.month]} ${gig.day}`;
       linkedId.value = s.linkedGigId;
+      if (artistInput) artistInput.value = s.artist || gig.artist;
     }
   } else {
     if (linkedInput) linkedInput.value = '';
     if (linkedId) linkedId.value = '';
+    if (artistInput) artistInput.value = s.artist || '';
   }
   document.getElementById('rehearsal-overlay').classList.add('show');
 }
@@ -658,6 +673,7 @@ async function saveRehearsal() {
   const notes=document.getElementById('rh-notes').value.trim();
   const calSync=document.getElementById('rh-cs').checked;
   const status=document.getElementById('rh-status-confirmed').classList.contains('sel-c')?'confirmed':'tentative';
+  const artist=document.getElementById('rh-artist')?.value.trim()||'';
   const linkedGigIdRaw = document.getElementById('rh-linked-gig-id')?.value;
   const linkedGigId = linkedGigIdRaw ? parseInt(linkedGigIdRaw) : null;
   if(!date){alert('Please enter a date.');return;}
@@ -665,12 +681,12 @@ async function saveRehearsal() {
   if(editingId){
     const idx=shows.findIndex(s=>s.id===editingId);
     const existingCalId=shows[idx].calEventId||null;
-    const updated={id:editingId,eventType:'rehearsal',year:yr,month:mo,day:dy,jampad,notes,status,linkedGigId,calEventId:existingCalId};
+    const updated={id:editingId,eventType:'rehearsal',year:yr,month:mo,day:dy,jampad,artist,notes,status,linkedGigId,calEventId:existingCalId};
     shows[idx]=updated; rebuildDashboard(); saveData();
     if(calSync&&existingCalId) updateCalendarEventNative(updated);
     else if(calSync&&!existingCalId){const eid=await createRehearsalCalEvent(updated);if(eid){shows[idx].calEventId=eid;saveData();}}
   } else {
-    const newR={id:nextId++,eventType:'rehearsal',year:yr,month:mo,day:dy,jampad,notes,status,linkedGigId,calEventId:null};
+    const newR={id:nextId++,eventType:'rehearsal',year:yr,month:mo,day:dy,jampad,artist,notes,status,linkedGigId,calEventId:null};
     shows.push(newR); rebuildDashboard(); saveData();
     if(calSync){const eid=await createRehearsalCalEvent(newR);if(eid){const idx=shows.findIndex(s=>s.id===newR.id);if(idx>-1){shows[idx].calEventId=eid;saveData();}}}
   }

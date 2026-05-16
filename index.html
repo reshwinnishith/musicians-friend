@@ -220,7 +220,7 @@
       </div>
 
       <!-- FAB + ACTION SHEET -->
-      <div class="fab-wrap">
+      <div class="fab-wrap" id="fab-wrap">
         <div class="fab-menu" id="fab-menu">
           <button class="fab-menu-item fab-rehearsal" id="fab-add-rehearsal">
             <i class="ti ti-microphone-2"></i> Add Rehearsal
@@ -229,7 +229,10 @@
             <i class="ti ti-music"></i> Add Gig
           </button>
         </div>
-        <button class="fab" id="fab"><i class="ti ti-plus" id="fab-icon"></i></button>
+        <button class="fab" id="fab">
+          <i class="ti ti-plus fab-icon-plus"></i>
+          <i class="ti ti-x fab-icon-x"></i>
+        </button>
       </div>
 
       <!-- CONFIRM POPUP -->
@@ -354,6 +357,13 @@
               <div class="autocomplete-wrap">
                 <input class="fin fin-combo" id="rh-jampad" placeholder="Tap to select or add..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <div class="ac-dropdown" id="jampad-dropdown"></div>
+              </div>
+            </div>
+            <div class="fg full">
+              <label class="flabel">Artist / Band</label>
+              <div class="autocomplete-wrap">
+                <input class="fin fin-combo" id="rh-artist" placeholder="Auto-filled from linked gig or enter manually..." type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+                <div class="ac-dropdown" id="rh-artist-dropdown"></div>
               </div>
             </div>
             <div class="fg full">
