@@ -788,10 +788,10 @@ function renderCal() {
     [...ms].sort((a,b)=>a.day-b.day).forEach(s=>{
       const row=document.createElement('div');row.className='agenda-item';
       if(isRehearsal(s)){
-        row.innerHTML=`<span class="ag-date">${MS[s.month]} ${s.day}</span><span class="ag-artist">${s.jampad||'Rehearsal'}</span><span class="badge rehearsal-badge" style="font-size:10px">🥁 Rehearsal</span><span class="ag-pay" style="visibility:hidden">₹00,000</span>`;
+        row.innerHTML=`<span class="ag-date">${MS[s.month]} ${s.day}</span><span class="ag-artist">${s.jampad||'Rehearsal'}</span><span class="badge rehearsal-badge" style="font-size:10px">🥁 Rehearsal</span><span class="ag-pay" style="visibility:hidden">—</span>`;
         row.addEventListener('click',()=>openEditRehearsal(s.id));
       } else {
-        row.innerHTML=`<span class="ag-date">${MS[s.month]} ${s.day}</span><span class="ag-artist">${s.artist}</span><span class="badge ${BC[s.type]||'other'}" style="font-size:10px">${cap(s.type)}</span><span class="ag-pay">${fmt(s.pay)}</span>`;
+        row.innerHTML = `<span class="ag-date">${MS[s.month]} ${s.day}</span><span class="ag-artist">${s.artist}</span><span class="badge ${BC[s.type]||'other'}" style="font-size:10px">${cap(s.type)}</span><span class="ag-pay">${fmt(s.pay)}</span>`;
         row.addEventListener('click',()=>openEdit(s.id));
       }
       ag.appendChild(row);
