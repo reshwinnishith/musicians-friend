@@ -246,7 +246,7 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Sego
 .flabel { font-size: 12px; color: var(--muted); font-weight: 500; }
 .fin { padding: 10px 12px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); font-size: 14px; font-family: inherit; background: var(--surface); color: var(--ink); outline: none; -webkit-appearance: none; }
 .fin:focus { border-color: var(--accent); }
-.tog-row, .pay-tog-row { display: flex; gap: 8px; }
+.tog-row, .pay-tog-row { display: flex; gap: 7px; }
 .tog-btn, .pay-tog {
   flex: 1;
   padding: 10px 8px;
@@ -331,8 +331,12 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Sego
   transition: filter 0.2s ease;
 }
 .privacy-hidden {
-  filter: blur(6px);
-  transition: filter 0.2s ease;
+  filter: blur(7px);
+  transition: filter 0.25s ease;
+  user-select: none;
+}
+.privacy-hidden.restoring {
+  filter: blur(0px);
 }
 
 /* ── SIGN OUT BUTTON ── */

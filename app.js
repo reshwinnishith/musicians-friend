@@ -14,15 +14,31 @@ let showRehearsals = localStorage.getItem('mf_show_rehearsals') !== 'false'; // 
 let privacyMode = localStorage.getItem('mf_privacy') === 'true';
 
 function applyPrivacyMode() {
-  const els = document.querySelectorAll('.financial-value');
-  els.forEach(el => {
-    if (privacyMode) el.classList.add('privacy-hidden');
-    else el.classList.remove('privacy-hidden');
-  });
   const icon = document.getElementById('privacy-icon');
   const btn = document.getElementById('privacy-btn');
   if (icon) icon.className = privacyMode ? 'ti ti-eye-off' : 'ti ti-eye';
   if (btn) btn.classList.toggle('active', privacyMode);
+
+  // All financial value elements
+  document.querySelectorAll('.financial-value').forEach(el => {
+    if (privacyMode) el.classList.add('privacy-hidden');
+    else el.classList.remove('privacy-hidden');
+  });
+
+  // Bar chart wrap — toggle directly, no stale state
+  const barWrap = document.querySelector('.bar-chart-wrap');
+  if (barWrap) {
+    barWrap.classList.toggle('privacy-hidden', privacyMode);
+  }
+
+  // Calendar summary stats (cc, ccf, ce)
+  const calEarn = document.getElementById('ce');
+  if (calEarn) calEarn.classList.toggle('privacy-hidden', privacyMode);
+
+  // Agenda list pay amounts
+  document.querySelectorAll('.ag-pay').forEach(el => {
+    el.classList.toggle('privacy-hidden', privacyMode);
+  });
 }
 
 function togglePrivacy() {
@@ -800,6 +816,8 @@ function renderCal() {
   const rem=(7-(first+dim)%7)%7;for(let i=1;i<=rem;i++){const e=document.createElement('div');e.className='cday other';e.innerHTML=`<div class="dnum">${i}</div>`;g.appendChild(e);}
   const gigMs=ms.filter(isGig);const conf=gigMs.filter(s=>s.status==='confirmed').length;const earn=gigMs.reduce((a,s)=>a+s.pay,0);
   document.getElementById('cc').textContent=ms.length||'—';document.getElementById('ccf').textContent=conf||'—';document.getElementById('ce').textContent=gigMs.length?fmt(earn):'—';
+  const ceEl = document.getElementById('ce');
+  if (ceEl) ceEl.classList.toggle('privacy-hidden', privacyMode);
   // Update calendar legend to show rehearsal dot if any rehearsals this month
   const hasRehearsal = ms.some(isRehearsal);
   const calLeg = document.querySelector('.cal-leg');
@@ -833,7 +851,7 @@ function renderCal() {
         row.innerHTML = `<span class="ag-date">${MS[s.month]} ${s.day}</span><span class="ag-artist">${s.jampad||'Rehearsal'}</span><span class="badge rehearsal-badge" style="font-size:10px">🥁 Rehearsal</span><span class="ag-pay" style="visibility:hidden">—</span>`;
         row.addEventListener('click', () => openEditRehearsal(s.id));
       } else {
-        row.innerHTML = `<span class="ag-date">${MS[s.month]} ${s.day}</span><span class="ag-artist">${s.artist}</span><span class="badge ${BC[s.type]||'other'}" style="font-size:10px">${cap(s.type)}</span><span class="ag-pay">${fmt(s.pay)}</span>`;
+        row.innerHTML = `<span class="ag-date">${MS[s.month]} ${s.day}</span><span class="ag-artist">${s.artist}</span><span class="badge ${BC[s.type]||'other'}" style="font-size:10px">${cap(s.type)}</span><span class="ag-pay financial-value">${fmt(s.pay)}</span>`;
         row.addEventListener('click', () => openEdit(s.id));
       }
       ag.appendChild(row);
