@@ -236,11 +236,11 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Sego
 /* BOTTOM SHEET */
 .overlay { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.25); z-index: 40; align-items: flex-end; }
 .overlay.show { display: flex; }
-.sheet { background: var(--surface); border-radius: 20px 20px 0 0; width: 100%; padding: 14px 16px 32px; max-height: 90%; overflow-y: auto; animation: up 0.22s ease; -webkit-overflow-scrolling: touch; }
+.sheet { background: var(--surface); border-radius: 20px 20px 0 0; width: 100%; padding: 16px 20px 24px; max-height: 90%; overflow-y: auto; animation: up 0.22s ease; -webkit-overflow-scrolling: touch; }
 @keyframes up { from{transform:translateY(40px);opacity:0} to{transform:translateY(0);opacity:1} }
 .handle { width: 40px; height: 4px; border-radius: 2px; background: var(--border-mid); margin: 0 auto 14px; }
 .sheet-title { font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 16px; }
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; row-gap: 14px; }
 .fg { display: flex; flex-direction: column; gap: 5px; }
 .fg.full { grid-column: 1/-1; }
 .flabel { font-size: 12px; color: var(--muted); font-weight: 500; }
@@ -254,7 +254,18 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Sego
 .pay-tog.sel-pending { background: var(--red-l); color: var(--red); border-color: var(--red); font-weight: 500; }
 .cal-row-label { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 13px; color: var(--muted); cursor: pointer; }
 .save-btn { margin-top: 12px; padding: 13px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer; width: 100%; -webkit-tap-highlight-color: transparent; }
-.del-btn { margin-top: 10px; padding: 12px; background: transparent; color: var(--red); border: 0.5px solid var(--red-l); border-radius: var(--radius); font-size: 14px; font-family: inherit; cursor: pointer; width: 100%; }
+.del-btn {
+  margin-top: 8px; padding: 9px;
+  background: transparent;
+  color: var(--color-text-danger, #A32D2D);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: 13px; font-family: inherit;
+  cursor: pointer; width: 100%;
+  opacity: 0.7;
+  transition: opacity 0.12s;
+}
+.del-btn:hover { opacity: 1; }
 .toast { display: none; margin-top: 10px; padding: 10px 14px; background: var(--teal-l); border-radius: var(--radius-sm); font-size: 13px; color: var(--teal); border-left: 3px solid var(--teal); }
 .toast.show { display: block; }
 
@@ -394,8 +405,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 .ac-add:hover { background: var(--accent-l); }
 
 /* ── MORE DETAILS ── */
-.more-details-btn { width: 100%; margin-top: 12px; padding: 8px; background: transparent; border: 0.5px dashed var(--border-mid); border-radius: var(--radius-sm); font-size: 13px; color: var(--muted); cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.12s; }
-.more-details-btn:hover { background: var(--raised); color: var(--ink); }
 .more-details-body { display: none; }
 
 /* ── STATUS COLOURS ── */
@@ -475,18 +484,22 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
 
 /* ── MORE DETAILS FIX ── */
 .more-details-btn {
-  width: 100%; margin-top: 12px; padding: 10px 14px;
-  background: transparent; border: 0.5px dashed var(--border-mid);
-  border-radius: var(--radius-sm); font-size: 13px; color: var(--muted);
+  width: 100%; margin-top: 16px; padding: 9px 14px;
+  background: transparent;
+  border: none;
+  border-top: 0.5px solid var(--color-border-tertiary);
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+  border-radius: 0;
+  font-size: 12px; color: var(--color-text-tertiary);
   cursor: pointer; font-family: inherit;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  transition: all 0.12s; -webkit-tap-highlight-color: transparent;
-  /* ensure no touch-event issues on mobile */
+  display: flex; align-items: center; justify-content: space-between;
+  transition: color 0.12s;
+  -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   user-select: none; -webkit-user-select: none;
 }
-.more-details-btn:hover { background: var(--raised); color: var(--ink); border-color: var(--border-mid); }
-.more-details-btn:active { background: var(--raised); transform: scale(0.98); }
+.more-details-btn:hover { color: var(--color-text-primary); }
+.more-details-btn:active { background: var(--color-background-secondary); }
 .more-details-body {
   display: none;
   animation: slideDown 0.18s ease;
@@ -737,15 +750,18 @@ select.fin {
 
 /* Rehearsal section inside gig edit sheet */
 .rh-divider {
-  height: 0.5px; background: var(--color-border-tertiary, #e5e7eb);
-  margin: 14px 0;
+  height: 0.5px;
+  background: var(--color-border-tertiary);
+  margin: 20px 0 14px;
 }
 .rh-section-title {
   font-size: 11px; font-weight: 500;
   color: var(--rehearsal, #B5860D);
   text-transform: uppercase; letter-spacing: 0.5px;
   display: flex; align-items: center; gap: 5px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 0.5px solid var(--color-border-tertiary);
 }
 .rh-section-title i { font-size: 13px; }
 
