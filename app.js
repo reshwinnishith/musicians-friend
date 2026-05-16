@@ -239,12 +239,13 @@ function makeShowRow(s) {
 
   // ── SWIPE → MODAL ──
   const SWIPE_THRESHOLD = 55;
-  let txStart = 0, tyStart = 0, dragging = false;
+  let txStart = 0, tyStart = 0, dragging = false, swipeDx = 0;
 
   row.addEventListener('touchstart', (e) => {
     txStart = e.touches[0].clientX;
     tyStart = e.touches[0].clientY;
     dragging = false;
+    swipeDx = 0;
     cardInner.style.transition = 'none';
   }, { passive: true });
 
@@ -254,7 +255,7 @@ function makeShowRow(s) {
     if (!dragging && Math.abs(dy) > Math.abs(dx) + 4) return;
     if (dx < -6) {
       dragging = true;
-      // Follow finger — max 40px, stays readable
+      swipeDx = dx; // track distance directly
       cardInner.style.transform = `translateX(${Math.max(dx, -40)}px)`;
       e.preventDefault();
     }
@@ -263,9 +264,8 @@ function makeShowRow(s) {
   row.addEventListener('touchend', () => {
     if (!dragging) return;
     dragging = false;
-    const currentX = new DOMMatrix(getComputedStyle(cardInner).transform).m41;
-    if (currentX < -SWIPE_THRESHOLD) {
-      // Swiped far enough — snap slightly left then show modal
+    if (swipeDx < -SWIPE_THRESHOLD) {
+      // Swiped far enough — hold slightly left, show modal
       cardInner.style.transition = 'transform 0.15s ease';
       cardInner.style.transform = 'translateX(-20px)';
       const name = isRehearsal(s) ? (s.jampad || 'Rehearsal') : s.artist;
@@ -278,7 +278,6 @@ function makeShowRow(s) {
           if (calId) deleteCalendarEventNative(calId);
         }
       });
-      // Reset card on any modal close
       const resetCard = () => {
         cardInner.style.transition = 'transform 0.2s ease';
         cardInner.style.transform = 'translateX(0)';
@@ -288,10 +287,10 @@ function makeShowRow(s) {
       });
       document.getElementById('delete-modal-backdrop')?.addEventListener('click', resetCard, { once: true });
     } else {
-      // Not far enough — snap back
       cardInner.style.transition = 'transform 0.2s ease';
       cardInner.style.transform = 'translateX(0)';
     }
+    swipeDx = 0;
   });
 
   return row;
