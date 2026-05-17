@@ -700,10 +700,10 @@ select.fin {
 
 /* Rehearsal date pip */
 .date-pip.status-rehearsal {
-  background: var(--rehearsal-l);
+  background: var(--color-background-secondary);
 }
-.date-pip.status-rehearsal .mo { color: var(--rehearsal); }
-.date-pip.status-rehearsal .dy { color: var(--rehearsal-d); }
+.date-pip.status-rehearsal .mo { color: var(--color-text-tertiary); }
+.date-pip.status-rehearsal .dy { color: var(--color-text-primary); }
 
 /* Rehearsal calendar dot */
 .sdot.rehearsal-dot { background: var(--rehearsal); }
