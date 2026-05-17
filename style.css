@@ -725,7 +725,7 @@ select.fin {
 
 /* Rehearsal card inner accent */
 .rehearsal-row .swipe-card-inner {
-  border: 0.5px solid var(--color-border-tertiary) !important;
+  border: 0.5px solid rgba(0,0,0,0.08) !important;
   background: var(--color-background-primary) !important;
 }
 .show-row.today-gig .swipe-card-inner {
