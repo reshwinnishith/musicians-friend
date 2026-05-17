@@ -190,8 +190,8 @@ async function createCalendarEventNative(show) {
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         summary: `🎵 ${cap(show.type)} Gig — ${show.artist}`,
-        location: `${show.city}, India`,
-        description: `Artist: ${show.artist}\nType: ${cap(show.type)}\nCity: ${show.city}\nPayment: ₹${Number(show.pay).toLocaleString('en-IN')}\nStatus: ${cap(show.status)}${show.notes ? '\nNotes: ' + show.notes : ''}\n\nManaged by Musician's Friend`,
+        location: show.venue ? `${show.venue}, ${show.city}, India` : `${show.city}, India`,
+        description: `Artist: ${show.artist}\nType: ${cap(show.type)}\nCity: ${show.city}${show.venue ? '\nVenue: ' + show.venue : ''}\nPayment: ₹${Number(show.pay).toLocaleString('en-IN')}\nStatus: ${cap(show.status)}${show.notes ? '\nNotes: ' + show.notes : ''}\n\nManaged by Musician's Friend`,
         start: { date: dateStr },
         end: { date: dateStr },
         colorId: show.status === 'tentative' ? '6' : '11'
@@ -212,8 +212,8 @@ async function updateCalendarEventNative(show) {
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         summary: `🎵 ${cap(show.type)} Gig — ${show.artist}`,
-        location: `${show.city}, India`,
-        description: `Artist: ${show.artist}\nType: ${cap(show.type)}\nCity: ${show.city}\nPayment: ₹${Number(show.pay).toLocaleString('en-IN')}\nStatus: ${cap(show.status)}${show.notes ? '\nNotes: ' + show.notes : ''}\n\nManaged by Musician's Friend`,
+        location: show.venue ? `${show.venue}, ${show.city}, India` : `${show.city}, India`,
+        description: `Artist: ${show.artist}\nType: ${cap(show.type)}\nCity: ${show.city}${show.venue ? '\nVenue: ' + show.venue : ''}\nPayment: ₹${Number(show.pay).toLocaleString('en-IN')}\nStatus: ${cap(show.status)}${show.notes ? '\nNotes: ' + show.notes : ''}\n\nManaged by Musician's Friend`,
         start: { date: dateStr },
         end: { date: dateStr },
         colorId: show.status === 'tentative' ? '6' : '11'
