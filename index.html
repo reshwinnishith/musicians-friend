@@ -37,7 +37,7 @@
       <div class="logo">
         <div class="logo-mark"><i class="ti ti-music"></i></div>
         <div>
-          <div class="logo-text">Musician's Friend <span class="app-version">v4.1.3</span></div>
+          <div class="logo-text">Musician's Friend <span class="app-version">v4.2.1</span></div>
           <div class="logo-sub" id="user-email">Your personal music manager</div>
         </div>
       </div>
@@ -254,95 +254,102 @@
       <div class="overlay" id="gig-overlay">
         <div class="sheet" id="sheet">
           <div class="sheet-top-row">
-            <div class="handle-inline"></div>
-            <div class="sheet-title" id="sheet-title">Add a new gig</div>
             <button class="sheet-close-btn" id="sheet-close-btn" aria-label="Close"><i class="ti ti-x"></i></button>
+            <div class="sheet-title" id="sheet-title">Add Gig</div>
+            <button class="sheet-save-circle" id="save-btn" aria-label="Save"><i class="ti ti-check"></i></button>
           </div>
-          <div class="form-grid">
 
-            <!-- Client -->
-            <div class="fg full">
-              <label class="flabel">Client / Artist name</label>
-              <div class="autocomplete-wrap" id="client-wrap">
-                <input class="fin fin-combo" id="fa" placeholder="Search or add client" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
-                <div class="ac-dropdown" id="client-dropdown"></div>
-              </div>
-            </div>
+          <div class="rs-title-area">
+            <input class="rs-title-input" id="fa" placeholder="Client / Artist name" type="text" autocomplete="off">
+            <div class="ac-dropdown" id="client-dropdown"></div>
+            <input class="rs-notes-input" id="fn" placeholder="Notes...">
+          </div>
 
-            <!-- Date + City on same row -->
-            <div class="fg">
-              <label class="flabel">Date</label>
-              <input class="fin" id="fd" type="date">
+          <div class="rs-section-label">Schedule</div>
+          <div class="rs-group">
+            <div class="rs-row">
+              <div class="rs-icon"><i class="ti ti-calendar"></i></div>
+              <span class="rs-label">Date</span>
+              <input class="rs-value-input" id="fd" type="date">
             </div>
-            <div class="fg">
-              <label class="flabel">City</label>
-              <div class="autocomplete-wrap" id="city-wrap">
-                <input class="fin fin-combo" id="fc" placeholder="Search city" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+            <div class="rs-row">
+              <div class="rs-icon"><i class="ti ti-map-pin"></i></div>
+              <span class="rs-label">City</span>
+              <div class="rs-value-wrap">
+                <input class="rs-value-input fin-combo" id="fc" placeholder="Search city" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <div class="ac-dropdown" id="city-dropdown"></div>
               </div>
             </div>
-            <div class="fg">
-              <label class="flabel">Venue <span style="font-weight:400;color:var(--color-text-tertiary)">(optional)</span></label>
-              <input class="fin" id="fv" placeholder="e.g. Music Academy" type="text">
+            <div class="rs-row">
+              <div class="rs-icon"><i class="ti ti-building"></i></div>
+              <span class="rs-label">Venue</span>
+              <input class="rs-value-input" id="fv" placeholder="Optional">
             </div>
+          </div>
 
-            <!-- Gig type + Payment on same row -->
-            <div class="fg">
-              <label class="flabel">Gig type</label>
-              <div class="autocomplete-wrap" id="type-wrap">
-                <input class="fin fin-combo" id="ft-input" placeholder="Search gig type" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+          <div class="rs-section-label">Gig</div>
+          <div class="rs-group">
+            <div class="rs-row">
+              <div class="rs-icon"><i class="ti ti-music"></i></div>
+              <span class="rs-label">Type</span>
+              <div class="rs-value-wrap">
+                <input class="rs-value-input fin-combo" id="ft-input" placeholder="Search gig type" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <input type="hidden" id="ft" value="wedding">
                 <div class="ac-dropdown" id="type-dropdown"></div>
               </div>
             </div>
-            <div class="fg">
-              <label class="flabel">Payment (₹)</label>
-              <input class="fin" id="fp" placeholder="e.g. 25000" type="text" inputmode="numeric" pattern="[0-9,]*">
-            </div>
-
-            <!-- Show status + Payment status on same row -->
-            <div class="fg">
-              <label class="flabel">Show status</label>
-              <div class="tog-row">
+            <div class="rs-row rs-row-col">
+              <div class="rs-row-inner">
+                <div class="rs-icon"><i class="ti ti-circle-check"></i></div>
+                <span class="rs-label">Show status</span>
+              </div>
+              <div class="tog-row" style="padding: 0 0 10px 44px;">
                 <button class="tog-btn sel-c" id="bc">✓ Confirmed</button>
                 <button class="tog-btn" id="bt">⏰ Tentative</button>
               </div>
             </div>
-            <div class="fg">
-              <label class="flabel">Payment status</label>
-              <div class="pay-tog-row">
+          </div>
+
+          <div class="rs-section-label">Payment</div>
+          <div class="rs-group">
+            <div class="rs-row">
+              <div class="rs-icon"><i class="ti ti-coin"></i></div>
+              <span class="rs-label">Amount</span>
+              <input class="rs-value-input rs-amount" id="fp" placeholder="₹0" type="text" inputmode="numeric" pattern="[0-9,]*">
+            </div>
+            <div class="rs-row rs-row-col">
+              <div class="rs-row-inner">
+                <div class="rs-icon"><i class="ti ti-credit-card"></i></div>
+                <span class="rs-label">Payment status</span>
+              </div>
+              <div class="pay-tog-row" style="padding: 0 0 10px 44px;">
                 <button class="pay-tog" id="bp-paid">✓ Paid</button>
                 <button class="pay-tog sel-pending" id="bp-pending">⏰ Pending</button>
               </div>
             </div>
           </div>
 
-          <!-- More details collapsible -->
-          <button class="more-details-btn" id="more-details-btn" type="button">
-            <i class="ti ti-chevron-down" id="more-details-icon"></i> <span id="more-details-label">More details</span>
-          </button>
-          <div class="more-details-body" id="more-details-body">
-            <div class="fg full" style="margin-top:10px;">
-              <label class="flabel">Notes</label>
-              <input class="fin" id="fn" placeholder="Soundcheck time, contact person, setlist notes..." type="text">
+          <div class="rs-section-label">More</div>
+          <div class="rs-group">
+            <div class="rs-row">
+              <div class="rs-icon"><i class="ti ti-calendar-event"></i></div>
+              <span class="rs-label">Google Calendar</span>
+              <label class="rs-toggle-wrap"><input type="checkbox" id="cs" checked><span class="rs-toggle"></span></label>
             </div>
           </div>
 
-          <!-- Calendar sync — always visible -->
-          <label class="cal-row-label" style="margin-top:12px;">
-            <input type="checkbox" id="cs" checked>
-            <i class="ti ti-calendar" style="color:var(--accent);font-size:14px"></i>
-            Sync to Google Calendar
-          </label>
-
-          <button class="save-btn" id="save-btn">💾 Save Gig</button>
-          <div id="delete-wrap"></div>
           <div id="gig-rehearsal-section" style="display:none;">
-            <div class="rh-divider"></div>
-            <div class="rh-section-title"><i class="ti ti-microphone-2"></i> <span id="rh-section-label">Rehearsals</span></div>
-            <div id="gig-rehearsal-list"></div>
-            <button class="add-rh-for-gig-btn" id="add-rh-for-gig-btn"><i class="ti ti-plus"></i> Add rehearsal for this gig</button>
+            <div class="rs-section-label">Rehearsals</div>
+            <div class="rs-group">
+              <div id="gig-rehearsal-list"></div>
+              <div class="rs-row rs-add-rh" id="add-rh-for-gig-btn">
+                <div class="rs-icon" style="background:rgba(181,134,13,0.12);color:#B5860D;"><i class="ti ti-plus"></i></div>
+                <span class="rs-label" style="color:#B5860D;">Add rehearsal for this gig</span>
+              </div>
+            </div>
           </div>
+
+          <div id="delete-wrap"></div>
           <div class="toast" id="toast"></div>
         </div>
       </div>
@@ -367,55 +374,61 @@
       <div class="overlay" id="rehearsal-overlay">
         <div class="sheet">
           <div class="sheet-top-row">
-            <div class="handle-inline"></div>
-            <div class="sheet-title" id="rh-sheet-title">Add rehearsal</div>
             <button class="sheet-close-btn" id="rh-close-btn" aria-label="Close"><i class="ti ti-x"></i></button>
+            <div class="sheet-title" id="rh-sheet-title">Add Rehearsal</div>
+            <button class="sheet-save-circle" id="rh-save-btn" aria-label="Save"><i class="ti ti-check"></i></button>
           </div>
-          <div class="form-grid">
-            <!-- Row 1: Artist + Date -->
-            <div class="fg">
-              <label class="flabel">Artist / Band</label>
-              <div class="autocomplete-wrap">
-                <input class="fin fin-combo" id="rh-artist" placeholder="Search or add artist" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
-                <div class="ac-dropdown" id="rh-artist-dropdown"></div>
-              </div>
+
+          <div class="rs-title-area">
+            <input class="rs-title-input" id="rh-artist" placeholder="Artist / Band name" type="text" autocomplete="off">
+            <div class="ac-dropdown" id="rh-artist-dropdown"></div>
+            <input class="rs-notes-input" id="rh-notes" placeholder="Notes...">
+          </div>
+
+          <div class="rs-section-label">Schedule</div>
+          <div class="rs-group">
+            <div class="rs-row">
+              <div class="rs-icon"><i class="ti ti-calendar"></i></div>
+              <span class="rs-label">Date</span>
+              <input class="rs-value-input" id="rh-date" type="date">
             </div>
-            <div class="fg">
-              <label class="flabel">Date</label>
-              <input class="fin" id="rh-date" type="date">
+            <div class="rs-row">
+              <div class="rs-icon"><i class="ti ti-clock"></i></div>
+              <span class="rs-label">Time</span>
+              <input class="rs-value-input" id="rh-time" type="time" placeholder="Optional">
             </div>
-            <!-- Row 2: Jampad + Linked Gig -->
-            <div class="fg">
-              <label class="flabel">Jampad / Venue</label>
-              <div class="autocomplete-wrap">
-                <input class="fin fin-combo" id="rh-jampad" placeholder="Search or add" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+            <div class="rs-row">
+              <div class="rs-icon"><i class="ti ti-microphone-2"></i></div>
+              <span class="rs-label">Jampad / Venue</span>
+              <div class="rs-value-wrap">
+                <input class="rs-value-input fin-combo" id="rh-jampad" placeholder="Search or add" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <div class="ac-dropdown" id="jampad-dropdown"></div>
               </div>
             </div>
-            <div class="fg">
-              <label class="flabel" style="color:var(--rehearsal,#B5860D);">Linked gig <span style="font-weight:400;color:var(--color-text-tertiary);">(optional)</span></label>
-              <div class="autocomplete-wrap">
-                <input class="fin fin-combo" id="rh-linked-gig-input" placeholder="Search gigs" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+          </div>
+
+          <div class="rs-section-label">Link</div>
+          <div class="rs-group">
+            <div class="rs-row">
+              <div class="rs-icon"><i class="ti ti-link"></i></div>
+              <span class="rs-label" style="color:#B5860D;">Linked gig</span>
+              <div class="rs-value-wrap">
+                <input class="rs-value-input fin-combo" id="rh-linked-gig-input" placeholder="Optional" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <input type="hidden" id="rh-linked-gig-id" value="">
                 <div class="ac-dropdown" id="linked-gig-dropdown"></div>
               </div>
             </div>
-            <!-- Row 3: Time + Notes -->
-            <div class="fg">
-              <label class="flabel">Time <span style="font-weight:400;color:var(--color-text-tertiary)">(optional)</span></label>
-              <input class="fin" id="rh-time" type="time">
-            </div>
-            <div class="fg">
-              <label class="flabel">Notes</label>
-              <input class="fin" id="rh-notes" placeholder="Run through setlist..." type="text">
+          </div>
+
+          <div class="rs-section-label">Sync</div>
+          <div class="rs-group">
+            <div class="rs-row">
+              <div class="rs-icon"><i class="ti ti-calendar-event"></i></div>
+              <span class="rs-label">Google Calendar</span>
+              <label class="rs-toggle-wrap"><input type="checkbox" id="rh-cs" checked><span class="rs-toggle"></span></label>
             </div>
           </div>
-          <label class="cal-row-label" style="margin-top:12px;">
-            <input type="checkbox" id="rh-cs" checked>
-            <i class="ti ti-calendar" style="color:#B5860D;font-size:14px"></i>
-            Sync to Google Calendar
-          </label>
-          <button class="save-btn rehearsal-save-btn" id="rh-save-btn">💾 Save Rehearsal</button>
+
           <div id="rh-delete-wrap"></div>
         </div>
       </div>

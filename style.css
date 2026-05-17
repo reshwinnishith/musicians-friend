@@ -993,3 +993,120 @@ input[type="number"] { -moz-appearance: textfield; }
   flex-shrink: 0;
 }
 .offline-banner i { font-size: 14px; }
+
+/* ── REMINDERS STYLE SHEET ── */
+.sheet-save-circle {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--accent); border: none;
+  color: #fff; font-size: 15px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.sheet-save-circle:active { opacity: 0.8; }
+
+.rs-title-area {
+  background: var(--raised);
+  margin: 0 0 6px;
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  position: relative;
+}
+.rs-title-input {
+  font-size: 20px; font-weight: 600;
+  color: var(--ink); background: transparent;
+  border: none; outline: none; width: 100%;
+  margin-bottom: 10px; font-family: inherit;
+}
+.rs-title-input::placeholder { color: var(--muted); font-weight: 400; }
+.rs-notes-input {
+  font-size: 14px; color: var(--muted);
+  background: transparent; border: none; outline: none;
+  width: 100%; border-top: 0.5px solid var(--border);
+  padding-top: 10px; font-family: inherit;
+}
+.rs-notes-input::placeholder { color: var(--muted); }
+
+.rs-section-label {
+  font-size: 12px; font-weight: 500;
+  color: var(--muted); text-transform: uppercase;
+  letter-spacing: 0.5px; padding: 10px 4px 5px;
+}
+.rs-group {
+  background: var(--raised);
+  border-radius: var(--radius-lg);
+  overflow: visible;
+  margin-bottom: 6px;
+}
+.rs-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px;
+  border-bottom: 0.5px solid var(--border);
+  position: relative;
+}
+.rs-row:last-child { border-bottom: none; }
+.rs-row-col { flex-direction: column; align-items: flex-start; gap: 0; }
+.rs-row-inner { display: flex; align-items: center; gap: 12px; padding: 11px 0 6px; width: 100%; }
+.rs-add-rh { cursor: pointer; }
+.rs-add-rh:active { opacity: 0.7; }
+.rs-icon {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: rgba(127,119,221,0.12);
+  color: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.rs-label { font-size: 15px; color: var(--ink); flex: 1; }
+.rs-value-input {
+  font-size: 14px; color: var(--muted);
+  background: transparent; border: none; outline: none;
+  text-align: right; font-family: inherit;
+  min-width: 0; flex: 1;
+}
+.rs-value-input:focus { color: var(--ink); }
+.rs-value-input::placeholder { color: var(--muted); }
+.rs-amount { color: var(--accent-d); font-weight: 500; }
+.rs-value-wrap { flex: 1; position: relative; }
+.rs-value-wrap .ac-dropdown { left: auto; right: 0; min-width: 180px; }
+.rs-value-wrap .rs-value-input { width: 100%; }
+
+/* Toggle switch */
+.rs-toggle-wrap { display: flex; align-items: center; cursor: pointer; }
+.rs-toggle-wrap input { display: none; }
+.rs-toggle {
+  width: 42px; height: 25px; border-radius: 13px;
+  background: var(--border-mid); position: relative;
+  transition: background 0.2s;
+}
+.rs-toggle::after {
+  content: ''; position: absolute;
+  width: 21px; height: 21px; background: #fff;
+  border-radius: 50%; top: 2px; left: 2px;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.rs-toggle-wrap input:checked + .rs-toggle { background: var(--accent); }
+.rs-toggle-wrap input:checked + .rs-toggle::after { transform: translateX(17px); }
+
+/* Rh linked item in gig sheet */
+.rh-linked-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; cursor: pointer;
+  border-bottom: 0.5px solid var(--border);
+}
+.rh-linked-item:last-child { border-bottom: none; }
+.rh-linked-item i { color: var(--rehearsal, #B5860D); font-size: 13px; }
+.rh-linked-date { font-size: 13px; font-weight: 500; color: var(--ink); }
+.rh-linked-venue { font-size: 12px; color: var(--muted); flex: 1; }
+.rh-linked-arrow { color: var(--border-mid) !important; margin-left: auto; }
+
+/* Delete btn in new style */
+.del-btn {
+  margin-top: 12px; padding: 9px;
+  background: transparent; color: var(--red);
+  border: none; border-radius: var(--radius-md);
+  font-size: 13px; font-family: inherit;
+  cursor: pointer; width: 100%; opacity: 0.7;
+  transition: opacity 0.12s;
+}
+.del-btn:hover { opacity: 1; }
