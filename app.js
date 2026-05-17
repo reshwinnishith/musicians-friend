@@ -108,7 +108,9 @@ async function initApp() {
       setSyncStatus('saved', 'Synced ✓');
     } else { shows = []; setSyncStatus('saved', 'Ready'); }
   } catch(e) {
+    console.log('Drive load failed, checking cache. Error:', e);
     const cached = localStorage.getItem('mf_cached_shows');
+    console.log('Cached shows found:', cached ? 'yes, length=' + cached.length : 'no');
     if (cached) {
       try {
         shows = JSON.parse(cached);

@@ -158,9 +158,13 @@ async function loadFromDrive() {
   const token = getToken(); if (!token) return null;
   const fileId = await findOrCreateDriveFile(); if (!fileId) return null;
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
     const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
+      signal: controller.signal
     });
+    clearTimeout(timeout);
     if (!res.ok) return null;
     const text = await res.text();
     if (!text || text.trim() === '') return { shows: [] };
