@@ -944,6 +944,13 @@ function setupEventListeners() {
     fpInput.addEventListener('focus', function() {
       this.value = this.value.replace(/,/g, '');
     });
+    fpInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        e.stopPropagation();
+        this.blur();
+      }
+    });
   }
   document.getElementById('bc').addEventListener('click',()=>setSt('confirmed'));
   document.getElementById('bt').addEventListener('click',()=>setSt('tentative'));
