@@ -37,7 +37,7 @@
       <div class="logo">
         <div class="logo-mark"><i class="ti ti-music"></i></div>
         <div>
-          <div class="logo-text">Musician's Friend <span class="app-version">v4.1.3</span></div>
+          <div class="logo-text">Musician's Friend <span class="app-version">v4.1.4</span></div>
           <div class="logo-sub" id="user-email">Your personal music manager</div>
         </div>
       </div>
@@ -253,96 +253,122 @@
       <!-- BOTTOM SHEET -->
       <div class="overlay" id="gig-overlay">
         <div class="sheet" id="sheet">
-          <div class="sheet-top-row">
-            <div class="handle-inline"></div>
-            <div class="sheet-title" id="sheet-title">Add a new gig</div>
-            <button class="sheet-close-btn" id="sheet-close-btn" aria-label="Close"><i class="ti ti-x"></i></button>
+          <div class="sheet-top-row ios-sheet-header">
+            <button class="ios-cancel-btn" id="sheet-close-btn" aria-label="Close">Cancel</button>
+            <div class="sheet-title" id="sheet-title">Add Gig</div>
+            <button class="ios-save-btn" id="save-btn" aria-label="Save">Save</button>
           </div>
-          <div class="form-grid">
 
-            <!-- Client -->
-            <div class="fg full">
-              <label class="flabel">Client / Artist name</label>
-              <div class="autocomplete-wrap" id="client-wrap">
-                <input class="fin fin-combo" id="fa" placeholder="Search or add client" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+          <!-- Legacy compat elements — kept hidden, referenced by JS -->
+          <div id="more-details-body" style="display:none;"></div>
+          <button id="more-details-btn" style="display:none;" tabindex="-1"></button>
+          <i id="more-details-icon" class="ti ti-chevron-down" style="display:none;"></i>
+          <span id="more-details-label" style="display:none;"></span>
+
+          <div class="ios-section-label">EVENT</div>
+          <div class="ios-card">
+            <div class="ios-row">
+              <div class="icon-sq purple"><i class="ti ti-user"></i></div>
+              <span class="ios-row-label">Artist / Client</span>
+              <div class="ios-input-wrap">
+                <input class="ios-input fin-combo" id="fa" placeholder="Name" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <div class="ac-dropdown" id="client-dropdown"></div>
               </div>
+              <i class="ti ti-chevron-right ios-chevron"></i>
             </div>
-
-            <!-- Date + City on same row -->
-            <div class="fg">
-              <label class="flabel">Date</label>
-              <input class="fin" id="fd" type="date">
+            <div class="ios-row">
+              <div class="icon-sq purple"><i class="ti ti-calendar"></i></div>
+              <span class="ios-row-label">Date</span>
+              <input class="ios-input" id="fd" type="date">
             </div>
-            <div class="fg">
-              <label class="flabel">City</label>
-              <div class="autocomplete-wrap" id="city-wrap">
-                <input class="fin fin-combo" id="fc" placeholder="Search city" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+            <div class="ios-row">
+              <div class="icon-sq purple"><i class="ti ti-map-pin"></i></div>
+              <span class="ios-row-label">City</span>
+              <div class="ios-input-wrap">
+                <input class="ios-input fin-combo" id="fc" placeholder="Search city" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <div class="ac-dropdown" id="city-dropdown"></div>
               </div>
+              <i class="ti ti-chevron-right ios-chevron"></i>
             </div>
-            <div class="fg">
-              <label class="flabel">Venue <span style="font-weight:400;color:var(--color-text-tertiary)">(optional)</span></label>
-              <input class="fin" id="fv" placeholder="e.g. Music Academy" type="text">
+            <div class="ios-row ios-row-last">
+              <div class="icon-sq purple"><i class="ti ti-building"></i></div>
+              <span class="ios-row-label">Venue</span>
+              <input class="ios-input" id="fv" placeholder="Optional">
             </div>
+          </div>
 
-            <!-- Gig type + Payment on same row -->
-            <div class="fg">
-              <label class="flabel">Gig type</label>
-              <div class="autocomplete-wrap" id="type-wrap">
-                <input class="fin fin-combo" id="ft-input" placeholder="Search gig type" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+          <div class="ios-section-label">GIG</div>
+          <div class="ios-card">
+            <div class="ios-row">
+              <div class="icon-sq purple"><i class="ti ti-music"></i></div>
+              <span class="ios-row-label">Type</span>
+              <div class="ios-input-wrap">
+                <input class="ios-input fin-combo" id="ft-input" placeholder="Select type" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <input type="hidden" id="ft" value="wedding">
                 <div class="ac-dropdown" id="type-dropdown"></div>
               </div>
+              <i class="ti ti-chevron-right ios-chevron"></i>
             </div>
-            <div class="fg">
-              <label class="flabel">Payment (₹)</label>
-              <input class="fin" id="fp" placeholder="e.g. 25000" type="text" inputmode="numeric" pattern="[0-9,]*">
-            </div>
-
-            <!-- Show status + Payment status on same row -->
-            <div class="fg">
-              <label class="flabel">Show status</label>
-              <div class="tog-row">
-                <button class="tog-btn sel-c" id="bc">✓ Confirmed</button>
-                <button class="tog-btn" id="bt">⏰ Tentative</button>
+            <div class="ios-row ios-row-chips ios-row-last">
+              <div class="ios-chip-label-row">
+                <div class="icon-sq amber"><i class="ti ti-circle-check"></i></div>
+                <span class="ios-row-label">Show status</span>
               </div>
-            </div>
-            <div class="fg">
-              <label class="flabel">Payment status</label>
-              <div class="pay-tog-row">
-                <button class="pay-tog" id="bp-paid">✓ Paid</button>
-                <button class="pay-tog sel-pending" id="bp-pending">⏰ Pending</button>
+              <div class="ios-chips">
+                <button class="sheet-chip active-amber" id="bc">✓ Confirmed</button>
+                <button class="sheet-chip" id="bt">⏰ Tentative</button>
               </div>
             </div>
           </div>
 
-          <!-- More details collapsible -->
-          <button class="more-details-btn" id="more-details-btn" type="button">
-            <i class="ti ti-chevron-down" id="more-details-icon"></i> <span id="more-details-label">More details</span>
-          </button>
-          <div class="more-details-body" id="more-details-body">
-            <div class="fg full" style="margin-top:10px;">
-              <label class="flabel">Notes</label>
-              <input class="fin" id="fn" placeholder="Soundcheck time, contact person, setlist notes..." type="text">
+          <div class="ios-section-label">PAYMENT</div>
+          <div class="ios-card">
+            <div class="ios-row">
+              <div class="icon-sq green"><i class="ti ti-coin"></i></div>
+              <span class="ios-row-label">Amount</span>
+              <input class="ios-input ios-amount-input" id="fp" placeholder="₹0" type="text" inputmode="numeric" pattern="[0-9,]*">
+            </div>
+            <div class="ios-row ios-row-chips ios-row-last">
+              <div class="ios-chip-label-row">
+                <div class="icon-sq green"><i class="ti ti-credit-card"></i></div>
+                <span class="ios-row-label">Payment status</span>
+              </div>
+              <div class="ios-chips">
+                <button class="sheet-chip" id="bp-paid">✓ Paid</button>
+                <button class="sheet-chip active-amber" id="bp-pending">⏳ Pending</button>
+              </div>
             </div>
           </div>
 
-          <!-- Calendar sync — always visible -->
-          <label class="cal-row-label" style="margin-top:12px;">
-            <input type="checkbox" id="cs" checked>
-            <i class="ti ti-calendar" style="color:var(--accent);font-size:14px"></i>
-            Sync to Google Calendar
-          </label>
+          <div class="ios-section-label">SYNC</div>
+          <div class="ios-card">
+            <div class="ios-row ios-row-last">
+              <div class="icon-sq blue"><i class="ti ti-calendar-event"></i></div>
+              <span class="ios-row-label">Google Calendar</span>
+              <label class="ios-toggle-wrap"><input type="checkbox" id="cs" checked><span class="ios-toggle"></span></label>
+            </div>
+          </div>
 
-          <button class="save-btn" id="save-btn">💾 Save Gig</button>
-          <div id="delete-wrap"></div>
+          <div class="ios-section-label">NOTES</div>
+          <div class="ios-card">
+            <div class="ios-row ios-notes-row ios-row-last">
+              <div class="icon-sq purple"><i class="ti ti-notes"></i></div>
+              <input class="ios-input ios-notes-input" id="fn" placeholder="Add notes…" type="text">
+            </div>
+          </div>
+
           <div id="gig-rehearsal-section" style="display:none;">
-            <div class="rh-divider"></div>
-            <div class="rh-section-title"><i class="ti ti-microphone-2"></i> <span id="rh-section-label">Rehearsals</span></div>
-            <div id="gig-rehearsal-list"></div>
-            <button class="add-rh-for-gig-btn" id="add-rh-for-gig-btn"><i class="ti ti-plus"></i> Add rehearsal for this gig</button>
+            <div class="ios-section-label"><span id="rh-section-label">REHEARSALS</span></div>
+            <div class="ios-card">
+              <div id="gig-rehearsal-list"></div>
+              <div class="ios-row ios-row-last ios-add-rh" id="add-rh-for-gig-btn">
+                <div class="icon-sq yellow"><i class="ti ti-plus"></i></div>
+                <span class="ios-row-label" style="color:#B5860D;">Add rehearsal for this gig</span>
+              </div>
+            </div>
           </div>
+
+          <div id="delete-wrap"></div>
           <div class="toast" id="toast"></div>
         </div>
       </div>
@@ -366,56 +392,75 @@
       <!-- REHEARSAL SHEET -->
       <div class="overlay" id="rehearsal-overlay">
         <div class="sheet">
-          <div class="sheet-top-row">
-            <div class="handle-inline"></div>
-            <div class="sheet-title" id="rh-sheet-title">Add rehearsal</div>
-            <button class="sheet-close-btn" id="rh-close-btn" aria-label="Close"><i class="ti ti-x"></i></button>
+          <div class="sheet-top-row ios-sheet-header">
+            <button class="ios-cancel-btn" id="rh-close-btn" aria-label="Close">Cancel</button>
+            <div class="sheet-title" id="rh-sheet-title">Add Rehearsal</div>
+            <button class="ios-save-btn rh-save-accent" id="rh-save-btn" aria-label="Save">Save</button>
           </div>
-          <div class="form-grid">
-            <!-- Row 1: Artist + Date -->
-            <div class="fg">
-              <label class="flabel">Artist / Band</label>
-              <div class="autocomplete-wrap">
-                <input class="fin fin-combo" id="rh-artist" placeholder="Search or add artist" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+
+          <div class="ios-section-label">SESSION</div>
+          <div class="ios-card">
+            <div class="ios-row">
+              <div class="icon-sq yellow"><i class="ti ti-user"></i></div>
+              <span class="ios-row-label">Artist / Band</span>
+              <div class="ios-input-wrap">
+                <input class="ios-input fin-combo" id="rh-artist" placeholder="Name" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <div class="ac-dropdown" id="rh-artist-dropdown"></div>
               </div>
+              <i class="ti ti-chevron-right ios-chevron"></i>
             </div>
-            <div class="fg">
-              <label class="flabel">Date</label>
-              <input class="fin" id="rh-date" type="date">
+            <div class="ios-row">
+              <div class="icon-sq yellow"><i class="ti ti-calendar"></i></div>
+              <span class="ios-row-label">Date</span>
+              <input class="ios-input" id="rh-date" type="date">
             </div>
-            <!-- Row 2: Jampad + Linked Gig -->
-            <div class="fg">
-              <label class="flabel">Jampad / Venue</label>
-              <div class="autocomplete-wrap">
-                <input class="fin fin-combo" id="rh-jampad" placeholder="Search or add" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+            <div class="ios-row">
+              <div class="icon-sq yellow"><i class="ti ti-clock"></i></div>
+              <span class="ios-row-label">Time</span>
+              <input class="ios-input" id="rh-time" type="time" placeholder="Optional">
+            </div>
+            <div class="ios-row ios-row-last">
+              <div class="icon-sq yellow"><i class="ti ti-building"></i></div>
+              <span class="ios-row-label">Jampad / Venue</span>
+              <div class="ios-input-wrap">
+                <input class="ios-input fin-combo" id="rh-jampad" placeholder="Search or add" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <div class="ac-dropdown" id="jampad-dropdown"></div>
               </div>
+              <i class="ti ti-chevron-right ios-chevron"></i>
             </div>
-            <div class="fg">
-              <label class="flabel" style="color:var(--rehearsal,#B5860D);">Linked gig <span style="font-weight:400;color:var(--color-text-tertiary);">(optional)</span></label>
-              <div class="autocomplete-wrap">
-                <input class="fin fin-combo" id="rh-linked-gig-input" placeholder="Search gigs" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+          </div>
+
+          <div class="ios-section-label">LINKED GIG</div>
+          <div class="ios-card">
+            <div class="ios-row ios-row-last">
+              <div class="icon-sq purple"><i class="ti ti-link"></i></div>
+              <span class="ios-row-label">For which gig?</span>
+              <div class="ios-input-wrap">
+                <input class="ios-input ios-linked-gig fin-combo" id="rh-linked-gig-input" placeholder="Optional" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
                 <input type="hidden" id="rh-linked-gig-id" value="">
                 <div class="ac-dropdown" id="linked-gig-dropdown"></div>
               </div>
-            </div>
-            <!-- Row 3: Time + Notes -->
-            <div class="fg">
-              <label class="flabel">Time <span style="font-weight:400;color:var(--color-text-tertiary)">(optional)</span></label>
-              <input class="fin" id="rh-time" type="time">
-            </div>
-            <div class="fg">
-              <label class="flabel">Notes</label>
-              <input class="fin" id="rh-notes" placeholder="Run through setlist..." type="text">
+              <i class="ti ti-chevron-right ios-chevron"></i>
             </div>
           </div>
-          <label class="cal-row-label" style="margin-top:12px;">
-            <input type="checkbox" id="rh-cs" checked>
-            <i class="ti ti-calendar" style="color:#B5860D;font-size:14px"></i>
-            Sync to Google Calendar
-          </label>
-          <button class="save-btn rehearsal-save-btn" id="rh-save-btn">💾 Save Rehearsal</button>
+
+          <div class="ios-section-label">SYNC</div>
+          <div class="ios-card">
+            <div class="ios-row ios-row-last">
+              <div class="icon-sq blue"><i class="ti ti-calendar-event"></i></div>
+              <span class="ios-row-label">Google Calendar</span>
+              <label class="ios-toggle-wrap rh-sync-toggle"><input type="checkbox" id="rh-cs" checked><span class="ios-toggle rh-toggle"></span></label>
+            </div>
+          </div>
+
+          <div class="ios-section-label">NOTES</div>
+          <div class="ios-card">
+            <div class="ios-row ios-notes-row ios-row-last">
+              <div class="icon-sq yellow"><i class="ti ti-notes"></i></div>
+              <input class="ios-input ios-notes-input" id="rh-notes" placeholder="Add notes…" type="text">
+            </div>
+          </div>
+
           <div id="rh-delete-wrap"></div>
         </div>
       </div>

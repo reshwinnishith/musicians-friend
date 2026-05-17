@@ -566,8 +566,8 @@ function toggleMoreDetails() {
 }
 
 // ── GIG SHEET ──
-function setSt(s) { selSt=s; document.getElementById('bc').className='tog-btn'+(s==='confirmed'?' sel-c':''); document.getElementById('bt').className='tog-btn'+(s==='tentative'?' sel-t':''); }
-function setPaySt(s) { selPaySt=s; document.getElementById('bp-paid').className='pay-tog'+(s==='paid'?' sel-paid':''); document.getElementById('bp-pending').className='pay-tog'+(s==='pending'?' sel-pending':''); }
+function setSt(s) { selSt=s; document.getElementById('bc').className='sheet-chip'+(s==='confirmed'?' active-amber':''); document.getElementById('bt').className='sheet-chip'+(s==='tentative'?' active-amber':''); }
+function setPaySt(s) { selPaySt=s; document.getElementById('bp-paid').className='sheet-chip'+(s==='paid'?' active-green':''); document.getElementById('bp-pending').className='sheet-chip'+(s==='pending'?' active-amber':''); }
 
 function openAdd(prefillDate) {
   closeFabMenu(); editingId=null;
@@ -748,7 +748,8 @@ async function saveRehearsal() {
   const jampad=document.getElementById('rh-jampad').value.trim()||'Rehearsal';
   const notes=document.getElementById('rh-notes').value.trim();
   const calSync=document.getElementById('rh-cs').checked;
-  const status=document.getElementById('rh-status-confirmed').classList.contains('sel-c')?'confirmed':'tentative';
+  const time=document.getElementById('rh-time')?.value.trim()||'';
+  const status='confirmed';
   const artist=document.getElementById('rh-artist')?.value.trim()||'';
   const linkedGigIdRaw = document.getElementById('rh-linked-gig-id')?.value;
   const linkedGigId = linkedGigIdRaw ? parseInt(linkedGigIdRaw) : null;
