@@ -236,7 +236,7 @@ function pillLabel(s) {
   return 'Upcoming';
 }
 function gigStatusClass(s) {
-  if (isRehearsal(s)) return 'status-rehearsal';
+  if (isRehearsal(s)) return s.status === 'tentative' ? 'status-tentative' : 'status-confirmed';
   if (isPast(s)) return 'status-completed';
   if (s.status === 'tentative') return 'status-tentative';
   return 'status-confirmed';

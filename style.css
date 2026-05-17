@@ -699,11 +699,6 @@ select.fin {
 }
 
 /* Rehearsal date pip */
-.date-pip.status-rehearsal {
-  background: transparent;
-}
-.date-pip.status-rehearsal .mo { color: var(--rehearsal); }
-.date-pip.status-rehearsal .dy { color: var(--rehearsal-d); }
 
 /* Rehearsal calendar dot */
 .sdot.rehearsal-dot { background: var(--rehearsal); }
