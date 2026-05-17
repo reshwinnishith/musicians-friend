@@ -420,7 +420,7 @@ function rebuildEarnings() {
   const typeList=document.getElementById('e-type-list');typeList.innerHTML='';
   const totalPay=gigs.reduce((a,s)=>a+s.pay,0)||1;
   const typeColors={wedding:'#993556',corporate:'#534AB7',festival:'#1D9E75',pub:'#3B6D11',college:'#993C1D',other:'#6b7280'};
-  Object.entries(typeMap).sort((a,b)=>b[1]-a[1]).forEach(([type,amt])=>{const pct=Math.round((amt/totalPay)*100);const row=document.createElement('div');row.className='type-row';row.innerHTML=`<div class="type-dot" style="background:${typeColors[type]||'#6b7280'}"></div><span class="type-name">${cap(type)}</span><div class="type-bar-wrap"><div class="type-bar-fill" style="width:${pct}%;background:${typeColors[type]||'#6b7280'}"></div></div><span class="type-amt">${fmt(amt)}</span>`;typeList.appendChild(row);});
+  Object.entries(typeMap).sort((a,b)=>b[1]-a[1]).forEach(([type,amt])=>{const pct=Math.round((amt/totalPay)*100);const row=document.createElement('div');row.className='type-row';row.innerHTML=`<div class="type-dot" style="background:${typeColors[type]||'#6b7280'}"></div><span class="type-name">${cap(type)}</span><div class="type-bar-wrap"><div class="type-bar-fill" style="width:${pct}%;background:${typeColors[type]||'#6b7280'}"></div></div><span class="type-amt financial-value">${fmt(amt)}</span>`;typeList.appendChild(row);});
   const yearTotal=gigs.filter(s=>s.year===yr).reduce((a,s)=>a+s.pay,0);
   const yearPaid=gigs.filter(s=>s.year===yr&&s.payStatus==='paid').reduce((a,s)=>a+s.pay,0);
   const yrGigs=gigs.filter(s=>s.year===yr).length;
