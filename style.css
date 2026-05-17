@@ -998,7 +998,3 @@ input[type="number"] { -moz-appearance: textfield; }
   flex-shrink: 0;
 }
 .offline-banner i { font-size: 14px; }
-.rehearsal-row .swipe-card-inner {
-  border: 0.5px solid var(--border) !important;
-  background: var(--surface) !important;
-}
