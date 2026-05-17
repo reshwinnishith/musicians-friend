@@ -255,7 +255,8 @@ function togglePayment(showId, btn) {
 function makeShowRow(s) {
   const past = isPast(s);
   const row = document.createElement('div');
-  row.className = 'show-row' + (past ? ' past' : '') + (isRehearsal(s) ? ' rehearsal-row' : '');
+  const isToday = s.year === today.getFullYear() && s.month === today.getMonth() && s.day === today.getDate();
+  row.className = 'show-row' + (past ? ' past' : '') + (isRehearsal(s) ? ' rehearsal-row' : '') + (isToday ? ' today-gig' : '');
   const sc = gigStatusClass(s);
   const pc = pillClass(s);
   const pl = pillLabel(s);
@@ -289,7 +290,7 @@ function makeShowRow(s) {
           <div class="mo">${MS[s.month]}</div><div class="dy">${s.day}</div>
         </div>
         <div class="show-body">
-          <div class="artist-line"><span class="show-artist">${s.artist}</span>${tentTag}</div>
+          <div class="artist-line"><span class="show-artist">${s.artist}</span>${tentTag}${isToday ? '<span class="today-gig-badge">Today</span>' : ''}</div>
           <div class="show-meta"><span class="badge ${BC[s.type]||'other'}">${cap(s.type)}</span><span class="mdot">·</span><span>${s.city}</span></div>
           ${rhChip}
         </div>

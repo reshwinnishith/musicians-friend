@@ -726,8 +726,24 @@ select.fin {
 /* Rehearsal card inner accent */
 .rehearsal-row .swipe-card-inner {
   border-color: var(--color-border-tertiary);
-  border-left: 2px solid #B5860D;
   background: var(--color-background-primary);
+  border-left: 2px solid rgba(181,134,13,0.4);
+}
+.show-row.today-gig .swipe-card-inner {
+  border-color: var(--accent);
+  background: var(--accent-l);
+  box-shadow: 0 0 0 1px var(--accent-l);
+}
+.today-gig-badge {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent-d);
+  background: var(--accent-l);
+  border: 0.5px solid var(--accent);
+  border-radius: 20px;
+  padding: 2px 7px;
+  margin-left: 6px;
+  letter-spacing: 0.2px;
 }
 
 /* Rehearsal save button */
