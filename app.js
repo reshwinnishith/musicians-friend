@@ -346,7 +346,7 @@ function renderGroupedList(container, list, emptyMsg) {
     const g = groups[key];
     const header = document.createElement('div');
     header.className = 'month-group-header';
-    header.innerHTML = `<span class="month-group-label">${g.label}</span>${g.total > 0 ? `<span class="month-group-total">${fmt(g.total)}</span>` : ''}`;
+    header.innerHTML = `<span class="month-group-label">${g.label}</span>${g.total > 0 ? `<span class="month-group-total financial-value">${fmt(g.total)}</span>` : ''}`;
     container.appendChild(header);
     g.shows.forEach(s => container.appendChild(makeShowRow(s)));
   });
