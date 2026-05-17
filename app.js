@@ -47,6 +47,22 @@ function togglePrivacy() {
   applyPrivacyMode();
 }
 
+function showOfflineBanner() {
+  const existing = document.getElementById('offline-banner');
+  if (existing) return;
+  const banner = document.createElement('div');
+  banner.id = 'offline-banner';
+  banner.className = 'offline-banner';
+  banner.innerHTML = '<i class="ti ti-wifi-off"></i> Offline — showing last synced data';
+  const content = document.getElementById('app');
+  if (content) content.insertBefore(banner, content.firstChild);
+}
+
+function hideOfflineBanner() {
+  const banner = document.getElementById('offline-banner');
+  if (banner) banner.remove();
+}
+
 const MO = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const BC = {wedding:'wedding',pub:'pub',corporate:'corporate',college:'college',festival:'festival',other:'other'};
@@ -87,9 +103,28 @@ async function initApp() {
     if (data && data.shows) {
       shows = data.shows;
       nextId = shows.length > 0 ? Math.max(...shows.map(s => s.id)) + 1 : 1;
+      localStorage.setItem('mf_cached_shows', JSON.stringify(shows));
+      localStorage.setItem('mf_cache_time', Date.now().toString());
       setSyncStatus('saved', 'Synced ✓');
     } else { shows = []; setSyncStatus('saved', 'Ready'); }
-  } catch(e) { shows = []; setSyncStatus('error', 'Load failed'); }
+  } catch(e) {
+    const cached = localStorage.getItem('mf_cached_shows');
+    if (cached) {
+      try {
+        shows = JSON.parse(cached);
+        nextId = shows.length > 0 ? Math.max(...shows.map(s => s.id)) + 1 : 1;
+        setSyncStatus('error', 'Offline — showing cached data');
+        showOfflineBanner();
+      } catch(e2) {
+        shows = [];
+        setSyncStatus('error', 'Offline');
+      }
+    } else {
+      shows = [];
+      setSyncStatus('error', 'Offline — no cached data');
+      showOfflineBanner();
+    }
+  }
   document.getElementById('loading-screen').classList.add('hidden');
   rebuildDashboard();
   setupEventListeners();
