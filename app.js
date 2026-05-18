@@ -665,7 +665,8 @@ function openAddRehearsal(prefillDate, prefillGigId) {
   closeFabMenu(); editingId=null;
   document.getElementById('rh-sheet-title').textContent='Add rehearsal';
   document.getElementById('rh-date').value=prefillDate||'';
-  document.getElementById('rh-time').value='';
+  document.getElementById('rh-time-hour').value='';
+  document.getElementById('rh-time-min').value='00';
   document.getElementById('rh-jampad').value='';
   document.getElementById('rh-notes').value='';
   document.getElementById('rh-cs').checked=true;
@@ -697,7 +698,13 @@ function openEditRehearsal(showId) {
   document.getElementById('rh-date').value=`${s.year}-${String(s.month+1).padStart(2,'0')}-${String(s.day).padStart(2,'0')}`;
   document.getElementById('rh-jampad').value=s.jampad||'';
   document.getElementById('rh-notes').value=s.notes||'';
-  document.getElementById('rh-time').value=s.time||'';
+  const _rhHour=document.getElementById('rh-time-hour');
+  const _rhMin=document.getElementById('rh-time-min');
+  if(_rhHour&&_rhMin){
+    const t=s.time||'';
+    if(t&&t.includes(':')){const parts=t.split(':');_rhHour.value=parseInt(parts[0]);_rhMin.value=parseInt(parts[1])>=15?'30':'00';}
+    else{_rhHour.value='';_rhMin.value='00';}
+  }
   document.getElementById('rh-cs').checked=true;
   document.getElementById('rh-save-btn').textContent='Save';
   document.getElementById('rh-delete-wrap').innerHTML='<button class="del-btn" id="rh-del-btn">🗑 Delete rehearsal</button>';
@@ -726,7 +733,9 @@ async function saveRehearsal() {
   const jampad=document.getElementById('rh-jampad').value.trim()||'Rehearsal';
   const notes=document.getElementById('rh-notes').value.trim();
   const calSync=document.getElementById('rh-cs').checked;
-  const time=document.getElementById('rh-time')?.value.trim()||'';
+  const rhHourVal=document.getElementById('rh-time-hour')?.value;
+  const rhMinVal=document.getElementById('rh-time-min')?.value||'00';
+  const time=rhHourVal?`${String(rhHourVal).padStart(2,'0')}:${rhMinVal}`:'';
   const status='confirmed';
   const artist=document.getElementById('rh-artist')?.value.trim()||'';
   const linkedGigIdRaw = document.getElementById('rh-linked-gig-id')?.value;
@@ -738,7 +747,7 @@ async function saveRehearsal() {
     const existingCalId=shows[idx].calEventId||null;
     const updated={id:editingId,eventType:'rehearsal',year:yr,month:mo,day:dy,jampad,artist,time,notes,linkedGigId,calEventId:existingCalId};
     shows[idx]=updated; rebuildDashboard(); saveData();
-    if(calSync&&existingCalId) updateCalendarEventNative(updated);
+    if(calSync&&existingCalId) updateRehearsalCalEvent(updated);
     else if(calSync&&!existingCalId){const eid=await createRehearsalCalEvent(updated);if(eid){shows[idx].calEventId=eid;saveData();}}
   } else {
     const newR={id:nextId++,eventType:'rehearsal',year:yr,month:mo,day:dy,jampad,artist,time,notes,linkedGigId,calEventId:null};
@@ -749,13 +758,34 @@ async function saveRehearsal() {
   if(document.getElementById('panel-calendar').classList.contains('active')) renderCal();
 }
 
+function rhCalTimes(r, dateStr) {
+  if(r.time&&r.time.includes(':')){
+    const [h,m]=r.time.split(':').map(Number);
+    const pad=n=>String(n).padStart(2,'0');
+    return {start:{dateTime:`${dateStr}T${pad(h)}:${pad(m)}:00`,timeZone:'Asia/Kolkata'},end:{dateTime:`${dateStr}T${pad((h+1)%24)}:${pad(m)}:00`,timeZone:'Asia/Kolkata'}};
+  }
+  return {start:{date:dateStr},end:{date:dateStr}};
+}
+
 async function createRehearsalCalEvent(r) {
   const token=getToken(); if(!token) return null;
   const dateStr=`${r.year}-${String(r.month+1).padStart(2,'0')}-${String(r.day).padStart(2,'0')}`;
+  const {start,end}=rhCalTimes(r,dateStr);
+  const timeNote=r.time?`\nTime: ${r.time}`:'';
   try {
-    const res=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({summary:`🥁 ${rhTitle(r)}`,description:`Jampad: ${r.jampad||'—'}\nStatus: ${r.status}${r.notes?'\nNotes: '+r.notes:''}\n\nManaged by Musician's Friend`,start:{date:dateStr},end:{date:dateStr},colorId:'5'})});
+    const res=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({summary:`🥁 ${rhTitle(r)}`,description:`Jampad: ${r.jampad||'—'}${timeNote}${r.notes?'\nNotes: '+r.notes:''}\n\nManaged by Musician's Friend`,start,end,colorId:'5'})});
     const data=await res.json(); return data.id||null;
   } catch(e){return null;}
+}
+
+async function updateRehearsalCalEvent(r) {
+  const token=getToken(); if(!token||!r.calEventId) return;
+  const dateStr=`${r.year}-${String(r.month+1).padStart(2,'0')}-${String(r.day).padStart(2,'0')}`;
+  const {start,end}=rhCalTimes(r,dateStr);
+  const timeNote=r.time?`\nTime: ${r.time}`:'';
+  try {
+    await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events/${r.calEventId}`,{method:'PUT',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({summary:`🥁 ${rhTitle(r)}`,description:`Jampad: ${r.jampad||'—'}${timeNote}${r.notes?'\nNotes: '+r.notes:''}\n\nManaged by Musician's Friend`,start,end,colorId:'5'})});
+  } catch(e){}
 }
 
 async function deleteRehearsal() {

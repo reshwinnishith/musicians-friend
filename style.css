@@ -735,6 +735,22 @@ select.fin {
   color: var(--rehearsal);
 }
 
+/* ── REHEARSAL TIME PICKER ── */
+.rh-time-selects {
+  display: flex; align-items: center; gap: 4px;
+  margin-left: auto;
+}
+.rh-time-select {
+  background: transparent; border: none; outline: none;
+  font-size: 14px; color: rgba(255,255,255,0.5);
+  font-family: inherit;
+  -webkit-appearance: none; appearance: none;
+  cursor: pointer; padding: 0 2px;
+}
+.rh-time-select:focus { color: rgba(255,255,255,0.88); }
+.rh-time-select option { background: #2C2C2E; color: rgba(255,255,255,0.88); }
+.rh-time-sep { font-size: 14px; color: rgba(255,255,255,0.3); }
+
 /* ── REHEARSAL VISIBILITY TOGGLE ── */
 .rh-toggle-label {
   display: flex; align-items: center; gap: 6px;
