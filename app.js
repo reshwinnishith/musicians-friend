@@ -55,6 +55,12 @@ const isPast = s => new Date(s.year, s.month, s.day) < new Date(today.getFullYea
 const isThisMonth = s => s.year === today.getFullYear() && s.month === today.getMonth();
 const isRehearsal = s => s.eventType === 'rehearsal';
 const isGig = s => s.eventType !== 'rehearsal';
+function rhTitle(r) {
+  if (r.artist && r.jampad) return `${r.artist} — ${r.jampad}`;
+  if (r.artist) return r.artist;
+  if (r.jampad) return `Rehearsal — ${r.jampad}`;
+  return 'Rehearsal';
+}
 
 // ── DEFAULT LISTS ──
 const DEFAULT_GIG_TYPES = ['Wedding','Pub','Corporate','College','Festival','Other'];
@@ -244,14 +250,16 @@ function makeShowRow(s) {
     // Rehearsal card — simpler, no payment
     const linkedGig = s.linkedGigId ? shows.find(g => g.id === s.linkedGigId) : null;
     const linkTag = linkedGig ? `<div class="rh-link-tag"><i class="ti ti-arrow-right"></i> ${linkedGig.artist}, ${MS[linkedGig.month]} ${linkedGig.day}</div>` : '';
-    const artistLine = s.artist ? `<span class="rh-artist-name">${s.artist}</span>` : '';
+    const primaryName = s.artist || 'Rehearsal';
+    const venueSecondary = s.jampad ? `<div class="rh-meta-line">${s.jampad}</div>` : '';
     row.innerHTML = `
       <div class="swipe-card-inner">
         <div class="date-pip ${sc}">
           <div class="mo">${MS[s.month]}</div><div class="dy">${s.day}</div>
         </div>
         <div class="show-body">
-          <div class="artist-line"><span class="show-artist">${s.jampad || 'Rehearsal'}</span>${artistLine}</div>
+          <div class="artist-line"><span class="show-artist">${primaryName}</span></div>
+          ${venueSecondary}
           <div class="show-meta"><span class="badge rehearsal-badge"><i class="ti ti-microphone-2"></i> Rehearsal</span>${s.notes ? `<span class="mdot">·</span><span style="font-size:11px;color:var(--muted)">${s.notes}</span>` : ''}</div>
           ${linkTag}
         </div>
@@ -325,7 +333,7 @@ function makeShowRow(s) {
     if (!_swiping || _dx > -THRESHOLD) return;
 
     // Threshold passed — show modal after snap animation
-    const name = isRehearsal(s) ? (s.jampad || 'Rehearsal') : s.artist;
+    const name = isRehearsal(s) ? rhTitle(s) : s.artist;
     setTimeout(() => {
       showDeleteModal(name, isRehearsal(s), () => {
         const idx = shows.findIndex(x => x.id === s.id);
@@ -594,7 +602,7 @@ function renderGigRehearsalSection(gigId) {
   linked.forEach(r => {
     const item = document.createElement('div');
     item.className = 'rh-linked-item';
-    item.innerHTML = `<i class="ti ti-calendar" aria-hidden="true"></i><span class="rh-linked-date">${MS[r.month]} ${r.day}</span><span class="rh-linked-venue">${r.jampad||'Rehearsal'}</span><i class="ti ti-chevron-right rh-linked-arrow" aria-hidden="true"></i>`;
+    item.innerHTML = `<i class="ti ti-calendar" aria-hidden="true"></i><span class="rh-linked-date">${MS[r.month]} ${r.day}</span><span class="rh-linked-venue">${rhTitle(r)}</span><i class="ti ti-chevron-right rh-linked-arrow" aria-hidden="true"></i>`;
     item.addEventListener('click', () => { closeSheet(); openEditRehearsal(r.id); });
     list.appendChild(item);
   });
@@ -745,7 +753,7 @@ async function createRehearsalCalEvent(r) {
   const token=getToken(); if(!token) return null;
   const dateStr=`${r.year}-${String(r.month+1).padStart(2,'0')}-${String(r.day).padStart(2,'0')}`;
   try {
-    const res=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({summary:`🥁 Rehearsal — ${r.jampad||''}`,description:`Jampad: ${r.jampad||'—'}\nStatus: ${r.status}${r.notes?'\nNotes: '+r.notes:''}\n\nManaged by Musician's Friend`,start:{date:dateStr},end:{date:dateStr},colorId:'5'})});
+    const res=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({summary:`🥁 ${rhTitle(r)}`,description:`Jampad: ${r.jampad||'—'}\nStatus: ${r.status}${r.notes?'\nNotes: '+r.notes:''}\n\nManaged by Musician's Friend`,start:{date:dateStr},end:{date:dateStr},colorId:'5'})});
     const data=await res.json(); return data.id||null;
   } catch(e){return null;}
 }
@@ -768,9 +776,9 @@ function showPreview(showId,dayEl) {
   if(previewShowId===showId){closePreview();return;}
   previewShowId=showId;
   if(isRehearsal(s)){
-    document.getElementById('pv-artist').textContent=s.jampad||'Rehearsal';
+    document.getElementById('pv-artist').textContent=s.artist||'Rehearsal';
     const b=document.getElementById('pv-badge');b.textContent='🥁 Rehearsal';b.className='badge rehearsal-badge';
-    document.getElementById('pv-city').textContent='';
+    document.getElementById('pv-city').textContent=s.jampad||'';
     document.getElementById('pv-date').textContent=`${s.day} ${MS[s.month]} ${s.year}`;
     const pe=document.getElementById('pv-pay');pe.textContent=s.notes||'';pe.className='pv-pay dim';
   } else {
@@ -857,7 +865,7 @@ function renderCal() {
       row.className = 'agenda-item';
       if (idx >= PREVIEW_COUNT) row.classList.add('agenda-hidden');
       if (isRehearsal(s)) {
-        row.innerHTML = `<span class="ag-date">${MS[s.month]} ${s.day}</span><span class="ag-artist">${s.jampad||'Rehearsal'}</span><span class="badge rehearsal-badge" style="font-size:10px">🥁 Rehearsal</span><span class="ag-pay" style="visibility:hidden">—</span>`;
+        row.innerHTML = `<span class="ag-date">${MS[s.month]} ${s.day}</span><span class="ag-artist">${rhTitle(s)}</span><span class="badge rehearsal-badge" style="font-size:10px">🥁 Rehearsal</span><span class="ag-pay" style="visibility:hidden">—</span>`;
         row.addEventListener('click', () => openEditRehearsal(s.id));
       } else {
         row.innerHTML = `<span class="ag-date">${MS[s.month]} ${s.day}</span><span class="ag-artist">${s.artist}</span><span class="badge ${BC[s.type]||'other'}" style="font-size:10px">${cap(s.type)}</span><span class="ag-pay financial-value">${formatAmount(s.pay)}</span>`;

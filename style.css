@@ -678,6 +678,9 @@ select.fin {
 }
 .bar-col { position: relative; }
 
+/* Rehearsal venue secondary line */
+.rh-meta-line { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
 /* ── REHEARSAL YELLOW IDENTITY ── */
 :root {
   --rehearsal: #B5860D;
