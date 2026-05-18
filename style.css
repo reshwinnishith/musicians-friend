@@ -324,20 +324,7 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Sego
 .privacy-btn:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
 .privacy-btn.active { color: var(--accent); border-color: var(--accent); background: var(--accent-l); }
 
-.privacy-blur {
-  filter: blur(6px);
-  user-select: none;
-  pointer-events: none;
-  transition: filter 0.2s ease;
-}
-.privacy-hidden {
-  filter: blur(7px);
-  transition: filter 0.25s ease;
-  user-select: none;
-}
-.privacy-hidden.restoring {
-  filter: blur(0px);
-}
+.priv-hidden { letter-spacing: 0.05em; color: var(--muted); }
 
 /* ── SIGN OUT BUTTON ── */
 .signout-btn {

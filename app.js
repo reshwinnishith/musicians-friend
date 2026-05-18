@@ -18,33 +18,15 @@ function applyPrivacyMode() {
   const btn = document.getElementById('privacy-btn');
   if (icon) icon.className = privacyMode ? 'ti ti-eye-off' : 'ti ti-eye';
   if (btn) btn.classList.toggle('active', privacyMode);
-
-  // All financial value elements
-  document.querySelectorAll('.financial-value').forEach(el => {
-    if (privacyMode) el.classList.add('privacy-hidden');
-    else el.classList.remove('privacy-hidden');
-  });
-
-  // Bar chart wrap — toggle directly, no stale state
-  const barWrap = document.querySelector('.bar-chart-wrap');
-  if (barWrap) {
-    barWrap.classList.toggle('privacy-hidden', privacyMode);
-  }
-
-  // Calendar summary stats (cc, ccf, ce)
-  const calEarn = document.getElementById('ce');
-  if (calEarn) calEarn.classList.toggle('privacy-hidden', privacyMode);
-
-  // Agenda list pay amounts
-  document.querySelectorAll('.ag-pay').forEach(el => {
-    el.classList.toggle('privacy-hidden', privacyMode);
-  });
 }
 
 function togglePrivacy() {
   privacyMode = !privacyMode;
   localStorage.setItem('mf_privacy', privacyMode);
   applyPrivacyMode();
+  rebuildDashboard();
+  if (document.getElementById('panel-earnings').classList.contains('active')) rebuildEarnings();
+  if (document.getElementById('panel-calendar').classList.contains('active')) renderCal();
 }
 
 function showOfflineBanner() {
@@ -68,6 +50,7 @@ const MS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','D
 const BC = {wedding:'wedding',pub:'pub',corporate:'corporate',college:'college',festival:'festival',other:'other'};
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const fmt = n => '₹' + Number(n).toLocaleString('en-IN');
+function formatAmount(n) { return privacyMode ? '₹••••••' : fmt(n); }
 const isPast = s => new Date(s.year, s.month, s.day) < new Date(today.getFullYear(), today.getMonth(), today.getDate());
 const isThisMonth = s => s.year === today.getFullYear() && s.month === today.getMonth();
 const isRehearsal = s => s.eventType === 'rehearsal';
@@ -295,7 +278,7 @@ function makeShowRow(s) {
           ${rhChip}
         </div>
         <div class="show-right">
-          <div class="pay-amount financial-value">${fmt(s.pay)}</div>
+          <div class="pay-amount financial-value">${formatAmount(s.pay)}</div>
           <button class="pay-marker ${pc}">${pl}</button>
         </div>
       </div>`;
@@ -384,7 +367,7 @@ function renderGroupedList(container, list, emptyMsg) {
     const g = groups[key];
     const header = document.createElement('div');
     header.className = 'month-group-header';
-    header.innerHTML = `<span class="month-group-label">${g.label}</span>${g.total > 0 ? `<span class="month-group-total financial-value">${fmt(g.total)}</span>` : ''}`;
+    header.innerHTML = `<span class="month-group-label">${g.label}</span>${g.total > 0 ? `<span class="month-group-total financial-value">${formatAmount(g.total)}</span>` : ''}`;
     container.appendChild(header);
     g.shows.forEach(s => container.appendChild(makeShowRow(s)));
   });
@@ -401,15 +384,14 @@ function rebuildDashboard() {
   const upcomingGigs = sorted.filter(s => !isPast(s) && isGig(s));
   const next = upcomingGigs[0];
   document.getElementById('s-count').textContent = upcomingGigs.length || '0';
-  document.getElementById('s-earn').textContent = fmt(projectedThisMonth);
-  document.getElementById('s-earn').className = 'stat-value financial-value';
+  document.getElementById('s-earn').textContent = formatAmount(projectedThisMonth);
+  document.getElementById('s-earn').className = 'stat-value';
   document.getElementById('s-month-label').textContent = MO[today.getMonth()] + ' ' + today.getFullYear();
   if (next) { document.getElementById('s-next').textContent = MS[next.month]+' '+next.day; document.getElementById('s-next-d').textContent = next.artist.split(' ')[0]+' · '+next.city; }
   else { document.getElementById('s-next').textContent = '—'; document.getElementById('s-next-d').textContent = 'No upcoming gigs'; }
   renderGroupedList(document.getElementById('list-upcoming'), upcoming, 'No upcoming gigs — tap Add Gig');
   renderGroupedList(document.getElementById('list-completed'), completed, 'No completed gigs yet');
   updateRehearsalToggleBtn();
-  applyPrivacyMode();
 }
 
 // ── EARNINGS ──
@@ -423,21 +405,21 @@ function rebuildEarnings() {
   const tmTentative = tmShows.filter(s=>s.status==='tentative').reduce((a,s)=>a+s.pay,0);
   // Set this-month stats safely — these IDs exist in current HTML
   const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-  setEl('e-earned', fmt(tmEarned));
-  setEl('e-projected', fmt(tmProjected));
-  setEl('e-confirmed', fmt(tmConfirmed));
-  setEl('e-tentative', fmt(tmTentative));
+  setEl('e-earned', formatAmount(tmEarned));
+  setEl('e-projected', formatAmount(tmProjected));
+  setEl('e-confirmed', formatAmount(tmConfirmed));
+  setEl('e-tentative', formatAmount(tmTentative));
   const projConfirmed = gigs.filter(s => !isPast(s) && s.status==='confirmed' && s.payStatus!=='paid');
   const projTentative = gigs.filter(s => !isPast(s) && s.status==='tentative' && s.payStatus!=='paid');
   const projPending = gigs.filter(s => isPast(s) && s.payStatus==='pending');
-  setEl('e-proj-total', fmt([...projConfirmed,...projTentative,...projPending].reduce((a,s)=>a+s.pay,0)));
-  setEl('e-proj-confirmed', fmt(projConfirmed.reduce((a,s)=>a+s.pay,0)));
-  setEl('e-proj-tentative', fmt(projTentative.reduce((a,s)=>a+s.pay,0)));
-  setEl('e-proj-pending', fmt(projPending.reduce((a,s)=>a+s.pay,0)));
+  setEl('e-proj-total', formatAmount([...projConfirmed,...projTentative,...projPending].reduce((a,s)=>a+s.pay,0)));
+  setEl('e-proj-confirmed', formatAmount(projConfirmed.reduce((a,s)=>a+s.pay,0)));
+  setEl('e-proj-tentative', formatAmount(projTentative.reduce((a,s)=>a+s.pay,0)));
+  setEl('e-proj-pending', formatAmount(projPending.reduce((a,s)=>a+s.pay,0)));
   const paidShows = gigs.filter(s=>s.payStatus==='paid');
-  setEl('e-current-total', fmt(paidShows.filter(s=>s.year===yr).reduce((a,s)=>a+s.pay,0)));
-  setEl('e-current-month', fmt(paidShows.filter(isThisMonth).reduce((a,s)=>a+s.pay,0)));
-  setEl('e-current-year', fmt(paidShows.filter(s=>s.year===yr).reduce((a,s)=>a+s.pay,0)));
+  setEl('e-current-total', formatAmount(paidShows.filter(s=>s.year===yr).reduce((a,s)=>a+s.pay,0)));
+  setEl('e-current-month', formatAmount(paidShows.filter(isThisMonth).reduce((a,s)=>a+s.pay,0)));
+  setEl('e-current-year', formatAmount(paidShows.filter(s=>s.year===yr).reduce((a,s)=>a+s.pay,0)));
   setEl('e-current-count', paidShows.length + ' gig' + (paidShows.length!==1?'s':''));
   const monthlyConf = Array(12).fill(0), monthlyTent = Array(12).fill(0);
   gigs.filter(s=>s.year===yr).forEach(s => { if(s.status==='confirmed') monthlyConf[s.month]+=s.pay; else monthlyTent[s.month]+=s.pay; });
@@ -450,31 +432,23 @@ function rebuildEarnings() {
     const confH=Math.round((conf/maxVal)*100),tentH=Math.round((tent/maxVal)*100);
     const col=document.createElement('div'); col.className='bar-col'+(i===today.getMonth()?' bar-now':'');
     col.innerHTML=`<div class="bar-wrap"><div class="bar-tent" style="height:${tentH}%"></div><div class="bar-conf" style="height:${confH}%"></div></div><div class="bar-label">${MS[i]}</div>`;
-    col.title=`${MO[i]}: ${fmt(val)}`;
-    if(val>0){col.style.cursor='pointer';col.addEventListener('click',(e)=>{e.stopPropagation();const old=document.getElementById('bar-tooltip');if(old){old.remove();if(old._col===col)return;}const tip=document.createElement('div');tip.id='bar-tooltip';tip._col=col;tip.className='bar-tooltip';tip.innerHTML=`<div class="bar-tip-month">${MO[i]}</div><div class="bar-tip-row"><span>Confirmed</span><span>${fmt(conf)}</span></div>${tent>0?`<div class="bar-tip-row tentative"><span>Tentative</span><span>${fmt(tent)}</span></div>`:''}<div class="bar-tip-total"><span>Total</span><span>${fmt(val)}</span></div>`;const chartRect=barChart.getBoundingClientRect();const colRect=col.getBoundingClientRect();barChart.style.position='relative';tip.style.position='absolute';tip.style.left=Math.max(0,Math.min(colRect.left-chartRect.left-40,chartRect.width-160))+'px';tip.style.bottom='100%';tip.style.marginBottom='6px';barChart.appendChild(tip);setTimeout(()=>{const close=(ev)=>{if(!tip.contains(ev.target)){tip.remove();document.removeEventListener('click',close);}};document.addEventListener('click',close);},10);});}
+    col.title=`${MO[i]}: ${formatAmount(val)}`;
+    if(val>0){col.style.cursor='pointer';col.addEventListener('click',(e)=>{e.stopPropagation();const old=document.getElementById('bar-tooltip');if(old){old.remove();if(old._col===col)return;}const tip=document.createElement('div');tip.id='bar-tooltip';tip._col=col;tip.className='bar-tooltip';tip.innerHTML=`<div class="bar-tip-month">${MO[i]}</div><div class="bar-tip-row"><span>Confirmed</span><span>${formatAmount(conf)}</span></div>${tent>0?`<div class="bar-tip-row tentative"><span>Tentative</span><span>${formatAmount(tent)}</span></div>`:''}<div class="bar-tip-total"><span>Total</span><span>${formatAmount(val)}</span></div>`;const chartRect=barChart.getBoundingClientRect();const colRect=col.getBoundingClientRect();barChart.style.position='relative';tip.style.position='absolute';tip.style.left=Math.max(0,Math.min(colRect.left-chartRect.left-40,chartRect.width-160))+'px';tip.style.bottom='100%';tip.style.marginBottom='6px';barChart.appendChild(tip);setTimeout(()=>{const close=(ev)=>{if(!tip.contains(ev.target)){tip.remove();document.removeEventListener('click',close);}};document.addEventListener('click',close);},10);});}
     barChart.appendChild(col);
   });
   const typeMap={};gigs.forEach(s=>{typeMap[s.type]=(typeMap[s.type]||0)+s.pay;});
   const typeList=document.getElementById('e-type-list');typeList.innerHTML='';
   const totalPay=gigs.reduce((a,s)=>a+s.pay,0)||1;
   const typeColors={wedding:'#993556',corporate:'#534AB7',festival:'#1D9E75',pub:'#3B6D11',college:'#993C1D',other:'#6b7280'};
-  Object.entries(typeMap).sort((a,b)=>b[1]-a[1]).forEach(([type,amt])=>{const pct=Math.round((amt/totalPay)*100);const row=document.createElement('div');row.className='type-row';row.innerHTML=`<div class="type-dot" style="background:${typeColors[type]||'#6b7280'}"></div><span class="type-name">${cap(type)}</span><div class="type-bar-wrap"><div class="type-bar-fill" style="width:${pct}%;background:${typeColors[type]||'#6b7280'}"></div></div><span class="type-amt financial-value">${fmt(amt)}</span>`;typeList.appendChild(row);});
+  Object.entries(typeMap).sort((a,b)=>b[1]-a[1]).forEach(([type,amt])=>{const pct=Math.round((amt/totalPay)*100);const row=document.createElement('div');row.className='type-row';row.innerHTML=`<div class="type-dot" style="background:${typeColors[type]||'#6b7280'}"></div><span class="type-name">${cap(type)}</span><div class="type-bar-wrap"><div class="type-bar-fill" style="width:${pct}%;background:${typeColors[type]||'#6b7280'}"></div></div><span class="type-amt financial-value">${formatAmount(amt)}</span>`;typeList.appendChild(row);});
   const yearTotal=gigs.filter(s=>s.year===yr).reduce((a,s)=>a+s.pay,0);
   const yearPaid=gigs.filter(s=>s.year===yr&&s.payStatus==='paid').reduce((a,s)=>a+s.pay,0);
   const yrGigs=gigs.filter(s=>s.year===yr).length;
-  setEl('e-year-total', fmt(yearTotal));
-  setEl('e-year-paid', fmt(yearPaid));
-  setEl('e-year-pending', fmt(yearTotal-yearPaid));
+  setEl('e-year-total', formatAmount(yearTotal));
+  setEl('e-year-paid', formatAmount(yearPaid));
+  setEl('e-year-pending', formatAmount(yearTotal-yearPaid));
   setEl('e-gig-count', yrGigs);
-  setEl('e-avg', fmt(yrGigs?Math.round(yearTotal/yrGigs):0));
-  const monetaryIds = ['e-earned','e-projected','e-confirmed','e-tentative','e-proj-total','e-proj-confirmed','e-proj-tentative','e-proj-pending','e-current-total','e-current-month','e-current-year','e-year-total','e-year-paid','e-year-pending','e-avg'];
-  monetaryIds.forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('financial-value'); });
-  const barWrap = document.querySelector('.bar-chart-wrap');
-  if (barWrap) {
-    if (privacyMode) barWrap.classList.add('privacy-hidden');
-    else barWrap.classList.remove('privacy-hidden');
-  }
-  applyPrivacyMode();
+  setEl('e-avg', formatAmount(yrGigs?Math.round(yearTotal/yrGigs):0));
 }
 
 // ── AUTOCOMPLETE ──
@@ -808,7 +782,7 @@ function showPreview(showId,dayEl) {
     const b=document.getElementById('pv-badge');b.textContent=cap(s.type);b.className='badge '+(BC[s.type]||'other');
     document.getElementById('pv-city').textContent=s.city;
     document.getElementById('pv-date').textContent=`${s.day} ${MS[s.month]} ${s.year}`;
-    const pe=document.getElementById('pv-pay');pe.textContent=fmt(s.pay)+(s.status==='tentative'?' (tentative)':'');pe.className='pv-pay'+(s.status==='tentative'?' dim':'');
+    const pe=document.getElementById('pv-pay');pe.textContent=formatAmount(s.pay)+(s.status==='tentative'?' (tentative)':'');pe.className='pv-pay'+(s.status==='tentative'?' dim':'');
   }
   const card=document.getElementById('preview');
   const pr=document.getElementById('panel-calendar').getBoundingClientRect();
@@ -856,7 +830,7 @@ function renderCal() {
   const gigMs=ms.filter(isGig);const conf=gigMs.filter(s=>s.status==='confirmed').length;const earn=gigMs.reduce((a,s)=>a+s.pay,0);
   document.getElementById('cc').textContent=ms.length||'—';document.getElementById('ccf').textContent=conf||'—';
   const ceEl = document.getElementById('ce');
-  if (ceEl) { ceEl.textContent = gigMs.length ? fmt(earn) : '—'; ceEl.classList.toggle('financial-value', true); }
+  if (ceEl) { ceEl.textContent = gigMs.length ? formatAmount(earn) : '—'; }
   // Update calendar legend to show rehearsal dot if any rehearsals this month
   const hasRehearsal = ms.some(isRehearsal);
   const calLeg = document.querySelector('.cal-leg');
@@ -890,7 +864,7 @@ function renderCal() {
         row.innerHTML = `<span class="ag-date">${MS[s.month]} ${s.day}</span><span class="ag-artist">${s.jampad||'Rehearsal'}</span><span class="badge rehearsal-badge" style="font-size:10px">🥁 Rehearsal</span><span class="ag-pay" style="visibility:hidden">—</span>`;
         row.addEventListener('click', () => openEditRehearsal(s.id));
       } else {
-        row.innerHTML = `<span class="ag-date">${MS[s.month]} ${s.day}</span><span class="ag-artist">${s.artist}</span><span class="badge ${BC[s.type]||'other'}" style="font-size:10px">${cap(s.type)}</span><span class="ag-pay financial-value">${fmt(s.pay)}</span>`;
+        row.innerHTML = `<span class="ag-date">${MS[s.month]} ${s.day}</span><span class="ag-artist">${s.artist}</span><span class="badge ${BC[s.type]||'other'}" style="font-size:10px">${cap(s.type)}</span><span class="ag-pay financial-value">${formatAmount(s.pay)}</span>`;
         row.addEventListener('click', () => openEdit(s.id));
       }
       ag.appendChild(row);
@@ -908,7 +882,6 @@ function renderCal() {
       ag.appendChild(showMoreBtn);
     }
   }
-  applyPrivacyMode();
 }
 
 // ── CHAT ──
