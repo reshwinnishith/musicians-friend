@@ -236,7 +236,7 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Sego
 /* BOTTOM SHEET */
 .overlay { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.45); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); z-index: 40; align-items: flex-end; }
 .overlay.show { display: flex; }
-.sheet { background: var(--surface); border-radius: 20px 20px 0 0; width: 100%; padding: 16px 20px 24px; max-height: 90%; overflow-y: auto; animation: up 0.22s ease; -webkit-overflow-scrolling: touch; }
+.sheet { background: var(--surface); border-radius: 20px 20px 0 0; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; padding: 16px 20px 24px; max-height: 90%; overflow-y: auto; animation: up 0.22s ease; -webkit-overflow-scrolling: touch; }
 @keyframes up { from{transform:translateY(40px);opacity:0} to{transform:translateY(0);opacity:1} }
 .handle { width: 40px; height: 4px; border-radius: 2px; background: var(--border-mid); margin: 0 auto 14px; }
 .sheet-title { font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 16px; }
@@ -1089,7 +1089,7 @@ input[type="time"].ios-input { color-scheme: dark; }
 
 /* Sheet chips */
 .sheet-chip {
-  flex: 1; padding: 7px 10px;
+  padding: 6px 12px;
   border-radius: 8px;
   font-size: 13px; font-weight: 500;
   text-align: center;

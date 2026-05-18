@@ -580,7 +580,7 @@ function openAdd(prefillDate) {
   document.getElementById('fp').value=''; document.getElementById('fn').value='';
   document.getElementById('fd').value=prefillDate||'';
   setSt('confirmed'); setPaySt('pending');
-  document.getElementById('save-btn').textContent='💾 Save Gig';
+  document.getElementById('save-btn').textContent='Save';
   document.getElementById('delete-wrap').innerHTML='';
   document.getElementById('toast').classList.remove('show');
   moreDetailsOpen=false;
@@ -599,7 +599,7 @@ function openEdit(showId) {
   document.getElementById('fd').value=`${s.year}-${String(s.month+1).padStart(2,'0')}-${String(s.day).padStart(2,'0')}`;
   document.getElementById('fc').value=s.city; document.getElementById('fv').value=s.venue||''; document.getElementById('fp').value=s.pay||''; document.getElementById('fn').value=s.notes||'';
   setSt(s.status); setPaySt(s.payStatus==='upcoming'?'pending':s.payStatus);
-  document.getElementById('save-btn').textContent='✓ Save changes';
+  document.getElementById('save-btn').textContent='Save';
   document.getElementById('delete-wrap').innerHTML='<button class="del-btn" id="del-btn">🗑 Delete gig</button>';
   document.getElementById('del-btn').addEventListener('click', deleteShow);
   document.getElementById('toast').classList.remove('show');
@@ -691,7 +691,7 @@ function openAddRehearsal(prefillDate, prefillGigId) {
   document.getElementById('rh-jampad').value='';
   document.getElementById('rh-notes').value='';
   document.getElementById('rh-cs').checked=true;
-  document.getElementById('rh-save-btn').textContent='💾 Save Rehearsal';
+  document.getElementById('rh-save-btn').textContent='Save';
   document.getElementById('rh-delete-wrap').innerHTML='';
   // Pre-link to gig if coming from gig sheet
   const linkedInput = document.getElementById('rh-linked-gig-input');
@@ -721,7 +721,7 @@ function openEditRehearsal(showId) {
   document.getElementById('rh-notes').value=s.notes||'';
   document.getElementById('rh-time').value=s.time||'';
   document.getElementById('rh-cs').checked=true;
-  document.getElementById('rh-save-btn').textContent='✓ Save changes';
+  document.getElementById('rh-save-btn').textContent='Save';
   document.getElementById('rh-delete-wrap').innerHTML='<button class="del-btn" id="rh-del-btn">🗑 Delete rehearsal</button>';
   document.getElementById('rh-del-btn').addEventListener('click', deleteRehearsal);
   // Populate linked gig and artist
