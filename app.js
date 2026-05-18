@@ -688,7 +688,7 @@ function openAddRehearsal(prefillDate, prefillGigId) {
     if (linkedId) linkedId.value = '';
     if (artistInput) artistInput.value = '';
   }
-  document.getElementById('rehearsal-overlay').classList.add('show');
+  setTimeout(() => { document.getElementById('rehearsal-overlay').classList.add('show'); }, 0);
 }
 
 function openEditRehearsal(showId) {
@@ -976,7 +976,7 @@ function setupEventListeners() {
   document.getElementById('privacy-btn')?.addEventListener('click', togglePrivacy);
   document.getElementById('fab').addEventListener('click', (e) => { e.stopPropagation(); openFabMenu(); });
   document.getElementById('fab-add-gig').addEventListener('click', () => openAdd());
-  document.getElementById('fab-add-rehearsal').addEventListener('click', () => openAddRehearsal());
+  document.getElementById('fab-add-rehearsal').addEventListener('click', (e) => { e.stopPropagation(); openAddRehearsal(); });
   document.addEventListener('click', (e) => { if(!e.target.closest('#fab')&&!e.target.closest('#fab-menu')) closeFabMenu(); });
   document.getElementById('fab-backdrop')?.addEventListener('click', closeFabMenu);
 
