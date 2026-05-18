@@ -158,11 +158,7 @@ function toggleRehearsalVisibility() {
 function updateRehearsalToggleBtn() {
   const btn = document.getElementById('rehearsal-toggle-btn');
   if (!btn) return;
-  btn.title = showRehearsals ? 'Hide rehearsals' : 'Show rehearsals';
-  btn.classList.toggle('rehearsal-toggle-active', showRehearsals);
-  btn.innerHTML = showRehearsals
-    ? '<i class="ti ti-music-off"></i>'
-    : '<i class="ti ti-music"></i>';
+  btn.classList.toggle('rh-toggle-active', showRehearsals);
 }
 
 // ── FAB ACTION SHEET ──
@@ -1001,14 +997,6 @@ function setupEventListeners() {
   document.getElementById('delete-modal-backdrop').addEventListener('click', (e) => {
     if (e.target === document.getElementById('delete-modal-backdrop')) closeDeleteModal();
   });
-  document.getElementById('manual-refresh-btn').addEventListener('click', async () => {
-    const btn=document.getElementById('manual-refresh-btn');
-    if(btn.classList.contains('spinning')) return;
-    btn.classList.add('spinning'); lastFetchTime=0;
-    await refreshIfStale();
-    setTimeout(()=>btn.classList.remove('spinning'),600);
-  });
-
   // Auto-refresh
   let lastFetchTime = Date.now();
   const MIN_REFETCH_INTERVAL = 30000;

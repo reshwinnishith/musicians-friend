@@ -37,7 +37,7 @@
       <div class="logo">
         <div class="logo-mark"><i class="ti ti-music"></i></div>
         <div>
-          <div class="logo-text">Musician's Friend <span class="app-version">v4.1.8</span></div>
+          <div class="logo-text">Musician's Friend <span class="app-version">v4.1.9</span></div>
           <div class="logo-sub" id="user-email">Your personal music manager</div>
         </div>
       </div>
@@ -90,8 +90,10 @@
         <div class="section-tabs">
           <button class="sec-tab active" id="tab-upcoming" onclick="showSection('upcoming')">Upcoming</button>
           <button class="sec-tab" id="tab-completed" onclick="showSection('completed')">Completed</button>
-          <button class="sec-tab-refresh rehearsal-toggle-active" id="rehearsal-toggle-btn" title="Hide rehearsals" aria-label="Toggle rehearsals"><i class="ti ti-music-off"></i></button>
-          <button class="sec-tab-refresh" id="manual-refresh-btn" title="Refresh from Drive" aria-label="Refresh"><i class="ti ti-refresh"></i></button>
+          <label class="rh-toggle-label" id="rehearsal-toggle-btn" title="Toggle rehearsals">
+            <span class="rh-toggle-box"><i class="ti ti-check"></i></span>
+            <span class="rh-toggle-text">Rehearsals</span>
+          </label>
         </div>
         <div id="list-upcoming"></div>
         <div id="list-completed" style="display:none"></div>
