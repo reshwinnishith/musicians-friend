@@ -1052,4 +1052,15 @@ function setupEventListeners() {
   }
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refreshIfStale();});
   window.addEventListener('focus',()=>refreshIfStale());
+
+  // Escape key closes any open sheet, modal, or overlay
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (document.getElementById('delete-modal-backdrop').classList.contains('show')) { closeDeleteModal(); return; }
+    if (document.getElementById('gig-overlay').classList.contains('show')) { closeSheet(); return; }
+    if (document.getElementById('rehearsal-overlay').classList.contains('show')) { closeSheet(); return; }
+    if (document.getElementById('confirm-popup').classList.contains('show')) { closeConfirm(); return; }
+    if (document.getElementById('preview').classList.contains('show')) { closePreview(); return; }
+    if (document.getElementById('fab-menu').classList.contains('show')) { closeFabMenu(); return; }
+  });
 }
