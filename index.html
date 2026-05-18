@@ -37,7 +37,7 @@
       <div class="logo">
         <div class="logo-mark"><i class="ti ti-music"></i></div>
         <div>
-          <div class="logo-text">Musician's Friend <span class="app-version">v4.3.2</span></div>
+          <div class="logo-text">Musician's Friend <span class="app-version">v4.3.3</span></div>
           <div class="logo-sub" id="user-email">Your personal music manager</div>
         </div>
       </div>
@@ -158,75 +158,37 @@
       <!-- EARNINGS -->
       <div class="panel" id="panel-earnings">
 
-        <!-- SECTION 1: CURRENT EARNINGS -->
-        <div class="earn-section-block">
-          <div class="earn-section-header">
-            <div class="earn-section-icon teal"><i class="ti ti-circle-check"></i></div>
-            <div>
-              <div class="earn-section-title-lg">Current Earnings</div>
-              <div class="earn-section-desc">Money already received — gigs marked as Paid</div>
-            </div>
+        <!-- STAT CARDS -->
+        <div class="earn-stat-grid">
+          <div class="earn-stat">
+            <div class="earn-stat-label" id="e-stat-year-label">Total 2026</div>
+            <div class="earn-stat-value purple" id="e-stat-total">—</div>
           </div>
-          <div class="earn-hero teal" id="e-current-total">—</div>
-          <div class="earn-row-stats">
-            <div class="earn-row-stat">
-              <div class="earn-row-label">This month</div>
-              <div class="earn-row-val" id="e-current-month">—</div>
-            </div>
-            <div class="earn-row-stat">
-              <div class="earn-row-label">This year</div>
-              <div class="earn-row-val" id="e-current-year">—</div>
-            </div>
-            <div class="earn-row-stat">
-              <div class="earn-row-label">Gigs paid</div>
-              <div class="earn-row-val" id="e-current-count">—</div>
-            </div>
+          <div class="earn-stat">
+            <div class="earn-stat-label">Paid</div>
+            <div class="earn-stat-value green" id="e-stat-paid">—</div>
+          </div>
+          <div class="earn-stat">
+            <div class="earn-stat-label">Pending</div>
+            <div class="earn-stat-value amber" id="e-stat-pending">—</div>
+          </div>
+          <div class="earn-stat">
+            <div class="earn-stat-label">Gigs this year</div>
+            <div class="earn-stat-value" id="e-stat-count">—</div>
           </div>
         </div>
 
-        <div class="earn-divider"></div>
-
-        <!-- SECTION 2: PROJECTED EARNINGS -->
-        <div class="earn-section-block">
-          <div class="earn-section-header">
-            <div class="earn-section-icon accent"><i class="ti ti-clock"></i></div>
-            <div>
-              <div class="earn-section-title-lg">Projected Earnings</div>
-              <div class="earn-section-desc">Expected income from upcoming unpaid gigs</div>
-            </div>
-          </div>
-          <div class="earn-hero accent" id="e-proj-total">—</div>
-          <div class="earn-row-stats">
-            <div class="earn-row-stat">
-              <div class="earn-row-label">Confirmed</div>
-              <div class="earn-row-val accent" id="e-proj-confirmed">—</div>
-            </div>
-            <div class="earn-row-stat earn-row-stat-tentative">
-              <div class="earn-row-label">Tentative <span class="earn-tent-tag">unconfirmed</span></div>
-              <div class="earn-row-val gold" id="e-proj-tentative">—</div>
-            </div>
-            <div class="earn-row-stat">
-              <div class="earn-row-label">Pending payment</div>
-              <div class="earn-row-val red" id="e-proj-pending">—</div>
-            </div>
-          </div>
+        <!-- MONTHLY BAR CHART -->
+        <div class="earn-section-title" style="padding:0 16px;margin-bottom:6px;">Monthly earnings</div>
+        <div class="earn-legend">
+          <div class="earn-leg-item"><div class="earn-leg-dot" style="background:#7F77DD"></div> Paid</div>
+          <div class="earn-leg-item"><div class="earn-leg-dot" style="background:rgba(127,119,221,0.3)"></div> Pending</div>
         </div>
+        <div class="earn-chart-wrap" id="e-bar-chart"></div>
 
-        <div class="earn-divider"></div>
-
-        <!-- BAR CHART -->
-        <div class="earn-section-title" style="margin-bottom:8px;">Monthly overview — 2026</div>
-        <div class="bar-legend">
-          <div class="bar-legend-item"><div class="bar-legend-dot conf"></div> Confirmed</div>
-          <div class="bar-legend-item"><div class="bar-legend-dot tent"></div> Tentative</div>
-        </div>
-        <div class="bar-chart-wrap"><div class="bar-chart" id="e-bar-chart"></div></div>
-
-        <div class="earn-divider"></div>
-
-        <!-- BY GIG TYPE -->
-        <div class="earn-section-title" style="margin-bottom:8px;">By gig type</div>
-        <div id="e-type-list"></div>
+        <!-- BY TYPE BREAKDOWN -->
+        <div class="earn-section-title" style="padding:0 16px;margin-top:16px;margin-bottom:8px;">By type</div>
+        <div class="earn-type-section" id="e-type-list"></div>
 
       </div>
 

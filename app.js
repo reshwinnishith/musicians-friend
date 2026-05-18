@@ -402,57 +402,55 @@ function rebuildDashboard() {
 function rebuildEarnings() {
   const yr = today.getFullYear();
   const gigs = shows.filter(isGig);
-  const tmShows = gigs.filter(isThisMonth);
-  const tmEarned = tmShows.filter(s => isPast(s) && s.payStatus==='paid').reduce((a,s)=>a+s.pay,0);
-  const tmProjected = tmShows.reduce((a,s)=>a+s.pay,0);
-  const tmConfirmed = tmShows.filter(s=>s.status==='confirmed').reduce((a,s)=>a+s.pay,0);
-  const tmTentative = tmShows.filter(s=>s.status==='tentative').reduce((a,s)=>a+s.pay,0);
-  // Set this-month stats safely — these IDs exist in current HTML
+  const yearGigs = gigs.filter(s => s.year === yr);
+
+  const yearTotal = yearGigs.reduce((a, s) => a + s.pay, 0);
+  const yearPaid = yearGigs.filter(s => s.payStatus === 'paid').reduce((a, s) => a + s.pay, 0);
+  const yearPending = yearGigs.filter(s => s.payStatus === 'pending').reduce((a, s) => a + s.pay, 0);
+
   const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-  setEl('e-earned', formatAmount(tmEarned));
-  setEl('e-projected', formatAmount(tmProjected));
-  setEl('e-confirmed', formatAmount(tmConfirmed));
-  setEl('e-tentative', formatAmount(tmTentative));
-  const projConfirmed = gigs.filter(s => !isPast(s) && s.status==='confirmed' && s.payStatus!=='paid');
-  const projTentative = gigs.filter(s => !isPast(s) && s.status==='tentative' && s.payStatus!=='paid');
-  const projPending = gigs.filter(s => isPast(s) && s.payStatus==='pending');
-  setEl('e-proj-total', formatAmount([...projConfirmed,...projTentative,...projPending].reduce((a,s)=>a+s.pay,0)));
-  setEl('e-proj-confirmed', formatAmount(projConfirmed.reduce((a,s)=>a+s.pay,0)));
-  setEl('e-proj-tentative', formatAmount(projTentative.reduce((a,s)=>a+s.pay,0)));
-  setEl('e-proj-pending', formatAmount(projPending.reduce((a,s)=>a+s.pay,0)));
-  const paidShows = gigs.filter(s=>s.payStatus==='paid');
-  setEl('e-current-total', formatAmount(paidShows.filter(s=>s.year===yr).reduce((a,s)=>a+s.pay,0)));
-  setEl('e-current-month', formatAmount(paidShows.filter(isThisMonth).reduce((a,s)=>a+s.pay,0)));
-  setEl('e-current-year', formatAmount(paidShows.filter(s=>s.year===yr).reduce((a,s)=>a+s.pay,0)));
-  setEl('e-current-count', paidShows.length + ' gig' + (paidShows.length!==1?'s':''));
-  const monthlyConf = Array(12).fill(0), monthlyTent = Array(12).fill(0);
-  gigs.filter(s=>s.year===yr).forEach(s => { if(s.status==='confirmed') monthlyConf[s.month]+=s.pay; else monthlyTent[s.month]+=s.pay; });
-  const monthlyTotals = monthlyConf.map((v,i)=>v+monthlyTent[i]);
-  const maxVal = Math.max(...monthlyTotals, 1);
-  const barChart = document.getElementById('e-bar-chart'); barChart.innerHTML='';
-  const existingTip = document.getElementById('bar-tooltip'); if(existingTip) existingTip.remove();
-  monthlyTotals.forEach((val,i) => {
-    const conf=monthlyConf[i],tent=monthlyTent[i];
-    const confH=Math.round((conf/maxVal)*100),tentH=Math.round((tent/maxVal)*100);
-    const col=document.createElement('div'); col.className='bar-col'+(i===today.getMonth()?' bar-now':'');
-    col.innerHTML=`<div class="bar-wrap"><div class="bar-tent" style="height:${tentH}%"></div><div class="bar-conf" style="height:${confH}%"></div></div><div class="bar-label">${MS[i]}</div>`;
-    col.title=`${MO[i]}: ${formatAmount(val)}`;
-    if(val>0){col.style.cursor='pointer';col.addEventListener('click',(e)=>{e.stopPropagation();const old=document.getElementById('bar-tooltip');if(old){old.remove();if(old._col===col)return;}const tip=document.createElement('div');tip.id='bar-tooltip';tip._col=col;tip.className='bar-tooltip';tip.innerHTML=`<div class="bar-tip-month">${MO[i]}</div><div class="bar-tip-row"><span>Confirmed</span><span>${formatAmount(conf)}</span></div>${tent>0?`<div class="bar-tip-row tentative"><span>Tentative</span><span>${formatAmount(tent)}</span></div>`:''}<div class="bar-tip-total"><span>Total</span><span>${formatAmount(val)}</span></div>`;const chartRect=barChart.getBoundingClientRect();const colRect=col.getBoundingClientRect();barChart.style.position='relative';tip.style.position='absolute';tip.style.left=Math.max(0,Math.min(colRect.left-chartRect.left-40,chartRect.width-160))+'px';tip.style.bottom='100%';tip.style.marginBottom='6px';barChart.appendChild(tip);setTimeout(()=>{const close=(ev)=>{if(!tip.contains(ev.target)){tip.remove();document.removeEventListener('click',close);}};document.addEventListener('click',close);},10);});}
-    barChart.appendChild(col);
+  setEl('e-stat-year-label', 'Total ' + yr);
+  setEl('e-stat-total', formatAmount(yearTotal));
+  setEl('e-stat-paid', formatAmount(yearPaid));
+  setEl('e-stat-pending', formatAmount(yearPending));
+  setEl('e-stat-count', yearGigs.length);
+
+  // Monthly bar chart — paid vs pending, current year
+  const monthlyPaid = Array(12).fill(0);
+  const monthlyPending = Array(12).fill(0);
+  yearGigs.forEach(s => {
+    if (s.payStatus === 'paid') monthlyPaid[s.month] += s.pay;
+    else monthlyPending[s.month] += s.pay;
   });
-  const typeMap={};gigs.forEach(s=>{typeMap[s.type]=(typeMap[s.type]||0)+s.pay;});
-  const typeList=document.getElementById('e-type-list');typeList.innerHTML='';
-  const totalPay=gigs.reduce((a,s)=>a+s.pay,0)||1;
-  const typeColors={wedding:'#993556',corporate:'#534AB7',festival:'#1D9E75',pub:'#3B6D11',college:'#993C1D',other:'#6b7280'};
-  Object.entries(typeMap).sort((a,b)=>b[1]-a[1]).forEach(([type,amt])=>{const pct=Math.round((amt/totalPay)*100);const row=document.createElement('div');row.className='type-row';row.innerHTML=`<div class="type-dot" style="background:${typeColors[type]||'#6b7280'}"></div><span class="type-name">${cap(type)}</span><div class="type-bar-wrap"><div class="type-bar-fill" style="width:${pct}%;background:${typeColors[type]||'#6b7280'}"></div></div><span class="type-amt financial-value">${formatAmount(amt)}</span>`;typeList.appendChild(row);});
-  const yearTotal=gigs.filter(s=>s.year===yr).reduce((a,s)=>a+s.pay,0);
-  const yearPaid=gigs.filter(s=>s.year===yr&&s.payStatus==='paid').reduce((a,s)=>a+s.pay,0);
-  const yrGigs=gigs.filter(s=>s.year===yr).length;
-  setEl('e-year-total', formatAmount(yearTotal));
-  setEl('e-year-paid', formatAmount(yearPaid));
-  setEl('e-year-pending', formatAmount(yearTotal-yearPaid));
-  setEl('e-gig-count', yrGigs);
-  setEl('e-avg', formatAmount(yrGigs?Math.round(yearTotal/yrGigs):0));
+  const monthlyTotals = monthlyPaid.map((v, i) => v + monthlyPending[i]);
+  const maxVal = Math.max(...monthlyTotals, 1);
+  const BAR_MAX_H = 110;
+  const MON = ['J','F','M','A','M','J','J','A','S','O','N','D'];
+
+  const barChart = document.getElementById('e-bar-chart');
+  barChart.innerHTML = '';
+  monthlyTotals.forEach((total, i) => {
+    const paidH = Math.round((monthlyPaid[i] / maxVal) * BAR_MAX_H);
+    const pendingH = Math.round((monthlyPending[i] / maxVal) * BAR_MAX_H);
+    const group = document.createElement('div');
+    group.className = 'earn-bar-group';
+    group.innerHTML = `<div class="earn-bars"><div class="earn-bar paid" style="height:${paidH}px"></div><div class="earn-bar pending" style="height:${pendingH}px"></div></div><div class="earn-month-label">${MON[i]}</div>`;
+    barChart.appendChild(group);
+  });
+
+  // By-type breakdown — current year
+  const typeMap = {};
+  yearGigs.forEach(s => { typeMap[s.type] = (typeMap[s.type] || 0) + s.pay; });
+  const maxTypeAmt = Math.max(...Object.values(typeMap), 1);
+  const typeList = document.getElementById('e-type-list');
+  typeList.innerHTML = '';
+  Object.entries(typeMap).sort((a, b) => b[1] - a[1]).forEach(([type, amt]) => {
+    const pct = Math.round((amt / maxTypeAmt) * 100);
+    const row = document.createElement('div');
+    row.className = 'earn-type-row';
+    row.innerHTML = `<div class="earn-type-name">${cap(type)}</div><div class="earn-type-bar-wrap"><div class="earn-type-bar" style="width:${pct}%"></div></div><div class="earn-type-amount financial-value">${formatAmount(amt)}</div>`;
+    typeList.appendChild(row);
+  });
 }
 
 // ── AUTOCOMPLETE ──
