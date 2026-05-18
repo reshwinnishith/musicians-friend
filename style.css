@@ -1187,11 +1187,11 @@ input[type="time"].ios-input { color-scheme: dark; }
 
 /* TEMPORARY — remove after beta */
 .cl-group { padding: 20px 20px 0; }
-.cl-date-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(255,255,255,0.3); margin-bottom: 12px; }
+.cl-date-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 12px; }
 .cl-entry { display: flex; gap: 12px; margin-bottom: 16px; }
 .cl-dot { width: 8px; height: 8px; border-radius: 50%; background: #7F77DD; flex-shrink: 0; margin-top: 4px; }
 .cl-line { display: none; }
 .cl-content { flex: 1; }
 .cl-version { display: inline-block; font-size: 11px; font-weight: 600; color: #7F77DD; background: rgba(127,119,221,0.12); border: 0.5px solid rgba(127,119,221,0.25); border-radius: 5px; padding: 2px 7px; margin-bottom: 6px; }
-.cl-item { font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.55; padding: 2px 0; display: flex; gap: 7px; }
+.cl-item { font-size: 14px; color: var(--ink); line-height: 1.55; padding: 2px 0; display: flex; gap: 7px; }
 .cl-item::before { content: '·'; color: #7F77DD; font-size: 16px; line-height: 1.3; flex-shrink: 0; }
