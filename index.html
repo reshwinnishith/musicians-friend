@@ -37,7 +37,7 @@
       <div class="logo">
         <div class="logo-mark"><i class="ti ti-music"></i></div>
         <div>
-          <div class="logo-text">Musician's Friend <span class="app-version">v4.2.4</span></div>
+          <div class="logo-text">Musician's Friend <span class="app-version">v4.2.5</span></div>
           <div class="logo-sub" id="user-email">Your personal music manager</div>
         </div>
       </div>
@@ -48,6 +48,10 @@
         </div>
         <button class="privacy-btn" id="privacy-btn" title="Toggle financial visibility" aria-label="Toggle privacy mode">
           <i class="ti ti-eye" id="privacy-icon"></i>
+        </button>
+        <!-- TEMPORARY — remove after beta -->
+        <button class="privacy-btn" id="hard-refresh-btn" title="Update app" aria-label="Update app">
+          <i class="ti ti-refresh"></i>
         </button>
         <button class="signout-btn" id="signout-btn" title="Sign out"><i class="ti ti-logout"></i></button>
       </div>
@@ -502,6 +506,17 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.log('SW failed:', err));
   });
 }
+
+/* TEMPORARY — remove after beta */
+document.getElementById('hard-refresh-btn').addEventListener('click', async () => {
+  if ('serviceWorker' in navigator) {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    for (const reg of registrations) await reg.unregister();
+    const keys = await caches.keys();
+    for (const key of keys) await caches.delete(key);
+  }
+  window.location.reload(true);
+});
 </script>
   <script src="auth.js"></script>
   <script src="app.js"></script>
