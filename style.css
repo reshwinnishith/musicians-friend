@@ -1184,3 +1184,11 @@ input[type="time"].ios-input { color-scheme: dark; }
 
 /* Delete button in dark sheet */
 .sheet .del-btn { color: #FF453A; opacity: 0.85; }
+
+/* TEMPORARY — remove after beta */
+.changelog { padding: 16px; }
+.changelog-entry { margin-bottom: 24px; }
+.changelog-version { font-size: 13px; font-weight: 600; color: #7F77DD; margin-bottom: 4px; }
+.changelog-date { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+.changelog-entry ul { padding-left: 16px; }
+.changelog-entry li { font-size: 14px; color: var(--text); line-height: 1.6; }

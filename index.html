@@ -37,7 +37,7 @@
       <div class="logo">
         <div class="logo-mark"><i class="ti ti-music"></i></div>
         <div>
-          <div class="logo-text">Musician's Friend <span class="app-version">v4.2.6</span></div>
+          <div class="logo-text">Musician's Friend <span class="app-version">v4.2.7</span></div>
           <div class="logo-sub" id="user-email">Your personal music manager</div>
         </div>
       </div>
@@ -64,6 +64,8 @@
       -->
       <button class="nav-tab" onclick="switchTab('calendar',this)"><i class="ti ti-calendar"></i><span>Calendar</span></button>
       <button class="nav-tab" onclick="switchTab('earnings',this)"><i class="ti ti-chart-bar"></i><span>Earnings</span></button>
+      <!-- TEMPORARY — remove after beta -->
+      <button class="nav-tab" id="tab-whatsnew" onclick="switchTab('whatsnew',this)"><i class="ti ti-sparkles"></i><span>What's New</span></button>
     </nav>
 
     <div class="content">
@@ -226,6 +228,68 @@
         <div class="earn-section-title" style="margin-bottom:8px;">By gig type</div>
         <div id="e-type-list"></div>
 
+      </div>
+
+      <!-- TEMPORARY — remove after beta -->
+      <div class="panel" id="panel-whatsnew">
+        <div class="changelog">
+
+          <div class="changelog-entry">
+            <div class="changelog-version">v4.2.6</div>
+            <div class="changelog-date">Today</div>
+            <ul>
+              <li>Fixed add rehearsal tap conflict on mobile</li>
+            </ul>
+          </div>
+
+          <div class="changelog-entry">
+            <div class="changelog-version">v4.2.5</div>
+            <ul>
+              <li>Added hard refresh button for beta testing</li>
+            </ul>
+          </div>
+
+          <div class="changelog-entry">
+            <div class="changelog-version">v4.2.3</div>
+            <ul>
+              <li>Rehearsal time picker snaps to 30-minute intervals</li>
+              <li>Fixed rehearsal Google Calendar sync and duplicate event bug</li>
+            </ul>
+          </div>
+
+          <div class="changelog-entry">
+            <div class="changelog-version">v4.2.2</div>
+            <ul>
+              <li>Fixed rehearsal card hierarchy — artist name leads</li>
+              <li>Removed rehearsal card border</li>
+              <li>Restored rehearsal checkbox toggle</li>
+              <li>Removed refresh button from dashboard header</li>
+            </ul>
+          </div>
+
+          <div class="changelog-entry">
+            <div class="changelog-version">v4.1.8</div>
+            <ul>
+              <li>Privacy mode — replaced blur with clean ₹•••••• placeholder</li>
+            </ul>
+          </div>
+
+          <div class="changelog-entry">
+            <div class="changelog-version">v4.1.7</div>
+            <ul>
+              <li>Escape key closes any open sheet or modal on desktop</li>
+            </ul>
+          </div>
+
+          <div class="changelog-entry">
+            <div class="changelog-version">v4.1.4</div>
+            <ul>
+              <li>Redesigned Add Gig sheet — iOS grouped list style</li>
+              <li>Redesigned Add Rehearsal sheet — iOS grouped list style</li>
+            </ul>
+          </div>
+
+        </div>
       </div>
 
       <!-- FAB BACKDROP -->
