@@ -1,4 +1,4 @@
-const CACHE_NAME = 'musicians-friend-v5';
+const CACHE_NAME = 'musicians-friend-v6';
 const SHELL_FILES = [
   '/',
   '/index.html',
