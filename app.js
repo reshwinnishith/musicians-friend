@@ -398,6 +398,21 @@ function rebuildDashboard() {
   updateRehearsalToggleBtn();
 }
 
+// ── EARNINGS TOOLTIP ──
+function showEarnTooltip(x, y, month, paid, pending) {
+  const t = document.getElementById('earn-tooltip');
+  t.innerHTML = `<div class="earn-tooltip-month">${month}</div><div class="earn-tooltip-row"><span class="earn-tooltip-label">Paid</span><span class="earn-tooltip-value purple">${formatAmount(paid)}</span></div><div class="earn-tooltip-row"><span class="earn-tooltip-label">Pending</span><span class="earn-tooltip-value amber">${formatAmount(pending)}</span></div>`;
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const left = x + 12 + 160 > vw ? x - 160 : x + 12;
+  const top = y + 12 + 90 > vh ? y - 90 : y + 12;
+  t.style.left = left + 'px';
+  t.style.top = top + 'px';
+  t.classList.add('visible');
+}
+function hideEarnTooltip() {
+  document.getElementById('earn-tooltip')?.classList.remove('visible');
+}
+
 // ── EARNINGS ──
 function rebuildEarnings() {
   const yr = today.getFullYear();
@@ -427,6 +442,14 @@ function rebuildEarnings() {
   const BAR_MAX_H = 110;
   const MON = ['J','F','M','A','M','J','J','A','S','O','N','D'];
 
+  // Ensure shared tooltip element exists
+  if (!document.getElementById('earn-tooltip')) {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'earn-tooltip';
+    tooltip.id = 'earn-tooltip';
+    document.body.appendChild(tooltip);
+  }
+
   const barChart = document.getElementById('e-bar-chart');
   barChart.innerHTML = '';
   monthlyTotals.forEach((total, i) => {
@@ -435,6 +458,17 @@ function rebuildEarnings() {
     const group = document.createElement('div');
     group.className = 'earn-bar-group';
     group.innerHTML = `<div class="earn-bars"><div class="earn-bar paid" style="height:${paidH}px"></div><div class="earn-bar pending" style="height:${pendingH}px"></div></div><div class="earn-month-label">${MON[i]}</div>`;
+    if (total > 0) {
+      group.addEventListener('mousemove', (e) => {
+        showEarnTooltip(e.clientX, e.clientY, MO[i], monthlyPaid[i], monthlyPending[i]);
+      });
+      group.addEventListener('mouseleave', hideEarnTooltip);
+      group.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const t = e.touches[0];
+        showEarnTooltip(t.clientX, t.clientY, MO[i], monthlyPaid[i], monthlyPending[i]);
+      }, { passive: false });
+    }
     barChart.appendChild(group);
   });
 
@@ -1068,6 +1102,11 @@ function setupEventListeners() {
   }
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refreshIfStale();});
   window.addEventListener('focus',()=>refreshIfStale());
+
+  // Dismiss earnings chart tooltip on tap outside a bar group
+  document.addEventListener('touchstart', (e) => {
+    if (!e.target.closest('.earn-bar-group')) hideEarnTooltip();
+  }, { passive: true });
 
   // Escape key closes any open sheet, modal, or overlay
   document.addEventListener('keydown', (e) => {
