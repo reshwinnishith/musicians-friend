@@ -37,7 +37,7 @@
       <div class="logo">
         <div class="logo-mark"><i class="ti ti-music"></i></div>
         <div>
-          <div class="logo-text">Musician's Friend <span class="app-version">v4.2.3</span></div>
+          <div class="logo-text">Musician's Friend <span class="app-version">v4.2.4</span></div>
           <div class="logo-sub" id="user-email">Your personal music manager</div>
         </div>
       </div>
@@ -374,22 +374,6 @@
           <div class="toast" id="toast"></div>
         </div>
       </div>
-    </div>
-
-    <!-- DELETE CONFIRMATION MODAL — outside .content so overflow:hidden doesn't clip -->
-    <div class="delete-modal-backdrop" id="delete-modal-backdrop">
-      <div class="delete-modal" id="delete-modal">
-        <div class="delete-modal-icon"><i class="ti ti-trash"></i></div>
-        <div class="delete-modal-title" id="delete-modal-title">Delete gig?</div>
-        <div class="delete-modal-sub" id="delete-modal-sub">This cannot be undone.</div>
-        <div class="delete-modal-btns">
-          <button class="delete-modal-cancel" id="delete-modal-cancel">Cancel</button>
-          <button class="delete-modal-confirm" id="delete-modal-confirm">Delete</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
 
       <!-- REHEARSAL SHEET -->
       <div class="overlay" id="rehearsal-overlay">
@@ -493,6 +477,22 @@
           <div id="rh-delete-wrap"></div>
         </div>
       </div>
+    </div>
+
+    <!-- DELETE CONFIRMATION MODAL — outside .content so overflow:hidden doesn't clip -->
+    <div class="delete-modal-backdrop" id="delete-modal-backdrop">
+      <div class="delete-modal" id="delete-modal">
+        <div class="delete-modal-icon"><i class="ti ti-trash"></i></div>
+        <div class="delete-modal-title" id="delete-modal-title">Delete gig?</div>
+        <div class="delete-modal-sub" id="delete-modal-sub">This cannot be undone.</div>
+        <div class="delete-modal-btns">
+          <button class="delete-modal-cancel" id="delete-modal-cancel">Cancel</button>
+          <button class="delete-modal-confirm" id="delete-modal-confirm">Delete</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
 
   <script>
 if ('serviceWorker' in navigator) {
