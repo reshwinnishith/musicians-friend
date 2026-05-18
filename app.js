@@ -241,7 +241,7 @@ function makeShowRow(s) {
   const past = isPast(s);
   const row = document.createElement('div');
   const isToday = s.year === today.getFullYear() && s.month === today.getMonth() && s.day === today.getDate();
-  row.className = 'show-row' + (past ? ' past' : '') + (isToday ? ' today-gig' : '');
+  row.className = 'show-row' + (past ? ' past' : '') + (isToday ? ' today-gig' : '') + (isRehearsal(s) ? ' show-row--rehearsal' : '');
   const sc = gigStatusClass(s);
   const pc = pillClass(s);
   const pl = pillLabel(s);

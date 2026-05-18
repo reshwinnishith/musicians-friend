@@ -680,6 +680,7 @@ select.fin {
 
 /* Rehearsal venue secondary line */
 .rh-meta-line { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.show-row--rehearsal .swipe-card-inner { border-color: transparent; background: rgba(181,134,13,0.04); }
 
 /* ── REHEARSAL YELLOW IDENTITY ── */
 :root {
@@ -739,6 +740,7 @@ select.fin {
   display: flex; align-items: center; gap: 6px;
   margin-left: auto; cursor: pointer;
   padding: 6px 0;
+  flex-shrink: 0; white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
   user-select: none; -webkit-user-select: none;
 }
