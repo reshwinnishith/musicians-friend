@@ -1243,3 +1243,26 @@ input[type="time"].ios-input { color-scheme: dark; }
 .type-picker-row:active { background: rgba(255,255,255,0.05); }
 .type-picker-row.selected { color: #7F77DD; }
 .type-picker-row.add-new { color: #7F77DD; }
+
+/* ── DESKTOP SHEET SIZING ── */
+@media (min-width: 768px) {
+  .overlay {
+    position: fixed;
+    align-items: center;
+    justify-content: center;
+  }
+  .sheet {
+    max-width: 680px;
+    width: 90%;
+    border-radius: 16px;
+    max-height: 90vh;
+    margin: 0;
+  }
+  .ios-card {
+    margin-left: 24px;
+    margin-right: 24px;
+  }
+  .ios-section-label {
+    padding-left: 28px;
+  }
+}
