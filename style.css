@@ -1246,11 +1246,6 @@ input[type="time"].ios-input { color-scheme: dark; }
 
 /* ── DESKTOP SHEET SIZING ── */
 @media (min-width: 768px) {
-  .overlay {
-    position: fixed;
-    align-items: center;
-    justify-content: center;
-  }
   .sheet {
     max-width: 680px;
     width: 90%;
