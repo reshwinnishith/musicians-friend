@@ -520,7 +520,6 @@ function setupAutocomplete(inputId, dropdownId, getOptions, onSelect, allowCreat
 function initAutocompletes() {
   setupAutocomplete('fa','client-dropdown', getAllClients, ()=>{}, true, 'Add client');
   setupAutocomplete('fc','city-dropdown', getAllCities, (val,isNew)=>{ if(isNew){customCities.push(val);localStorage.setItem('mf_cities',JSON.stringify(customCities));} }, true, 'Add city');
-  setupAutocomplete('ft-input','type-dropdown', getAllGigTypes, (val,isNew)=>{ if(isNew){customGigTypes.push(val);localStorage.setItem('mf_gig_types',JSON.stringify(customGigTypes));} document.getElementById('ft').value=val.toLowerCase(); }, true, 'Add type');
   setupAutocomplete('rh-jampad','jampad-dropdown', getAllJampads, ()=>{}, true, 'Add jampad');
   setupAutocomplete('rh-artist','rh-artist-dropdown', getAllClients, ()=>{}, true, 'Add artist');
   // Linked gig autocomplete — shows upcoming gigs as options
@@ -575,6 +574,92 @@ function toggleMoreDetails() {
   if (label) label.textContent = moreDetailsOpen ? 'Hide details' : 'More details';
 }
 
+// ── GIG TYPE PICKER ──
+function getTypePickerOptions() {
+  const usedTypes = shows.filter(isGig).map(s => s.type).filter(Boolean).map(cap);
+  const all = [...new Set([...DEFAULT_GIG_TYPES, ...customGigTypes.map(cap), ...usedTypes])];
+  return all.sort((a, b) => a.localeCompare(b));
+}
+
+function openTypePicker() {
+  closeTypePicker();
+  const currentVal = (document.getElementById('ft').value || '').toLowerCase();
+  const options = getTypePickerOptions();
+
+  const backdrop = document.createElement('div');
+  backdrop.className = 'type-picker-backdrop';
+  backdrop.id = 'type-picker-backdrop';
+  backdrop.addEventListener('click', closeTypePicker);
+
+  const sheet = document.createElement('div');
+  sheet.className = 'type-picker-sheet';
+  sheet.id = 'type-picker-sheet';
+  sheet.addEventListener('click', e => e.stopPropagation());
+
+  const title = document.createElement('div');
+  title.className = 'type-picker-title';
+  title.textContent = 'Gig Type';
+  sheet.appendChild(title);
+
+  options.forEach(opt => {
+    const isSelected = opt.toLowerCase() === currentVal;
+    const row = document.createElement('div');
+    row.className = 'type-picker-row' + (isSelected ? ' selected' : '');
+    row.innerHTML = `<span>${opt}</span>${isSelected ? '<i class="ti ti-check"></i>' : ''}`;
+    row.addEventListener('click', () => { selectGigType(opt); closeTypePicker(); });
+    sheet.appendChild(row);
+  });
+
+  const addRow = document.createElement('div');
+  addRow.className = 'type-picker-row add-new';
+  addRow.id = 'type-picker-add-row';
+  addRow.innerHTML = '<i class="ti ti-plus" style="font-size:13px;margin-right:8px"></i><span>Add new type</span>';
+  addRow.addEventListener('click', () => showAddTypeInput(addRow));
+  sheet.appendChild(addRow);
+
+  document.body.appendChild(backdrop);
+  document.body.appendChild(sheet);
+}
+
+function closeTypePicker() {
+  document.getElementById('type-picker-backdrop')?.remove();
+  document.getElementById('type-picker-sheet')?.remove();
+}
+
+function selectGigType(typeStr) {
+  document.getElementById('ft').value = typeStr.toLowerCase();
+  const disp = document.getElementById('ft-display');
+  if (disp) { disp.textContent = cap(typeStr); disp.style.color = 'rgba(255,255,255,0.88)'; }
+}
+
+function showAddTypeInput(addRow) {
+  addRow.innerHTML = '';
+  addRow.style.gap = '8px';
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.placeholder = 'New type name';
+  inp.style.cssText = 'flex:1;background:transparent;border:none;outline:none;font-size:15px;color:#fff;font-family:inherit;min-width:0;';
+  const btn = document.createElement('button');
+  btn.textContent = 'Add';
+  btn.style.cssText = 'background:none;border:none;color:#7F77DD;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;padding:0;flex-shrink:0;';
+  function confirm() {
+    const val = inp.value.trim();
+    if (!val) return;
+    const typeCapped = cap(val);
+    if (!customGigTypes.some(t => t.toLowerCase() === val.toLowerCase())) {
+      customGigTypes.push(typeCapped);
+      localStorage.setItem('mf_gig_types', JSON.stringify(customGigTypes));
+    }
+    selectGigType(typeCapped);
+    closeTypePicker();
+  }
+  btn.addEventListener('click', confirm);
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); confirm(); } });
+  addRow.appendChild(inp);
+  addRow.appendChild(btn);
+  setTimeout(() => inp.focus(), 50);
+}
+
 // ── GIG SHEET ──
 function setSt(s) { selSt=s; document.getElementById('bc').className='sheet-chip'+(s==='confirmed'?' active-amber':''); document.getElementById('bt').className='sheet-chip'+(s==='tentative'?' active-amber':''); }
 function setPaySt(s) { selPaySt=s; document.getElementById('bp-paid').className='sheet-chip'+(s==='paid'?' active-green':''); document.getElementById('bp-pending').className='sheet-chip'+(s==='pending'?' active-amber':''); }
@@ -586,7 +671,8 @@ function openAdd(prefillDate) {
   if (rhSec) rhSec.style.display = 'none';
   document.getElementById('fa').value=''; document.getElementById('fc').value='';
   document.getElementById('fv').value='';
-  document.getElementById('ft-input').value=''; document.getElementById('ft').value='wedding';
+  document.getElementById('ft').value='';
+  const _ftDA=document.getElementById('ft-display'); if(_ftDA){_ftDA.textContent='Select type';_ftDA.style.color='rgba(255,255,255,0.5)';}
   document.getElementById('fp').value=''; document.getElementById('fn').value='';
   document.getElementById('fd').value=prefillDate||'';
   setSt('confirmed'); setPaySt('pending');
@@ -605,7 +691,9 @@ function openEdit(showId) {
   editingId=s.id;
   document.getElementById('sheet-title').textContent='Edit gig';
   document.getElementById('fa').value=s.artist;
-  document.getElementById('ft-input').value=cap(s.type); document.getElementById('ft').value=s.type;
+  document.getElementById('ft').value=s.type;
+  const _ftDE=document.getElementById('ft-display'); if(_ftDE){_ftDE.textContent=cap(s.type);_ftDE.style.color='rgba(255,255,255,0.88)';}
+
   document.getElementById('fd').value=`${s.year}-${String(s.month+1).padStart(2,'0')}-${String(s.day).padStart(2,'0')}`;
   document.getElementById('fc').value=s.city; document.getElementById('fv').value=s.venue||''; document.getElementById('fp').value=s.pay||''; document.getElementById('fn').value=s.notes||'';
   setSt(s.status); setPaySt(s.payStatus==='upcoming'?'pending':s.payStatus);
@@ -651,14 +739,14 @@ function renderGigRehearsalSection(gigId) {
 
 function openEditFromPreview() { const id=previewShowId; closePreview(); openEdit(id); }
 function closeSheet() {
+  closeTypePicker();
   document.getElementById('gig-overlay').classList.remove('show');
   document.getElementById('rehearsal-overlay').classList.remove('show');
 }
 
 async function saveShow() {
   const artist=document.getElementById('fa').value.trim();
-  const typeRaw=document.getElementById('ft-input').value.trim();
-  const type=document.getElementById('ft').value||typeRaw.toLowerCase()||'other';
+  const type=document.getElementById('ft').value||'other';
   const date=document.getElementById('fd').value;
   const city=document.getElementById('fc').value.trim();
   const venue=document.getElementById('fv').value.trim();

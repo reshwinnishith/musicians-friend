@@ -37,7 +37,7 @@
       <div class="logo">
         <div class="logo-mark"><i class="ti ti-music"></i></div>
         <div>
-          <div class="logo-text">Musician's Friend <span class="app-version">v4.3.7</span></div>
+          <div class="logo-text">Musician's Friend <span class="app-version">v4.3.8</span></div>
           <div class="logo-sub" id="user-email">Your personal music manager</div>
         </div>
       </div>
@@ -197,6 +197,13 @@
 
         <div class="cl-group">
           <div class="cl-date-label">19 May 2026</div>
+          <div class="cl-entry">
+            <div class="cl-dot"></div>
+            <div class="cl-content">
+              <span class="cl-version">v4.3.8</span>
+              <div class="cl-item">Gig Type field is now a tap-to-select picker with dynamic options and Add New support</div>
+            </div>
+          </div>
           <div class="cl-entry">
             <div class="cl-dot"></div>
             <div class="cl-content">
@@ -378,14 +385,11 @@
 
           <div class="ios-section-label">GIG</div>
           <div class="ios-card">
-            <div class="ios-row">
+            <div class="ios-row" id="type-picker-row" onclick="openTypePicker()" style="-webkit-tap-highlight-color:transparent;cursor:pointer;">
               <div class="icon-sq purple"><i class="ti ti-music"></i></div>
               <span class="ios-row-label">Type</span>
-              <div class="ios-input-wrap">
-                <input class="ios-input fin-combo" id="ft-input" placeholder="Select type" type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
-                <input type="hidden" id="ft" value="wedding">
-                <div class="ac-dropdown" id="type-dropdown"></div>
-              </div>
+              <input type="hidden" id="ft" value="">
+              <span id="ft-display" style="flex:1;text-align:right;font-size:14px;color:rgba(255,255,255,0.5);">Select type</span>
               <i class="ti ti-chevron-right ios-chevron"></i>
             </div>
             <div class="ios-row ios-row-chips ios-row-last">
