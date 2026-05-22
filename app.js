@@ -676,7 +676,7 @@ function openAdd(prefillDate) {
   document.getElementById('fp').value=''; document.getElementById('fn').value='';
   document.getElementById('fd').value=prefillDate||'';
   setSt('confirmed'); setPaySt('pending');
-  document.getElementById('save-btn').textContent='Save';
+  const _saveBtnA=document.getElementById('save-btn'); _saveBtnA.textContent='Save'; _saveBtnA.disabled=false; _saveBtnA.style.opacity=''; gigSaving=false;
   document.getElementById('delete-wrap').innerHTML='';
   document.getElementById('toast').classList.remove('show');
   moreDetailsOpen=false;
@@ -697,7 +697,7 @@ function openEdit(showId) {
   document.getElementById('fd').value=`${s.year}-${String(s.month+1).padStart(2,'0')}-${String(s.day).padStart(2,'0')}`;
   document.getElementById('fc').value=s.city; document.getElementById('fv').value=s.venue||''; document.getElementById('fp').value=s.pay||''; document.getElementById('fn').value=s.notes||'';
   setSt(s.status); setPaySt(s.payStatus==='upcoming'?'pending':s.payStatus);
-  document.getElementById('save-btn').textContent='Save';
+  const _saveBtnE=document.getElementById('save-btn'); _saveBtnE.textContent='Save'; _saveBtnE.disabled=false; _saveBtnE.style.opacity=''; gigSaving=false;
   document.getElementById('delete-wrap').innerHTML='<button class="del-btn" id="del-btn">🗑 Delete gig</button>';
   document.getElementById('del-btn').addEventListener('click', deleteShow);
   document.getElementById('toast').classList.remove('show');
@@ -744,7 +744,11 @@ function closeSheet() {
   document.getElementById('rehearsal-overlay').classList.remove('show');
 }
 
+let gigSaving = false;
 async function saveShow() {
+  if(gigSaving) return;
+  const saveBtn=document.getElementById('save-btn');
+  gigSaving=true; saveBtn.disabled=true; saveBtn.style.opacity='0.4';
   const artist=document.getElementById('fa').value.trim();
   const type=document.getElementById('ft').value||'other';
   const date=document.getElementById('fd').value;
@@ -753,7 +757,7 @@ async function saveShow() {
   const pay=parseInt(document.getElementById('fp').value.replace(/,/g,''))||0;
   const notes=document.getElementById('fn').value.trim();
   const calSync=document.getElementById('cs').checked;
-  if(!artist||!date){alert('Please enter at least a name and date.');return;}
+  if(!artist||!date){alert('Please enter at least a name and date.');gigSaving=false;saveBtn.disabled=false;saveBtn.style.opacity='';return;}
   const d=new Date(date+'T00:00:00'); const mo=d.getMonth(),dy=d.getDate(),yr=d.getFullYear();
   const isUpcoming=new Date(yr,mo,dy)>=new Date(today.getFullYear(),today.getMonth(),today.getDate());
   const computedPayStatus=isUpcoming&&selPaySt==='pending'?'upcoming':selPaySt;
