@@ -1211,3 +1211,157 @@ function setupEventListeners() {
     if (document.getElementById('fab-menu').classList.contains('show')) { closeFabMenu(); return; }
   });
 }
+
+// ── v4.5.0 — THEME SYSTEM ──────────────────────────────────────────────────
+
+function applyTheme(theme) {
+  const html = document.documentElement;
+  html.classList.remove('theme-auto', 'theme-light', 'theme-dark');
+  html.classList.add('theme-' + theme);
+  localStorage.setItem('mf-theme', theme);
+  document.querySelectorAll('.theme-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.theme === theme);
+  });
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('mf-theme') || 'auto';
+  applyTheme(saved);
+}
+
+// ── HOME HEADER ────────────────────────────────────────────────────────────
+
+function updateHomeHeader() {
+  const h = new Date().getHours();
+  const greeting = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  const emailEl = document.getElementById('user-email');
+  let firstName = '';
+  if (emailEl) {
+    const raw = emailEl.textContent || '';
+    if (raw && raw !== 'Your personal music manager') {
+      firstName = raw.split('@')[0].replace(/[._]/g, ' ').split(' ')[0];
+      firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+    }
+  }
+  const greetEl = document.getElementById('mf-greeting');
+  if (greetEl) greetEl.textContent = firstName ? `${greeting}, ${firstName}.` : `${greeting}.`;
+  const dateEl = document.getElementById('mf-header-date');
+  if (dateEl) {
+    const now = new Date();
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    dateEl.textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]}`;
+  }
+  const initial = firstName ? firstName.charAt(0).toUpperCase() : 'M';
+  const hdrAvatar = document.getElementById('hdr-avatar');
+  if (hdrAvatar) hdrAvatar.textContent = initial;
+  const settingsAvatar = document.getElementById('settings-avatar');
+  if (settingsAvatar) settingsAvatar.textContent = initial;
+  const settingsName = document.getElementById('settings-name');
+  if (settingsName && firstName) settingsName.textContent = firstName;
+  const settingsEmail = document.getElementById('settings-email-display');
+  if (settingsEmail && emailEl && emailEl.textContent && emailEl.textContent !== 'Your personal music manager') {
+    settingsEmail.textContent = emailEl.textContent;
+  }
+}
+
+// ── HERO CARD ──────────────────────────────────────────────────────────────
+
+const _origRebuildDashboard = rebuildDashboard;
+rebuildDashboard = function() {
+  _origRebuildDashboard.apply(this, arguments);
+  const sorted = [...shows].sort((a,b) => new Date(a.year,a.month,a.day)-new Date(b.year,b.month,b.day));
+  const next = sorted.filter(s => !isPast(s) && isGig(s))[0];
+  const heroVenue = document.getElementById('hero-venue');
+  const heroType  = document.getElementById('hero-type');
+  const heroPay   = document.getElementById('hero-pay');
+  if (heroVenue) heroVenue.textContent = next ? (next.artist || '—') : 'No upcoming gigs';
+  if (heroType)  heroType.textContent  = next ? cap(next.type || 'gig') : '—';
+  if (heroPay)   heroPay.textContent   = next ? formatAmount(next.pay) : '—';
+};
+
+// ── EARNINGS: MARK CURRENT MONTH BAR ──────────────────────────────────────
+
+const _origRebuildEarnings = rebuildEarnings;
+rebuildEarnings = function() {
+  _origRebuildEarnings.apply(this, arguments);
+  const groups = document.querySelectorAll('.earn-bar-group');
+  if (groups[today.getMonth()]) groups[today.getMonth()].classList.add('earn-bar-current');
+};
+
+// ── PATCH applyPrivacyMode FOR NEW UI ELEMENTS ─────────────────────────────
+
+const _origApplyPrivacyMode = applyPrivacyMode;
+applyPrivacyMode = function() {
+  _origApplyPrivacyMode.apply(this, arguments);
+  const earnIcon = document.getElementById('earn-privacy-icon');
+  if (earnIcon) earnIcon.className = privacyMode ? 'ti ti-eye-off' : 'ti ti-eye';
+  const privVal = document.getElementById('settings-privacy-value');
+  if (privVal) privVal.textContent = privacyMode ? 'On' : 'Off';
+};
+
+// ── PATCH switchTab: settings tab + earnings FAB ───────────────────────────
+
+const _origSwitchTab = switchTab;
+switchTab = function(tab, el) {
+  _origSwitchTab.apply(this, arguments);
+  const fab = document.getElementById('fab');
+  if (fab && tab === 'earnings') fab.style.display = 'flex';
+  if (fab && tab === 'settings') fab.style.display = 'none';
+  if (tab === 'settings') updateSettingsView();
+};
+
+function updateSettingsView() {
+  updateHomeHeader();
+  const privVal = document.getElementById('settings-privacy-value');
+  if (privVal) privVal.textContent = privacyMode ? 'On' : 'Off';
+}
+
+// ── SETTINGS INIT ──────────────────────────────────────────────────────────
+
+function initSettingsListeners() {
+  document.querySelectorAll('.theme-pill').forEach(pill => {
+    pill.addEventListener('click', () => applyTheme(pill.dataset.theme));
+  });
+  const refreshRow = document.getElementById('settings-refresh-row');
+  if (refreshRow) {
+    refreshRow.addEventListener('click', async () => {
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        for (const r of regs) await r.unregister();
+        const keys = await caches.keys();
+        for (const k of keys) await caches.delete(k);
+      }
+      window.location.reload(true);
+    });
+  }
+  const privacyRow = document.getElementById('settings-privacy-row');
+  if (privacyRow) privacyRow.addEventListener('click', togglePrivacy);
+  const signoutBtn = document.getElementById('settings-signout-btn');
+  if (signoutBtn) signoutBtn.addEventListener('click', () => {
+    const orig = document.getElementById('signout-btn');
+    if (orig) orig.click();
+  });
+  const hdrAvatar = document.getElementById('hdr-avatar');
+  if (hdrAvatar) hdrAvatar.addEventListener('click', () => {
+    const settingsTab = document.querySelector('.nav-tab:last-child');
+    if (settingsTab) settingsTab.click();
+  });
+}
+
+// ── BOOT ───────────────────────────────────────────────────────────────────
+
+initTheme();
+document.addEventListener('DOMContentLoaded', () => {
+  updateHomeHeader();
+  initSettingsListeners();
+});
+// Also run after auth sets user-email (auth.js calls initApp which we hook here)
+const _origInitApp = typeof initApp === 'function' ? initApp : null;
+if (_origInitApp) {
+  initApp = async function() {
+    await _origInitApp.apply(this, arguments);
+    updateHomeHeader();
+    applyPrivacyMode();
+  };
+}

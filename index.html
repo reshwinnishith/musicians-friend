@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-auto">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Musician's Friend">
-  <meta name="theme-color" content="#7F77DD">
+  <meta name="theme-color" content="#FAF8F2">
   <title>Musician's Friend</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -33,40 +36,36 @@
   </div>
 
   <div id="app" style="display:none;">
-    <div class="header">
-      <div class="logo">
-        <div class="logo-mark"><i class="ti ti-music"></i></div>
-        <div>
-          <div class="logo-text">Musician's Friend <span class="app-version">v4.4.1</span></div>
-          <div class="logo-sub" id="user-email">Your personal music manager</div>
-        </div>
+
+    <!-- TOP HEADER -->
+    <div class="mf-header">
+      <div class="mf-header-left">
+        <div class="mf-header-date" id="mf-header-date"></div>
+        <div class="mf-greeting" id="mf-greeting">Good morning.</div>
       </div>
-      <div class="header-right">
-        <div class="sync-status">
-          <div class="sync-dot" id="sync-dot"></div>
-          <span id="sync-label">Loading...</span>
-        </div>
-        <button class="privacy-btn" id="privacy-btn" title="Toggle financial visibility" aria-label="Toggle privacy mode">
+      <div class="mf-header-right">
+        <button class="hdr-icon-btn" id="privacy-btn" title="Toggle financial visibility" aria-label="Toggle privacy mode">
           <i class="ti ti-eye" id="privacy-icon"></i>
         </button>
-        <!-- TEMPORARY — remove after beta -->
-        <button class="privacy-btn" id="hard-refresh-btn" title="Update app" aria-label="Update app">
+        <button class="hdr-icon-btn" id="hard-refresh-btn" title="Update app" aria-label="Update app">
           <i class="ti ti-refresh"></i>
         </button>
-        <button class="signout-btn" id="signout-btn" title="Sign out"><i class="ti ti-logout"></i></button>
+        <div class="hdr-avatar" id="hdr-avatar">M</div>
       </div>
     </div>
 
-    <nav class="nav-tabs">
-      <button class="nav-tab active" onclick="switchTab('dashboard',this)"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></button>
-      <!-- Chat tab hidden until core experience is stable
-      <button class="nav-tab" onclick="switchTab('chat',this)"><i class="ti ti-message"></i><span>Chat</span></button>
-      -->
-      <button class="nav-tab" onclick="switchTab('calendar',this)"><i class="ti ti-calendar"></i><span>Calendar</span></button>
-      <button class="nav-tab" onclick="switchTab('earnings',this)"><i class="ti ti-chart-bar"></i><span>Earnings</span></button>
-      <!-- TEMPORARY — remove after beta -->
-      <button class="nav-tab" id="tab-whatsnew" onclick="switchTab('whatsnew',this)"><i class="ti ti-sparkles"></i><span>What's New</span></button>
-    </nav>
+    <!-- Hidden legacy compat elements -->
+    <div style="display:none">
+      <div class="logo">
+        <div class="logo-text">Musician's Friend <span class="app-version">v4.5.0</span></div>
+        <div id="user-email">Your personal music manager</div>
+      </div>
+      <div class="sync-status">
+        <div class="sync-dot" id="sync-dot"></div>
+        <span id="sync-label">Loading...</span>
+      </div>
+      <button id="signout-btn"></button>
+    </div>
 
     <div class="content">
       <div class="loading-screen" id="loading-screen">
@@ -74,38 +73,56 @@
         <div class="loading-text">Loading your gigs...</div>
       </div>
 
-      <!-- DASHBOARD -->
+      <!-- HOME / DASHBOARD -->
       <div class="panel active" id="panel-dashboard">
-        <div class="stats-grid">
-          <div class="stat-card accent">
-            <div class="stat-label">Next gig</div>
-            <div class="stat-value" id="s-next">—</div>
-            <div class="stat-sub" id="s-next-d">—</div>
+
+        <div class="hero-card" id="hero-card">
+          <div class="hero-top-row">
+            <span class="hero-type-chip" id="hero-type">—</span>
+            <span class="hero-date-text" id="s-next">—</span>
           </div>
-          <div class="stat-card">
-            <div class="stat-label">Upcoming gigs</div>
-            <div class="stat-value" id="s-count">—</div>
-            <div class="stat-sub" id="s-month-label">—</div>
+          <div class="hero-venue" id="hero-venue">No upcoming gigs</div>
+          <div class="hero-location">
+            <i class="ti ti-map-pin"></i>
+            <span id="s-next-d">Add your first gig</span>
           </div>
-          <div class="stat-card">
-            <div class="stat-label">Projected this month</div>
-            <div class="stat-value" id="s-earn">—</div>
-            <div class="stat-sub">All gigs</div>
+          <div class="hero-footer-row">
+            <span class="hero-footer-label">NEXT GIG</span>
+            <span class="hero-pay financial-value" id="hero-pay">—</span>
           </div>
         </div>
-        <div class="section-tabs">
-          <button class="sec-tab active" id="tab-upcoming" onclick="showSection('upcoming')">Upcoming</button>
-          <button class="sec-tab" id="tab-completed" onclick="showSection('completed')">Completed</button>
-          <label class="rh-toggle-label" id="rehearsal-toggle-btn" title="Toggle rehearsals">
-            <span class="rh-toggle-box"><i class="ti ti-check"></i></span>
-            <span class="rh-toggle-text">Rehearsals</span>
-          </label>
+
+        <div class="home-section-header">
+          <div class="home-section-controls">
+            <button class="sec-tab active" id="tab-upcoming" onclick="showSection('upcoming')">Upcoming</button>
+            <button class="sec-tab" id="tab-completed" onclick="showSection('completed')">Done</button>
+            <label class="rh-toggle-label" id="rehearsal-toggle-btn" title="Toggle rehearsals">
+              <span class="rh-toggle-box"><i class="ti ti-check"></i></span>
+              <span class="rh-toggle-text">Rehearsals</span>
+            </label>
+          </div>
         </div>
+
         <div id="list-upcoming"></div>
         <div id="list-completed" style="display:none"></div>
+
+        <div class="earn-strip">
+          <div class="earn-strip-col">
+            <div class="earn-strip-label" id="s-month-label">This month</div>
+            <div class="earn-strip-amount-wrap">
+              <span id="s-earn" class="earn-strip-amount financial-value">—</span>
+            </div>
+          </div>
+          <div class="earn-strip-divider"></div>
+          <div class="earn-strip-col">
+            <div class="earn-strip-label">Upcoming gigs</div>
+            <div class="earn-strip-count" id="s-count">—</div>
+          </div>
+        </div>
+
       </div>
 
-      <!-- CHAT -->
+      <!-- CHAT (hidden until stable) -->
       <div class="panel" id="panel-chat">
         <div class="chat-wrap">
           <div class="chat-msgs" id="chat-msgs">
@@ -128,7 +145,10 @@
       <!-- CALENDAR -->
       <div class="panel" id="panel-calendar">
         <div class="cal-head">
-          <div class="cal-title" id="cal-title">May 2026</div>
+          <div>
+            <div class="screen-title">Calendar</div>
+            <div class="cal-title" id="cal-title">May 2026</div>
+          </div>
           <div class="cal-nav">
             <button class="cnb" id="cal-prev"><i class="ti ti-chevron-left"></i></button>
             <button class="cnb" id="cal-next"><i class="ti ti-chevron-right"></i></button>
@@ -142,7 +162,7 @@
         <div class="mstats">
           <div class="mstat"><div class="mstat-l">Gigs</div><div class="mstat-v" id="cc">—</div></div>
           <div class="mstat"><div class="mstat-l">Confirmed</div><div class="mstat-v" id="ccf">—</div></div>
-          <div class="mstat"><div class="mstat-l">Earnings</div><div class="mstat-v" id="ce">—</div></div>
+          <div class="mstat"><div class="mstat-l">Earnings</div><div class="mstat-v financial-value" id="ce">—</div></div>
         </div>
         <div class="agenda" id="agenda"></div>
         <div class="preview-card" id="preview">
@@ -151,183 +171,249 @@
           <div class="pv-row"><span class="badge" id="pv-badge"></span><span id="pv-city" style="margin-left:4px"></span></div>
           <div class="pv-row"><i class="ti ti-calendar" style="font-size:12px"></i> <span id="pv-date"></span></div>
           <div class="pv-pay" id="pv-pay"></div>
-          <button class="pv-edit" id="pv-edit"><i class="ti ti-edit"></i> Open & edit</button>
+          <button class="pv-edit" id="pv-edit"><i class="ti ti-edit"></i> Open &amp; edit</button>
         </div>
       </div>
 
       <!-- EARNINGS -->
       <div class="panel" id="panel-earnings">
+        <div class="earn-screen-header">
+          <div class="screen-title">Earnings</div>
+          <button class="hdr-icon-btn" onclick="togglePrivacy()" aria-label="Toggle privacy">
+            <i class="ti ti-eye" id="earn-privacy-icon"></i>
+          </button>
+        </div>
 
-        <!-- STAT CARDS -->
-        <div class="earn-stat-grid">
-          <div class="earn-stat">
-            <div class="earn-stat-label" id="e-stat-year-label">Total 2026</div>
-            <div class="earn-stat-value purple" id="e-stat-total">—</div>
+        <div class="earn-hero-card">
+          <div class="earn-hero-left">
+            <div class="earn-hero-label" id="e-stat-year-label">Total 2026</div>
+            <div class="earn-hero-amount financial-value" id="e-stat-total">—</div>
           </div>
-          <div class="earn-stat">
-            <div class="earn-stat-label">Paid</div>
-            <div class="earn-stat-value green" id="e-stat-paid">—</div>
-          </div>
-          <div class="earn-stat">
-            <div class="earn-stat-label">Pending</div>
-            <div class="earn-stat-value amber" id="e-stat-pending">—</div>
-          </div>
-          <div class="earn-stat">
-            <div class="earn-stat-label">Gigs this year</div>
-            <div class="earn-stat-value" id="e-stat-count">—</div>
+          <div class="earn-hero-right">
+            <div class="earn-hero-sub-row">
+              <span class="earn-hero-sub-label">Paid</span>
+              <span class="earn-hero-sub-val financial-value" id="e-stat-paid">—</span>
+            </div>
+            <div class="earn-hero-sub-row">
+              <span class="earn-hero-sub-label">Pending</span>
+              <span class="earn-hero-sub-val financial-value" id="e-stat-pending">—</span>
+            </div>
+            <div class="earn-hero-sub-row">
+              <span class="earn-hero-sub-label">Gigs</span>
+              <span class="earn-hero-sub-val" id="e-stat-count">—</span>
+            </div>
           </div>
         </div>
 
-        <!-- MONTHLY BAR CHART -->
         <div class="earn-section-title" style="padding:0 16px;margin-bottom:6px;">Monthly earnings</div>
         <div class="earn-legend">
-          <div class="earn-leg-item"><div class="earn-leg-dot" style="background:#7F77DD"></div> Paid</div>
-          <div class="earn-leg-item"><div class="earn-leg-dot" style="background:rgba(127,119,221,0.3)"></div> Pending</div>
+          <div class="earn-leg-item"><div class="earn-leg-dot earn-leg-active"></div> This month</div>
+          <div class="earn-leg-item"><div class="earn-leg-dot earn-leg-inactive"></div> Other months</div>
         </div>
         <div class="earn-chart-wrap" id="e-bar-chart"></div>
 
-        <!-- BY TYPE BREAKDOWN -->
-        <div class="earn-section-title" style="padding:0 16px;margin-top:16px;margin-bottom:8px;">By type</div>
+        <div class="earn-section-title" style="padding:0 16px;margin-top:16px;margin-bottom:8px;">By type · YTD</div>
         <div class="earn-type-section" id="e-type-list"></div>
+      </div>
+
+      <!-- SETTINGS (new) -->
+      <div class="panel" id="panel-settings">
+
+        <div class="settings-profile">
+          <div class="settings-avatar" id="settings-avatar">M</div>
+          <div class="settings-profile-info">
+            <div class="settings-profile-name" id="settings-name">Musician</div>
+            <div class="settings-profile-email" id="settings-email-display">—</div>
+          </div>
+        </div>
+
+        <div class="settings-section-label">Appearance</div>
+        <div class="settings-card">
+          <div class="settings-row">
+            <span class="settings-row-label">Theme</span>
+            <div class="theme-pill-group" id="theme-toggle">
+              <button class="theme-pill active" data-theme="auto">Auto</button>
+              <button class="theme-pill" data-theme="light">Light</button>
+              <button class="theme-pill" data-theme="dark">Dark</button>
+            </div>
+          </div>
+          <div class="settings-row settings-row-last settings-row-tap" id="settings-privacy-row">
+            <span class="settings-row-label">Privacy mode</span>
+            <span class="settings-row-value" id="settings-privacy-value">Off</span>
+          </div>
+        </div>
+
+        <div class="settings-section-label">Data</div>
+        <div class="settings-card">
+          <div class="settings-row settings-row-tap" id="settings-refresh-row">
+            <i class="ti ti-refresh settings-row-icon"></i>
+            <span class="settings-row-label">Hard refresh</span>
+            <i class="ti ti-chevron-right settings-row-chevron"></i>
+          </div>
+          <div class="settings-row settings-row-last">
+            <i class="ti ti-brand-google-drive settings-row-icon"></i>
+            <span class="settings-row-label">Google Drive</span>
+            <span class="settings-connected-wrap">
+              <span class="sync-dot" id="sync-dot"></span>
+              <span id="sync-label" class="settings-connected">Connected</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="settings-section-label">About</div>
+        <div class="settings-card settings-whatsnew">
+
+          <div class="cl-group">
+            <div class="cl-date-label">28 May 2026</div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.5.0</span>
+                <div class="cl-item">Full visual redesign: warm notebook palette, Plus Jakarta Sans typography, 4-tab nav (Home / Calendar / Earnings / Settings), light/dark/auto theme toggle, Settings screen replaces What's New tab.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cl-group">
+            <div class="cl-date-label">19 May 2026</div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.4.1</span>
+                <div class="cl-item">Fixed gigs sometimes being added twice or not at all to Google Calendar</div>
+              </div>
+            </div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.4.0</span>
+                <div class="cl-item">Fixed desktop modal sizing regression on mobile</div>
+              </div>
+            </div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.3.9</span>
+                <div class="cl-item">Add Gig and Edit Gig modals are wider and better proportioned on desktop</div>
+              </div>
+            </div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.3.8</span>
+                <div class="cl-item">Gig Type field is now a tap-to-select picker with dynamic options and Add New support</div>
+              </div>
+            </div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.3.7</span>
+                <div class="cl-item">Earnings chart now shows tooltips on hover (desktop) and tap (mobile) with paid and pending breakdown per month</div>
+              </div>
+            </div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.3.6</span>
+                <div class="cl-item">Fixed version display and backfilled missing changelog entries</div>
+              </div>
+            </div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.3.5</span>
+                <div class="cl-item">Fixed What's New entry for v4.3.4</div>
+              </div>
+            </div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.3.4</span>
+                <div class="cl-item">Updated What's New tab with missing changelog entries</div>
+              </div>
+            </div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.3.3</span>
+                <div class="cl-item">Earnings tab redesigned with monthly bar chart, paid vs pending split, and by-type breakdown</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cl-group">
+            <div class="cl-date-label">18 May 2026</div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.2.6</span>
+                <div class="cl-item">Fixed add rehearsal tap conflict on mobile</div>
+              </div>
+            </div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.2.5</span>
+                <div class="cl-item">Added hard refresh button for beta testing</div>
+                <div class="cl-item">Added What's New tab</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cl-group">
+            <div class="cl-date-label">17 May 2026</div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.2.3</span>
+                <div class="cl-item">Rehearsal time picker snaps to 30-min intervals</div>
+                <div class="cl-item">Fixed rehearsal Google Calendar sync</div>
+              </div>
+            </div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.2.2</span>
+                <div class="cl-item">Artist name leads on rehearsal cards</div>
+                <div class="cl-item">Removed rehearsal card border</div>
+                <div class="cl-item">Restored rehearsal checkbox toggle</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cl-group">
+            <div class="cl-date-label">Earlier</div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.1.8</span>
+                <div class="cl-item">Privacy mode replaces blur with ₹•••••• placeholder</div>
+              </div>
+            </div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.1.7</span>
+                <div class="cl-item">Escape key closes any open sheet or modal on desktop</div>
+              </div>
+            </div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.1.4</span>
+                <div class="cl-item">Add Gig and Add Rehearsal sheets redesigned — iOS grouped list style</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <button class="settings-signout" id="settings-signout-btn">Sign out</button>
 
       </div>
 
-      <!-- TEMPORARY — remove after beta -->
-      <div class="panel" id="panel-whatsnew">
-
-        <div class="cl-group">
-          <div class="cl-date-label">19 May 2026</div>
-          <div class="cl-entry">
-            <div class="cl-dot"></div>
-            <div class="cl-content">
-              <span class="cl-version">v4.4.1</span>
-              <div class="cl-item">Fixed gigs sometimes being added twice or not at all to Google Calendar</div>
-            </div>
-          </div>
-          <div class="cl-entry">
-            <div class="cl-dot"></div>
-            <div class="cl-content">
-              <span class="cl-version">v4.4.0</span>
-              <div class="cl-item">Fixed desktop modal sizing regression on mobile</div>
-            </div>
-          </div>
-          <div class="cl-entry">
-            <div class="cl-dot"></div>
-            <div class="cl-content">
-              <span class="cl-version">v4.3.9</span>
-              <div class="cl-item">Add Gig and Edit Gig modals are wider and better proportioned on desktop</div>
-            </div>
-          </div>
-          <div class="cl-entry">
-            <div class="cl-dot"></div>
-            <div class="cl-content">
-              <span class="cl-version">v4.3.8</span>
-              <div class="cl-item">Gig Type field is now a tap-to-select picker with dynamic options and Add New support</div>
-            </div>
-          </div>
-          <div class="cl-entry">
-            <div class="cl-dot"></div>
-            <div class="cl-content">
-              <span class="cl-version">v4.3.7</span>
-              <div class="cl-item">Earnings chart now shows tooltips on hover (desktop) and tap (mobile) with paid and pending breakdown per month</div>
-            </div>
-          </div>
-          <div class="cl-entry">
-            <div class="cl-dot"></div>
-            <div class="cl-content">
-              <span class="cl-version">v4.3.6</span>
-              <div class="cl-item">Fixed version display and backfilled missing changelog entries</div>
-            </div>
-          </div>
-          <div class="cl-entry">
-            <div class="cl-dot"></div>
-            <div class="cl-content">
-              <span class="cl-version">v4.3.5</span>
-              <div class="cl-item">Fixed What's New entry for v4.3.4</div>
-            </div>
-          </div>
-          <div class="cl-entry">
-            <div class="cl-dot"></div>
-            <div class="cl-content">
-              <span class="cl-version">v4.3.4</span>
-              <div class="cl-item">Updated What's New tab with missing changelog entries</div>
-            </div>
-          </div>
-          <div class="cl-entry">
-            <div class="cl-dot"></div>
-            <div class="cl-content">
-              <span class="cl-version">v4.3.3</span>
-              <div class="cl-item">Earnings tab redesigned with monthly bar chart, paid vs pending split, and by-type breakdown</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="cl-group">
-          <div class="cl-date-label">18 May 2026</div>
-          <div class="cl-entry">
-            <div class="cl-dot"></div>
-            <div class="cl-content">
-              <span class="cl-version">v4.2.6</span>
-              <div class="cl-item">Fixed add rehearsal tap conflict on mobile</div>
-            </div>
-          </div>
-          <div class="cl-entry">
-            <div class="cl-dot"></div>
-            <div class="cl-content">
-              <span class="cl-version">v4.2.5</span>
-              <div class="cl-item">Added hard refresh button for beta testing</div>
-              <div class="cl-item">Added What's New tab</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="cl-group">
-          <div class="cl-date-label">17 May 2026</div>
-          <div class="cl-entry">
-            <div class="cl-dot"></div>
-            <div class="cl-content">
-              <span class="cl-version">v4.2.3</span>
-              <div class="cl-item">Rehearsal time picker snaps to 30-min intervals</div>
-              <div class="cl-item">Fixed rehearsal Google Calendar sync</div>
-            </div>
-          </div>
-          <div class="cl-entry">
-            <div class="cl-dot"></div>
-            <div class="cl-content">
-              <span class="cl-version">v4.2.2</span>
-              <div class="cl-item">Artist name leads on rehearsal cards</div>
-              <div class="cl-item">Removed rehearsal card border</div>
-              <div class="cl-item">Restored rehearsal checkbox toggle</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="cl-group">
-          <div class="cl-date-label">Earlier</div>
-          <div class="cl-entry">
-            <div class="cl-dot"></div>
-            <div class="cl-content">
-              <span class="cl-version">v4.1.8</span>
-              <div class="cl-item">Privacy mode replaces blur with ₹•••••• placeholder</div>
-            </div>
-          </div>
-          <div class="cl-entry">
-            <div class="cl-dot"></div>
-            <div class="cl-content">
-              <span class="cl-version">v4.1.7</span>
-              <div class="cl-item">Escape key closes any open sheet or modal on desktop</div>
-            </div>
-          </div>
-          <div class="cl-entry">
-            <div class="cl-dot"></div>
-            <div class="cl-content">
-              <span class="cl-version">v4.1.4</span>
-              <div class="cl-item">Add Gig and Add Rehearsal sheets redesigned — iOS grouped list style</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
+      <!-- WHATSNEW panel (legacy compat, emptied) -->
+      <div class="panel" id="panel-whatsnew" style="display:none!important"></div>
 
       <!-- FAB BACKDROP -->
       <div class="fab-backdrop" id="fab-backdrop"></div>
@@ -348,7 +434,7 @@
         </button>
       </div>
 
-      <!-- CONFIRM POPUP (payment toggle) -->
+      <!-- CONFIRM POPUP -->
       <div class="confirm-popup" id="confirm-popup">
         <div class="confirm-msg" id="confirm-msg"></div>
         <div class="confirm-btns">
@@ -357,9 +443,10 @@
         </div>
       </div>
 
-      <!-- BOTTOM SHEET -->
+      <!-- GIG BOTTOM SHEET -->
       <div class="overlay" id="gig-overlay">
         <div class="sheet" id="sheet">
+          <div class="sheet-drag-handle"></div>
           <div class="sheet-top-row ios-sheet-header">
             <button class="ios-cancel-btn" id="sheet-close-btn" aria-label="Close">Cancel</button>
             <div class="sheet-title" id="sheet-title">Add Gig</div>
@@ -480,6 +567,7 @@
       <!-- REHEARSAL SHEET -->
       <div class="overlay" id="rehearsal-overlay">
         <div class="sheet">
+          <div class="sheet-drag-handle"></div>
           <div class="sheet-top-row ios-sheet-header">
             <button class="ios-cancel-btn" id="rh-close-btn" aria-label="Close">Cancel</button>
             <div class="sheet-title" id="rh-sheet-title">Add Rehearsal</div>
@@ -508,24 +596,12 @@
               <div class="rh-time-selects">
                 <select class="rh-time-select" id="rh-time-hour">
                   <option value="">—</option>
-                  <option value="6">6 AM</option>
-                  <option value="7">7 AM</option>
-                  <option value="8">8 AM</option>
-                  <option value="9">9 AM</option>
-                  <option value="10">10 AM</option>
-                  <option value="11">11 AM</option>
-                  <option value="12">12 PM</option>
-                  <option value="13">1 PM</option>
-                  <option value="14">2 PM</option>
-                  <option value="15">3 PM</option>
-                  <option value="16">4 PM</option>
-                  <option value="17">5 PM</option>
-                  <option value="18">6 PM</option>
-                  <option value="19">7 PM</option>
-                  <option value="20">8 PM</option>
-                  <option value="21">9 PM</option>
-                  <option value="22">10 PM</option>
-                  <option value="23">11 PM</option>
+                  <option value="6">6 AM</option><option value="7">7 AM</option><option value="8">8 AM</option>
+                  <option value="9">9 AM</option><option value="10">10 AM</option><option value="11">11 AM</option>
+                  <option value="12">12 PM</option><option value="13">1 PM</option><option value="14">2 PM</option>
+                  <option value="15">3 PM</option><option value="16">4 PM</option><option value="17">5 PM</option>
+                  <option value="18">6 PM</option><option value="19">7 PM</option><option value="20">8 PM</option>
+                  <option value="21">9 PM</option><option value="22">10 PM</option><option value="23">11 PM</option>
                 </select>
                 <span class="rh-time-sep">:</span>
                 <select class="rh-time-select" id="rh-time-min">
@@ -579,9 +655,10 @@
           <div id="rh-delete-wrap"></div>
         </div>
       </div>
-    </div>
 
-    <!-- DELETE CONFIRMATION MODAL — outside .content so overflow:hidden doesn't clip -->
+    </div><!-- /.content -->
+
+    <!-- DELETE CONFIRMATION MODAL — at #app level so it covers nav -->
     <div class="delete-modal-backdrop" id="delete-modal-backdrop">
       <div class="delete-modal" id="delete-modal">
         <div class="delete-modal-icon"><i class="ti ti-trash"></i></div>
@@ -594,7 +671,15 @@
       </div>
     </div>
 
-  </div>
+    <!-- BOTTOM NAV -->
+    <nav class="nav-tabs">
+      <button class="nav-tab active" onclick="switchTab('dashboard',this)"><i class="ti ti-home"></i><span>Home</span></button>
+      <button class="nav-tab" onclick="switchTab('calendar',this)"><i class="ti ti-calendar"></i><span>Calendar</span></button>
+      <button class="nav-tab" onclick="switchTab('earnings',this)"><i class="ti ti-chart-bar"></i><span>Earnings</span></button>
+      <button class="nav-tab" onclick="switchTab('settings',this)"><i class="ti ti-settings"></i><span>Settings</span></button>
+    </nav>
+
+  </div><!-- /#app -->
 
   <script>
 if ('serviceWorker' in navigator) {
@@ -605,7 +690,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-/* TEMPORARY — remove after beta */
 document.getElementById('hard-refresh-btn').addEventListener('click', async () => {
   if ('serviceWorker' in navigator) {
     const registrations = await navigator.serviceWorker.getRegistrations();
