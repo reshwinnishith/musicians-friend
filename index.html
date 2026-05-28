@@ -57,7 +57,7 @@
     <!-- Hidden legacy compat elements -->
     <div style="display:none">
       <div class="logo">
-        <div class="logo-text">Musician's Friend <span class="app-version">v4.6.4</span></div>
+        <div class="logo-text">Musician's Friend <span class="app-version">v4.6.5</span></div>
         <div id="user-email">Your personal music manager</div>
       </div>
       <div class="sync-status">
@@ -181,27 +181,31 @@
       <!-- CALENDAR -->
       <div class="panel" id="panel-calendar">
         <div class="staff-lines"></div>
-        <div class="cal-head">
-          <div>
-            <div class="screen-title">Calendar</div>
-            <div class="cal-title" id="cal-title">May 2026</div>
+        <div class="calendar-card">
+          <div class="cal-head">
+            <div>
+              <div class="screen-title">Calendar</div>
+              <div class="cal-title" id="cal-title">May 2026</div>
+            </div>
+            <div class="cal-nav">
+              <button class="cnb" id="cal-prev"><i class="ti ti-chevron-left"></i></button>
+              <button class="cnb" id="cal-next"><i class="ti ti-chevron-right"></i></button>
+            </div>
           </div>
-          <div class="cal-nav">
-            <button class="cnb" id="cal-prev"><i class="ti ti-chevron-left"></i></button>
-            <button class="cnb" id="cal-next"><i class="ti ti-chevron-right"></i></button>
+          <div class="cal-grid" id="cal-grid"></div>
+          <div class="cal-leg">
+            <div class="li"><div class="ld confirmed-dot"></div> Confirmed</div>
+            <div class="li"><div class="ld tentative-dot"></div> Tentative</div>
           </div>
         </div>
-        <div class="cal-grid" id="cal-grid"></div>
-        <div class="cal-leg">
-          <div class="li"><div class="ld confirmed-dot"></div> Confirmed</div>
-          <div class="li"><div class="ld tentative-dot"></div> Tentative</div>
+        <div class="this-month-card">
+          <div class="mstats">
+            <div class="mstat"><div class="mstat-l">Gigs</div><div class="mstat-v" id="cc">—</div></div>
+            <div class="mstat"><div class="mstat-l">Confirmed</div><div class="mstat-v" id="ccf">—</div></div>
+            <div class="mstat"><div class="mstat-l">Earnings</div><div class="mstat-v financial-value" id="ce">—</div></div>
+          </div>
+          <div class="agenda" id="agenda"></div>
         </div>
-        <div class="mstats">
-          <div class="mstat"><div class="mstat-l">Gigs</div><div class="mstat-v" id="cc">—</div></div>
-          <div class="mstat"><div class="mstat-l">Confirmed</div><div class="mstat-v" id="ccf">—</div></div>
-          <div class="mstat"><div class="mstat-l">Earnings</div><div class="mstat-v financial-value" id="ce">—</div></div>
-        </div>
-        <div class="agenda" id="agenda"></div>
         <div class="preview-card" id="preview">
           <button class="pv-close" id="pv-close">×</button>
           <div class="pv-artist" id="pv-artist"></div>
@@ -328,6 +332,13 @@
 
           <div class="cl-group">
             <div class="cl-date-label">28 May 2026</div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.6.5</span>
+                <div class="cl-item">Calendar and this month sections in clean solid cards.</div>
+              </div>
+            </div>
             <div class="cl-entry">
               <div class="cl-dot"></div>
               <div class="cl-content">
