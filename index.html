@@ -11,7 +11,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -57,7 +57,7 @@
     <!-- Hidden legacy compat elements -->
     <div style="display:none">
       <div class="logo">
-        <div class="logo-text">Musician's Friend <span class="app-version">v4.5.4</span></div>
+        <div class="logo-text">Musician's Friend <span class="app-version">v4.5.6</span></div>
         <div id="user-email">Your personal music manager</div>
       </div>
       <div class="sync-status">
@@ -78,18 +78,49 @@
 
         <div class="home-sticky-top">
           <div class="hero-card" id="hero-card">
-            <div class="hero-top-row">
-              <span class="hero-type-chip" id="hero-type">—</span>
-              <span class="hero-date-text" id="s-next">—</span>
-            </div>
-            <div class="hero-venue" id="hero-venue">No upcoming gigs</div>
-            <div class="hero-location">
-              <i class="ti ti-map-pin"></i>
-              <span id="s-next-d">Add your first gig</span>
-            </div>
-            <div class="hero-footer-row">
-              <span class="hero-footer-label">NEXT GIG</span>
-              <span class="hero-pay financial-value" id="hero-pay">—</span>
+            <svg class="vinyl-groove" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <radialGradient id="vg-hero" cx="100%" cy="0%" r="140%">
+                  <stop offset="0%" stop-color="#FAF8F2" stop-opacity="0"/>
+                  <stop offset="100%" stop-color="#FAF8F2" stop-opacity="0.4"/>
+                </radialGradient>
+              </defs>
+              <circle cx="300" cy="0" r="40"  fill="none" stroke="url(#vg-hero)" stroke-width="0.25"/>
+              <circle cx="300" cy="0" r="60"  fill="none" stroke="url(#vg-hero)" stroke-width="0.25"/>
+              <circle cx="300" cy="0" r="80"  fill="none" stroke="url(#vg-hero)" stroke-width="0.25"/>
+              <circle cx="300" cy="0" r="100" fill="none" stroke="url(#vg-hero)" stroke-width="0.25"/>
+              <circle cx="300" cy="0" r="120" fill="none" stroke="url(#vg-hero)" stroke-width="0.25"/>
+              <circle cx="300" cy="0" r="140" fill="none" stroke="url(#vg-hero)" stroke-width="0.25"/>
+              <circle cx="300" cy="0" r="160" fill="none" stroke="url(#vg-hero)" stroke-width="0.25"/>
+              <circle cx="300" cy="0" r="180" fill="none" stroke="url(#vg-hero)" stroke-width="0.25"/>
+              <circle cx="300" cy="0" r="200" fill="none" stroke="url(#vg-hero)" stroke-width="0.25"/>
+              <circle cx="300" cy="0" r="220" fill="none" stroke="url(#vg-hero)" stroke-width="0.25"/>
+              <circle cx="300" cy="0" r="240" fill="none" stroke="url(#vg-hero)" stroke-width="0.25"/>
+              <circle cx="300" cy="0" r="260" fill="none" stroke="url(#vg-hero)" stroke-width="0.25"/>
+            </svg>
+            <div class="staff-lines" style="opacity:0.06;mix-blend-mode:screen;background-image:repeating-linear-gradient(to bottom,transparent 0px,transparent 9px,rgba(240,237,228,0.06) 9px,rgba(240,237,228,0.06) 10px)"></div>
+            <div class="hero-inner">
+              <div class="hero-top-row">
+                <span class="hero-type-chip" id="hero-type">—</span>
+                <span class="hero-date" id="s-next">—</span>
+              </div>
+              <div class="hero-middle">
+                <div class="hero-venue" id="hero-venue">No upcoming gigs</div>
+                <div class="hero-location">
+                  <i class="ti ti-map-pin" aria-hidden="true"></i>
+                  <span id="s-next-d">Add your first gig</span>
+                </div>
+              </div>
+              <div class="hero-footer">
+                <div class="hero-time-block">
+                  <div class="hero-footer-label">Next gig</div>
+                  <div class="hero-time" id="hero-time-display">—</div>
+                </div>
+                <div class="hero-pay-block">
+                  <div class="hero-footer-label">Pay</div>
+                  <div class="hero-pay financial-value" id="hero-pay">—</div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -110,6 +141,7 @@
           <div id="list-completed" style="display:none"></div>
 
           <div class="earn-strip">
+            <div class="staff-lines" style="opacity:0.05"></div>
             <div class="earn-strip-col">
               <div class="earn-strip-label" id="s-month-label">This month</div>
               <div class="earn-strip-amount-wrap">
@@ -148,6 +180,7 @@
 
       <!-- CALENDAR -->
       <div class="panel" id="panel-calendar">
+        <div class="staff-lines"></div>
         <div class="cal-head">
           <div>
             <div class="screen-title">Calendar</div>
@@ -181,6 +214,7 @@
 
       <!-- EARNINGS -->
       <div class="panel" id="panel-earnings">
+        <div class="staff-lines"></div>
         <div class="earn-screen-header">
           <div class="screen-title">Earnings</div>
           <button class="hdr-icon-btn" onclick="togglePrivacy()" aria-label="Toggle privacy">
@@ -189,22 +223,44 @@
         </div>
 
         <div class="earn-hero-card">
-          <div class="earn-hero-left">
-            <div class="earn-hero-label" id="e-stat-year-label">Total 2026</div>
-            <div class="earn-hero-amount financial-value" id="e-stat-total">—</div>
-          </div>
-          <div class="earn-hero-right">
-            <div class="earn-hero-sub-row">
-              <span class="earn-hero-sub-label">Paid</span>
-              <span class="earn-hero-sub-val financial-value" id="e-stat-paid">—</span>
+          <svg class="vinyl-groove" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <radialGradient id="vg-earn" cx="100%" cy="0%" r="140%">
+                <stop offset="0%" stop-color="#FAF8F2" stop-opacity="0"/>
+                <stop offset="100%" stop-color="#FAF8F2" stop-opacity="0.4"/>
+              </radialGradient>
+            </defs>
+            <circle cx="300" cy="0" r="40"  fill="none" stroke="url(#vg-earn)" stroke-width="0.25"/>
+            <circle cx="300" cy="0" r="60"  fill="none" stroke="url(#vg-earn)" stroke-width="0.25"/>
+            <circle cx="300" cy="0" r="80"  fill="none" stroke="url(#vg-earn)" stroke-width="0.25"/>
+            <circle cx="300" cy="0" r="100" fill="none" stroke="url(#vg-earn)" stroke-width="0.25"/>
+            <circle cx="300" cy="0" r="120" fill="none" stroke="url(#vg-earn)" stroke-width="0.25"/>
+            <circle cx="300" cy="0" r="140" fill="none" stroke="url(#vg-earn)" stroke-width="0.25"/>
+            <circle cx="300" cy="0" r="160" fill="none" stroke="url(#vg-earn)" stroke-width="0.25"/>
+            <circle cx="300" cy="0" r="180" fill="none" stroke="url(#vg-earn)" stroke-width="0.25"/>
+            <circle cx="300" cy="0" r="200" fill="none" stroke="url(#vg-earn)" stroke-width="0.25"/>
+            <circle cx="300" cy="0" r="220" fill="none" stroke="url(#vg-earn)" stroke-width="0.25"/>
+            <circle cx="300" cy="0" r="240" fill="none" stroke="url(#vg-earn)" stroke-width="0.25"/>
+            <circle cx="300" cy="0" r="260" fill="none" stroke="url(#vg-earn)" stroke-width="0.25"/>
+          </svg>
+          <div class="earn-hero-inner">
+            <div class="earn-hero-left">
+              <div class="earn-hero-label" id="e-stat-year-label">Total 2026</div>
+              <div class="earn-hero-amount financial-value" id="e-stat-total">—</div>
             </div>
-            <div class="earn-hero-sub-row">
-              <span class="earn-hero-sub-label">Pending</span>
-              <span class="earn-hero-sub-val financial-value" id="e-stat-pending">—</span>
-            </div>
-            <div class="earn-hero-sub-row">
-              <span class="earn-hero-sub-label">Gigs</span>
-              <span class="earn-hero-sub-val" id="e-stat-count">—</span>
+            <div class="earn-hero-right">
+              <div class="earn-hero-sub-row">
+                <span class="earn-hero-sub-label">Paid</span>
+                <span class="earn-hero-sub-val financial-value" id="e-stat-paid">—</span>
+              </div>
+              <div class="earn-hero-sub-row">
+                <span class="earn-hero-sub-label">Pending</span>
+                <span class="earn-hero-sub-val financial-value" id="e-stat-pending">—</span>
+              </div>
+              <div class="earn-hero-sub-row">
+                <span class="earn-hero-sub-label">Gigs</span>
+                <span class="earn-hero-sub-val" id="e-stat-count">—</span>
+              </div>
             </div>
           </div>
         </div>
@@ -222,6 +278,7 @@
 
       <!-- SETTINGS (new) -->
       <div class="panel" id="panel-settings">
+        <div class="staff-lines"></div>
 
         <div class="settings-profile">
           <div class="settings-avatar" id="settings-avatar">M</div>
@@ -269,6 +326,13 @@
 
           <div class="cl-group">
             <div class="cl-date-label">28 May 2026</div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.5.6</span>
+                <div class="cl-item">Full design source implementation: staff lines texture, vinyl groove on hero and earnings cards, frosted glass tab bar, corrected typography scale, gig/rehearsal card styles rebuilt from design source.</div>
+              </div>
+            </div>
             <div class="cl-entry">
               <div class="cl-dot"></div>
               <div class="cl-content">
