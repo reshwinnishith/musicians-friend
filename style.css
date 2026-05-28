@@ -326,14 +326,30 @@ html.theme-dark .nav-tabs {
 
 /* ── HERO CARD ─────────────────────────────────── */
 .hero-card {
-  background: #3A3835;
   border-radius: 22px;
   padding: 22px;
   margin: 0 20px 20px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 18px 36px -20px rgba(28,28,30,0.45);
 }
+/* Light / auto-light: dark chocolate card */
+html.theme-light .hero-card,
+html.theme-auto .hero-card {
+  background: #3A3835;
+  box-shadow: 0 18px 36px -20px rgba(0,0,0,0.45);
+}
+/* Dark / auto-dark: warm sand card */
+html.theme-dark .hero-card {
+  background: #D4C4A0;
+  box-shadow: 0 18px 36px -20px rgba(0,0,0,0.45);
+}
+@media (prefers-color-scheme: dark) {
+  html.theme-auto .hero-card {
+    background: #D4C4A0;
+    box-shadow: 0 18px 36px -20px rgba(0,0,0,0.45);
+  }
+}
+
 .hero-inner { position: relative; z-index: 1; }
 .hero-top-row {
   display: flex;
@@ -341,6 +357,8 @@ html.theme-dark .nav-tabs {
   align-items: center;
   margin-bottom: 16px;
 }
+
+/* Type chip — light default */
 .hero-type-chip {
   background: rgba(250,248,242,0.12);
   color: #FAF8F2;
@@ -351,6 +369,12 @@ html.theme-dark .nav-tabs {
   letter-spacing: 0.04em;
   text-transform: capitalize;
 }
+html.theme-dark .hero-type-chip { background: #3A3835; color: #FAF8F2; }
+@media (prefers-color-scheme: dark) {
+  html.theme-auto .hero-type-chip { background: #3A3835; color: #FAF8F2; }
+}
+
+/* Date — light default */
 .hero-date {
   font-size: 11px;
   font-weight: 600;
@@ -358,7 +382,12 @@ html.theme-dark .nav-tabs {
   color: rgba(250,248,242,0.55);
   text-transform: uppercase;
 }
+html.theme-dark .hero-date { color: #6B5E4A; }
+@media (prefers-color-scheme: dark) { html.theme-auto .hero-date { color: #6B5E4A; } }
+
 .hero-middle { margin-bottom: 22px; }
+
+/* Venue — light default */
 .hero-venue {
   font-size: 26px;
   font-weight: 700;
@@ -367,6 +396,10 @@ html.theme-dark .nav-tabs {
   line-height: 1.15;
   margin-bottom: 6px;
 }
+html.theme-dark .hero-venue { color: #3A3835; }
+@media (prefers-color-scheme: dark) { html.theme-auto .hero-venue { color: #3A3835; } }
+
+/* Location — light default */
 .hero-location {
   display: flex;
   align-items: center;
@@ -375,6 +408,14 @@ html.theme-dark .nav-tabs {
   color: rgba(250,248,242,0.6);
 }
 .hero-location i { font-size: 13px; color: rgba(250,248,242,0.6); }
+html.theme-dark .hero-location,
+html.theme-dark .hero-location i { color: #6B5E4A; }
+@media (prefers-color-scheme: dark) {
+  html.theme-auto .hero-location,
+  html.theme-auto .hero-location i { color: #6B5E4A; }
+}
+
+/* Footer divider — light default */
 .hero-footer {
   display: flex;
   justify-content: space-between;
@@ -382,6 +423,10 @@ html.theme-dark .nav-tabs {
   padding-top: 16px;
   border-top: 1px dashed rgba(250,248,242,0.18);
 }
+html.theme-dark .hero-footer { border-top-color: rgba(58,56,53,0.30); }
+@media (prefers-color-scheme: dark) { html.theme-auto .hero-footer { border-top-color: rgba(58,56,53,0.30); } }
+
+/* Footer labels — light default */
 .hero-footer-label {
   font-size: 11px;
   font-weight: 500;
@@ -390,17 +435,28 @@ html.theme-dark .nav-tabs {
   color: rgba(250,248,242,0.5);
   margin-bottom: 4px;
 }
+html.theme-dark .hero-footer-label { color: #6B5E4A; }
+@media (prefers-color-scheme: dark) { html.theme-auto .hero-footer-label { color: #6B5E4A; } }
+
+/* Time value — light default */
 .hero-time {
   font-size: 18px;
   font-weight: 600;
   color: #FAF8F2;
 }
+html.theme-dark .hero-time { color: #3A3835; }
+@media (prefers-color-scheme: dark) { html.theme-auto .hero-time { color: #3A3835; } }
+
 .hero-pay-block { text-align: right; }
+
+/* Pay amount — light default */
 .hero-pay {
   font-size: 22px;
   font-weight: 700;
   color: #C8A96E;
 }
+html.theme-dark .hero-pay { color: #8B6914; }
+@media (prefers-color-scheme: dark) { html.theme-auto .hero-pay { color: #8B6914; } }
 
 /* ── HOME SECTION HEADER ───────────────────────── */
 .home-section-header {
