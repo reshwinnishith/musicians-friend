@@ -95,35 +95,35 @@ html, body {
   color: var(--mf-text-primary);
 }
 body {
-  background-color: #FAF8F2;
+  background-color: #FAF8F2 !important;
   background-image: repeating-linear-gradient(
     to bottom,
     transparent 0px,
     transparent 27px,
     #C8C4B8 27px,
     #C8C4B8 28px
-  );
+  ) !important;
 }
 html.theme-dark body {
-  background-color: #1C1A16;
+  background-color: #1C1A16 !important;
   background-image: repeating-linear-gradient(
     to bottom,
     transparent 0px,
     transparent 27px,
-    #2E2A24 27px,
-    #2E2A24 28px
-  );
+    #2A2520 27px,
+    #2A2520 28px
+  ) !important;
 }
 @media (prefers-color-scheme: dark) {
   html.theme-auto body {
-    background-color: #1C1A16;
+    background-color: #1C1A16 !important;
     background-image: repeating-linear-gradient(
       to bottom,
       transparent 0px,
       transparent 27px,
-      #2E2A24 27px,
-      #2E2A24 28px
-    );
+      #2A2520 27px,
+      #2A2520 28px
+    ) !important;
   }
 }
 
@@ -214,7 +214,7 @@ html.theme-dark .staff-lines {
   justify-content: space-between;
   padding: 14px 20px 10px;
   flex-shrink: 0;
-  background: var(--mf-bg);
+  background: transparent;
 }
 .mf-header-date {
   font-size: 13px;
@@ -353,11 +353,13 @@ html.theme-dark .nav-tabs {
 
 /* ── HERO CARD ─────────────────────────────────── */
 .hero-card {
-  border-radius: 22px;
+  border-radius: 22px !important;
   padding: 22px;
   margin: 0 16px 20px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 20px 48px -12px rgba(0,0,0,0.5),
+              0 8px 20px -8px rgba(0,0,0,0.3) !important;
 }
 /* Light / auto-light: dark chocolate card */
 html.theme-light .hero-card,
@@ -388,20 +390,22 @@ html.theme-dark .hero-card {
   margin-bottom: 16px;
 }
 
-/* Type chip — light default */
+/* Type chip — light default (on dark #3A3835 card) */
 .hero-type-chip {
-  background: rgba(250,248,242,0.12);
-  color: #FAF8F2;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 12px;
-  border-radius: 999px;
+  background: #2A2520;
+  color: #D4C4A0;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  padding: 3px 10px !important;
+  border-radius: 6px !important;
   letter-spacing: 0.04em;
-  text-transform: capitalize;
+  text-transform: capitalize !important;
+  display: inline-block !important;
 }
-html.theme-dark .hero-type-chip { background: #3A3835; color: #FAF8F2; }
+/* Dark mode chip (on sand #D4C4A0 card) */
+html.theme-dark .hero-type-chip { background: #3A3835 !important; color: #FAF8F2 !important; }
 @media (prefers-color-scheme: dark) {
-  html.theme-auto .hero-type-chip { background: #3A3835; color: #FAF8F2; }
+  html.theme-auto .hero-type-chip { background: #3A3835 !important; color: #FAF8F2 !important; }
 }
 
 /* Date — light default */
@@ -582,9 +586,13 @@ html.theme-dark .hero-pay { color: #8B6914; }
   padding: 0 !important; margin-bottom: 7px;
   min-height: 64px;
 }
+.week-item, .this-week-item, [class*="week-row"] {
+  padding: 14px 16px !important;
+  margin-bottom: 6px !important;
+}
 .swipe-card-inner {
   display: flex; align-items: center; gap: 12px;
-  padding: 12px 16px;
+  padding: 14px 16px;
   background: var(--mf-surface);
   border: 1px solid rgba(28,28,30,0.05);
   border-radius: 18px;

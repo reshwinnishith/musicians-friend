@@ -91,14 +91,19 @@ function handleOAuthCallback() {
 }
 
 async function getUserEmail() {
-  const stored = localStorage.getItem('mf_email');
-  if (stored) return stored;
+  const storedEmail = localStorage.getItem('mf_email');
+  if (storedEmail && localStorage.getItem('mf_name') !== null) return storedEmail;
   try {
     const res = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
       headers: { Authorization: `Bearer ${getToken()}` }
     });
     const data = await res.json();
-    if (data.email) { localStorage.setItem('mf_email', data.email); return data.email; }
+    if (data.email) {
+      localStorage.setItem('mf_email', data.email);
+      const firstName = data.given_name || (data.name ? data.name.split(' ')[0] : null);
+      if (firstName) localStorage.setItem('mf_name', firstName);
+      return data.email;
+    }
   } catch(e) {}
   return null;
 }

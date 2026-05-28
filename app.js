@@ -1236,7 +1236,11 @@ function updateHomeHeader() {
   const greeting = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
   const emailEl = document.getElementById('user-email');
   let firstName = '';
-  if (emailEl) {
+  const storedName = localStorage.getItem('mf_name');
+  if (storedName) {
+    firstName = storedName.split(' ')[0];
+    firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+  } else if (emailEl) {
     const raw = emailEl.textContent || '';
     if (raw && raw !== 'Your personal music manager') {
       firstName = raw.split('@')[0].replace(/[._]/g, ' ').split(' ')[0];
@@ -1275,9 +1279,11 @@ rebuildDashboard = function() {
   const heroVenue = document.getElementById('hero-venue');
   const heroType  = document.getElementById('hero-type');
   const heroPay   = document.getElementById('hero-pay');
+  const heroTime  = document.getElementById('hero-time-display');
   if (heroVenue) heroVenue.textContent = next ? (next.artist || '—') : 'No upcoming gigs';
   if (heroType)  heroType.textContent  = next ? cap(next.type || 'gig') : '—';
   if (heroPay)   heroPay.textContent   = next ? formatAmount(next.pay) : '—';
+  if (heroTime)  heroTime.textContent  = next ? (next.time || 'TBA') : 'TBA';
 };
 
 // ── EARNINGS: MARK CURRENT MONTH BAR ──────────────────────────────────────
