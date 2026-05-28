@@ -101,12 +101,12 @@ body {
 }
 html.theme-dark body {
   background-color: #1C1A16;
-  background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 27px, #2A2520 27px, #2A2520 28px);
+  background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 27px, #2C2720 27px, #2C2720 28px);
 }
 @media (prefers-color-scheme: dark) {
   html.theme-auto body {
     background-color: #1C1A16;
-    background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 27px, #2A2520 27px, #2A2520 28px);
+    background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 27px, #2C2720 27px, #2C2720 28px);
   }
 }
 
@@ -117,7 +117,7 @@ html.theme-dark body {
   flex-direction: column;
   max-width: 680px;
   margin: 0 auto;
-  background: var(--mf-bg);
+  background: transparent;
   position: relative;
   overflow: hidden;
 }
@@ -211,22 +211,10 @@ html.theme-dark body {
   overflow-y: auto;
   height: 100%;
   -webkit-overflow-scrolling: touch;
-  background-color: #FAF8F2;
-  background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 27px, #DDD9CE 27px, #DDD9CE 28px);
-  background-attachment: local;
+  background: transparent !important;
 }
 .panel.active { display: block; }
 #panel-earnings.panel { padding: 0 0 100px; }
-html.theme-dark .panel {
-  background-color: #1C1A16;
-  background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 27px, #2A2520 27px, #2A2520 28px);
-}
-@media (prefers-color-scheme: dark) {
-  html.theme-auto .panel {
-    background-color: #1C1A16;
-    background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 27px, #2A2520 27px, #2A2520 28px);
-  }
-}
 
 /* ── BOTTOM NAV ────────────────────────────────── */
 .nav-tabs {
@@ -270,10 +258,30 @@ html.theme-dark .panel {
 /* ── HERO CARD ─────────────────────────────────── */
 .hero-card {
   background: #2A2520 !important;
+  background-image: none !important;
   border-radius: 16px;
-  padding: 18px 20px;
+  padding: 16px;
   margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
 }
+/* Hardcoded dark descendants — always readable on #2A2520 */
+.hero-card .hero-venue, .hero-card h2, .hero-card .venue-name {
+  color: #F0EDE4 !important; font-weight: 700;
+}
+.hero-card .hero-pay, .hero-card .pay-amount {
+  color: #C8A96E !important; font-weight: 700;
+}
+.hero-card .hero-label, .hero-card .set-time-label, .hero-card .pay-label,
+.hero-card .hero-date, .hero-card .hero-date-text, .hero-card .hero-location {
+  color: #8A8278 !important;
+}
+.hero-card .hero-time { color: #F0EDE4 !important; font-weight: 700; }
+.hero-card .hero-type-chip, .hero-card .gig-type-chip, .hero-card .type-chip {
+  background: #3A3835 !important; color: #D4C4A0 !important; border: none !important;
+}
+.hero-card hr, .hero-card .divider { border-color: #3A3835 !important; }
+
 .hero-top-row {
   display: flex;
   justify-content: space-between;
