@@ -57,7 +57,7 @@
     <!-- Hidden legacy compat elements -->
     <div style="display:none">
       <div class="logo">
-        <div class="logo-text">Musician's Friend <span class="app-version">v4.5.3</span></div>
+        <div class="logo-text">Musician's Friend <span class="app-version">v4.5.4</span></div>
         <div id="user-email">Your personal music manager</div>
       </div>
       <div class="sync-status">
@@ -76,47 +76,51 @@
       <!-- HOME / DASHBOARD -->
       <div class="panel active" id="panel-dashboard">
 
-        <div class="hero-card" id="hero-card">
-          <div class="hero-top-row">
-            <span class="hero-type-chip" id="hero-type">—</span>
-            <span class="hero-date-text" id="s-next">—</span>
-          </div>
-          <div class="hero-venue" id="hero-venue">No upcoming gigs</div>
-          <div class="hero-location">
-            <i class="ti ti-map-pin"></i>
-            <span id="s-next-d">Add your first gig</span>
-          </div>
-          <div class="hero-footer-row">
-            <span class="hero-footer-label">NEXT GIG</span>
-            <span class="hero-pay financial-value" id="hero-pay">—</span>
-          </div>
-        </div>
-
-        <div class="home-section-header">
-          <div class="home-section-controls">
-            <button class="sec-tab active" id="tab-upcoming" onclick="showSection('upcoming')">Upcoming</button>
-            <button class="sec-tab" id="tab-completed" onclick="showSection('completed')">Done</button>
-            <label class="rh-toggle-label" id="rehearsal-toggle-btn" title="Toggle rehearsals">
-              <span class="rh-toggle-box"><i class="ti ti-check"></i></span>
-              <span class="rh-toggle-text">Rehearsals</span>
-            </label>
-          </div>
-        </div>
-
-        <div id="list-upcoming"></div>
-        <div id="list-completed" style="display:none"></div>
-
-        <div class="earn-strip">
-          <div class="earn-strip-col">
-            <div class="earn-strip-label" id="s-month-label">This month</div>
-            <div class="earn-strip-amount-wrap">
-              <span id="s-earn" class="earn-strip-amount financial-value">—</span>
+        <div class="home-sticky-top">
+          <div class="hero-card" id="hero-card">
+            <div class="hero-top-row">
+              <span class="hero-type-chip" id="hero-type">—</span>
+              <span class="hero-date-text" id="s-next">—</span>
+            </div>
+            <div class="hero-venue" id="hero-venue">No upcoming gigs</div>
+            <div class="hero-location">
+              <i class="ti ti-map-pin"></i>
+              <span id="s-next-d">Add your first gig</span>
+            </div>
+            <div class="hero-footer-row">
+              <span class="hero-footer-label">NEXT GIG</span>
+              <span class="hero-pay financial-value" id="hero-pay">—</span>
             </div>
           </div>
-          <div class="earn-strip-divider"></div>
-          <div class="earn-strip-col">
-            <div class="earn-strip-label">Upcoming gigs</div>
-            <div class="earn-strip-count" id="s-count">—</div>
+
+          <div class="home-section-header">
+            <div class="home-section-controls">
+              <button class="sec-tab active" id="tab-upcoming" onclick="showSection('upcoming')">Upcoming</button>
+              <button class="sec-tab" id="tab-completed" onclick="showSection('completed')">Done</button>
+              <label class="rh-toggle-label" id="rehearsal-toggle-btn" title="Toggle rehearsals">
+                <span class="rh-toggle-box"><i class="ti ti-check"></i></span>
+                <span class="rh-toggle-text">Rehearsals</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="home-scroll-list">
+          <div id="list-upcoming"></div>
+          <div id="list-completed" style="display:none"></div>
+
+          <div class="earn-strip">
+            <div class="earn-strip-col">
+              <div class="earn-strip-label" id="s-month-label">This month</div>
+              <div class="earn-strip-amount-wrap">
+                <span id="s-earn" class="earn-strip-amount financial-value">—</span>
+              </div>
+            </div>
+            <div class="earn-strip-divider"></div>
+            <div class="earn-strip-col">
+              <div class="earn-strip-label">Upcoming gigs</div>
+              <div class="earn-strip-count" id="s-count">—</div>
+            </div>
           </div>
         </div>
 
@@ -265,6 +269,13 @@
 
           <div class="cl-group">
             <div class="cl-date-label">28 May 2026</div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.5.4</span>
+                <div class="cl-item">Fixed nav bar stays anchored, nav elevation shadow, home screen sticky hero with scrollable gig list.</div>
+              </div>
+            </div>
             <div class="cl-entry">
               <div class="cl-dot"></div>
               <div class="cl-content">

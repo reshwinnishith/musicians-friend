@@ -215,27 +215,45 @@ html.theme-dark body {
 }
 .panel.active { display: block; }
 #panel-earnings.panel { padding: 0 0 100px; }
+#panel-dashboard.panel { padding: 0; overflow: hidden; }
+#panel-dashboard.panel.active { display: flex; flex-direction: column; }
+.home-sticky-top { flex-shrink: 0; padding: 16px 16px 8px; }
+.home-scroll-list { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 16px 100px; }
+.home-scroll-list::-webkit-scrollbar { display: none; }
 
 /* ── BOTTOM NAV ────────────────────────────────── */
 .nav-tabs {
   display: flex;
-  border-top: 1px solid var(--mf-border);
-  flex-shrink: 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
   background: var(--mf-bg);
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  border-top: 1px solid var(--mf-border);
+  padding: 12px 0 max(28px, env(safe-area-inset-bottom));
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.15), 0 -1px 6px rgba(0,0,0,0.08);
+}
+html.theme-dark .nav-tabs {
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.4), 0 -1px 6px rgba(0,0,0,0.2);
+}
+@media (prefers-color-scheme: dark) {
+  html.theme-auto .nav-tabs {
+    box-shadow: 0 -8px 24px rgba(0,0,0,0.4), 0 -1px 6px rgba(0,0,0,0.2);
+  }
 }
 .nav-tab {
   flex: 1;
-  padding: 10px 4px 8px;
+  padding: 0 4px;
   border: none;
   background: transparent;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
   font-family: inherit;
   color: var(--mf-text-secondary);
   cursor: pointer;
   display: flex; flex-direction: column;
-  align-items: center; gap: 3px;
+  align-items: center; gap: 4px;
   transition: color 0.12s;
   -webkit-tap-highlight-color: transparent;
   letter-spacing: 0.3px;
@@ -843,9 +861,9 @@ html.theme-dark .swipe-card-inner { background: #2A2520; border-color: #3A3530; 
 
 /* ── FAB ───────────────────────────────────────── */
 .fab-wrap {
-  position: absolute; bottom: 20px; right: 20px;
+  position: fixed; bottom: 90px; right: 20px;
   display: flex; flex-direction: column; align-items: flex-end;
-  gap: 10px; z-index: 10;
+  gap: 10px; z-index: 99;
 }
 .fab-menu {
   display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
