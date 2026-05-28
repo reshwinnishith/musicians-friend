@@ -948,7 +948,7 @@ html.theme-dark .show-row:has(.tentative-tag) .swipe-card-inner {
 
 /* ── EARNINGS CHART CARD ───────────────────────── */
 .earnings-chart-card {
-  background: var(--mf-bg);
+  background: #FFFFFF !important;
   border-radius: 16px;
   border: 1px solid var(--mf-border);
   padding: 18px 16px;
@@ -957,14 +957,14 @@ html.theme-dark .show-row:has(.tentative-tag) .swipe-card-inner {
               0 1px 4px rgba(0,0,0,0.04);
 }
 html.theme-dark .earnings-chart-card {
-  background: var(--mf-surface);
+  background: var(--mf-surface) !important;
   border-color: var(--mf-border);
   box-shadow: 0 2px 16px rgba(0,0,0,0.2),
               0 1px 4px rgba(0,0,0,0.12);
 }
 @media (prefers-color-scheme: dark) {
   html.theme-auto .earnings-chart-card {
-    background: var(--mf-surface);
+    background: var(--mf-surface) !important;
     border-color: var(--mf-border);
     box-shadow: 0 2px 16px rgba(0,0,0,0.2),
                 0 1px 4px rgba(0,0,0,0.12);
