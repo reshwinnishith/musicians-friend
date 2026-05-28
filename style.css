@@ -867,9 +867,9 @@ html.theme-dark .show-row:has(.tentative-tag) .swipe-card-inner {
 }
 .earn-hero-card {
   background: #3A3835;
-  margin: 0 16px 20px;
-  border-radius: 18px;
-  padding: 16px 18px;
+  margin: 0 16px 4px;
+  border-radius: 16px;
+  padding: 18px 16px;
   position: relative;
   overflow: hidden;
 }
@@ -945,6 +945,66 @@ html.theme-dark .show-row:has(.tentative-tag) .swipe-card-inner {
 .earn-tooltip-value { font-weight: 600; color: #fff; }
 .earn-tooltip-value.purple { color: #C8A96E; }
 .earn-tooltip-value.amber  { color: #C8A96E; }
+
+/* ── EARNINGS CHART CARD ───────────────────────── */
+.earnings-chart-card {
+  background: var(--mf-bg);
+  border-radius: 16px;
+  border: 1px solid var(--mf-border);
+  padding: 18px 16px;
+  margin: 12px 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06),
+              0 1px 4px rgba(0,0,0,0.04);
+}
+html.theme-dark .earnings-chart-card {
+  background: var(--mf-surface);
+  border-color: var(--mf-border);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.2),
+              0 1px 4px rgba(0,0,0,0.12);
+}
+@media (prefers-color-scheme: dark) {
+  html.theme-auto .earnings-chart-card {
+    background: var(--mf-surface);
+    border-color: var(--mf-border);
+    box-shadow: 0 2px 16px rgba(0,0,0,0.2),
+                0 1px 4px rgba(0,0,0,0.12);
+  }
+}
+.earnings-chart-card [class*="chart"],
+.earnings-chart-card .chart-bars {
+  overflow: hidden;
+  border-radius: 8px;
+}
+.earnings-chart-card .earn-legend { padding: 0; }
+.earnings-chart-card .earn-chart-wrap { padding: 0; gap: 8px; margin-bottom: 0; }
+.earnings-chart-card .earn-type-section { padding: 0; }
+.earnings-chart-card .earn-bar { background: var(--mf-border); border-radius: 4px 4px 2px 2px; }
+.earnings-chart-card .earn-bar-group.earn-bar-current .earn-bar.paid { background: var(--mf-earnings); box-shadow: 0 4px 12px rgba(28,28,30,0.2); border-radius: 4px 4px 2px 2px; }
+.earnings-chart-card .earn-bar-group.earn-bar-current .earn-bar.pending { background: var(--mf-border); }
+.earnings-chart-card .earn-section-title {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--mf-text-secondary);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  padding: 0;
+}
+.earn-chart-divider {
+  border: none;
+  border-top: 1px solid var(--mf-border);
+  margin: 16px 0;
+}
+.earn-breakdown-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mf-text-primary);
+  margin-bottom: 12px;
+}
+.earnings-chart-card .earn-type-name { font-size: 12px; color: var(--mf-text-secondary); flex: 0 0 auto; min-width: 64px; }
+.earnings-chart-card .earn-type-bar-wrap { background: var(--mf-border); height: 5px; }
+.earnings-chart-card .earn-type-bar { background: var(--mf-earnings); height: 5px; }
+.earnings-chart-card .earn-type-amount { flex: 0 0 auto; min-width: 56px; color: var(--mf-earnings); }
 
 /* ── SETTINGS SCREEN ───────────────────────────── */
 .settings-profile {
