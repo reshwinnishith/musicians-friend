@@ -947,11 +947,18 @@ html.theme-dark .show-row:has(.tentative-tag) .swipe-card-inner {
 .earn-tooltip-value.amber  { color: #C8A96E; }
 
 /* ── EARNINGS CHART CARD ───────────────────────── */
+.earnings-chart-card,
+.earnings-chart-card * {
+  background-image: none !important;
+}
+.chart-grid-line, [class*="grid-line"], [class*="gridline"] {
+  display: none !important;
+}
 .earnings-chart-card {
   background: #FFFFFF !important;
   border-radius: 16px;
   border: 1px solid var(--mf-border);
-  padding: 18px 16px;
+  padding: 20px 18px !important;
   margin: 12px 16px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06),
               0 1px 4px rgba(0,0,0,0.04);
@@ -994,6 +1001,14 @@ html.theme-dark .earnings-chart-card {
   border: none;
   border-top: 1px solid var(--mf-border);
   margin: 16px 0;
+}
+.earnings-chart-card .chart-area,
+.earnings-chart-card [class*="chart"] {
+  padding: 8px 0 12px !important;
+}
+.earnings-chart-card .breakdown-row,
+.earnings-chart-card [class*="breakdown-row"] {
+  margin-bottom: 12px !important;
 }
 .earn-breakdown-title {
   font-size: 13px;
