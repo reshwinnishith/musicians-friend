@@ -21,3 +21,6 @@ File ID is hardcoded in `app.js` — do not change it.
 - Drive sync requires the app to be opened via Claude.ai (credentials are passed through the Anthropic API)
 - All data is stored in your personal Google Drive
 - The app works offline in read mode if Drive is unavailable
+
+<!-- Lucy was here. -->
+<!-- Phase 3.5 complete. -->
