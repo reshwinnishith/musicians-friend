@@ -5,6 +5,7 @@ let calY = today.getFullYear();
 let calM = today.getMonth();
 let selSt = 'confirmed';
 let selPaySt = 'pending';
+let selSlot = '';
 let editingId = null;
 let previewShowId = null;
 let confirmCallback = null;
@@ -663,6 +664,7 @@ function showAddTypeInput(addRow) {
 // ── GIG SHEET ──
 function setSt(s) { selSt=s; document.getElementById('bc').className='sheet-chip'+(s==='confirmed'?' active-amber':''); document.getElementById('bt').className='sheet-chip'+(s==='tentative'?' active-amber':''); }
 function setPaySt(s) { selPaySt=s; document.getElementById('bp-paid').className='sheet-chip'+(s==='paid'?' active-green':''); document.getElementById('bp-pending').className='sheet-chip'+(s==='pending'?' active-amber':''); }
+function setSlot(s) { selSlot=s; document.getElementById('bs-morning').className='sheet-chip'+(s==='morning'?' active-amber':''); document.getElementById('bs-afternoon').className='sheet-chip'+(s==='afternoon'?' active-amber':''); document.getElementById('bs-evening').className='sheet-chip'+(s==='evening'?' active-amber':''); }
 
 function openAdd(prefillDate) {
   closeFabMenu(); editingId=null;
@@ -675,7 +677,7 @@ function openAdd(prefillDate) {
   const _ftDA=document.getElementById('ft-display'); if(_ftDA){_ftDA.textContent='Select type';_ftDA.style.color='rgba(255,255,255,0.5)';}
   document.getElementById('fp').value=''; document.getElementById('fn').value='';
   document.getElementById('fd').value=prefillDate||'';
-  setSt('confirmed'); setPaySt('pending');
+  setSt('confirmed'); setPaySt('pending'); setSlot('');
   const _saveBtnA=document.getElementById('save-btn'); _saveBtnA.textContent='Save'; _saveBtnA.disabled=false; _saveBtnA.style.opacity=''; gigSaving=false;
   document.getElementById('delete-wrap').innerHTML='';
   document.getElementById('toast').classList.remove('show');
@@ -696,7 +698,7 @@ function openEdit(showId) {
 
   document.getElementById('fd').value=`${s.year}-${String(s.month+1).padStart(2,'0')}-${String(s.day).padStart(2,'0')}`;
   document.getElementById('fc').value=s.city; document.getElementById('fv').value=s.venue||''; document.getElementById('fp').value=s.pay||''; document.getElementById('fn').value=s.notes||'';
-  setSt(s.status); setPaySt(s.payStatus==='upcoming'?'pending':s.payStatus);
+  setSt(s.status); setPaySt(s.payStatus==='upcoming'?'pending':s.payStatus); setSlot(s.slot||'');
   const _saveBtnE=document.getElementById('save-btn'); _saveBtnE.textContent='Save'; _saveBtnE.disabled=false; _saveBtnE.style.opacity=''; gigSaving=false;
   document.getElementById('delete-wrap').innerHTML='<button class="del-btn" id="del-btn">🗑 Delete gig</button>';
   document.getElementById('del-btn').addEventListener('click', deleteShow);
@@ -765,12 +767,12 @@ async function saveShow() {
   if(editingId){
     const idx=shows.findIndex(s=>s.id===editingId);
     const existingCalId=shows[idx].calEventId||null;
-    const updated={id:editingId,eventType:'gig',year:yr,month:mo,day:dy,artist,type,city,venue,pay,status:selSt,payStatus:computedPayStatus,notes,calEventId:existingCalId};
+    const updated={id:editingId,eventType:'gig',year:yr,month:mo,day:dy,artist,type,city,venue,pay,status:selSt,payStatus:computedPayStatus,notes,slot:selSlot,calEventId:existingCalId};
     shows[idx]=updated; rebuildDashboard(); saveData();
     if(calSync&&existingCalId) updateCalendarEventNative(updated);
     else if(calSync&&!existingCalId){const eid=await createCalendarEventNative(updated);if(eid){shows[idx].calEventId=eid;saveData();}}
   } else {
-    const newGig={id:nextId++,eventType:'gig',year:yr,month:mo,day:dy,artist,type,city,venue,pay,status:selSt,payStatus:computedPayStatus,notes,calEventId:null};
+    const newGig={id:nextId++,eventType:'gig',year:yr,month:mo,day:dy,artist,type,city,venue,pay,status:selSt,payStatus:computedPayStatus,notes,slot:selSlot,calEventId:null};
     shows.push(newGig); rebuildDashboard(); saveData();
     if(calSync){const eid=await createCalendarEventNative(newGig);if(eid){const idx=shows.findIndex(s=>s.id===newGig.id);if(idx>-1){shows[idx].calEventId=eid;saveData();}}}
   }
@@ -1145,6 +1147,9 @@ function setupEventListeners() {
   document.getElementById('bt').addEventListener('click',()=>setSt('tentative'));
   document.getElementById('bp-paid').addEventListener('click',()=>setPaySt('paid'));
   document.getElementById('bp-pending').addEventListener('click',()=>setPaySt('pending'));
+  document.getElementById('bs-morning').addEventListener('click',()=>setSlot(selSlot==='morning'?'':'morning'));
+  document.getElementById('bs-afternoon').addEventListener('click',()=>setSlot(selSlot==='afternoon'?'':'afternoon'));
+  document.getElementById('bs-evening').addEventListener('click',()=>setSlot(selSlot==='evening'?'':'evening'));
   document.getElementById('save-btn').addEventListener('click',saveShow);
   document.getElementById('gig-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('gig-overlay'))closeSheet();});
 
@@ -1283,7 +1288,7 @@ rebuildDashboard = function() {
   if (heroVenue) heroVenue.textContent = next ? (next.artist || '—') : 'No upcoming gigs';
   if (heroType)  heroType.textContent  = next ? cap(next.type || 'gig') : '—';
   if (heroPay)   heroPay.textContent   = next ? formatAmount(next.pay) : '—';
-  if (heroTime)  heroTime.textContent  = next ? (next.time || 'TBA') : 'TBA';
+  if (heroTime)  heroTime.textContent  = next ? (next.slot ? cap(next.slot) : 'TBA') : 'TBA';
 };
 
 // ── EARNINGS: MARK CURRENT MONTH BAR ──────────────────────────────────────

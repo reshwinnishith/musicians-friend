@@ -57,7 +57,7 @@
     <!-- Hidden legacy compat elements -->
     <div style="display:none">
       <div class="logo">
-        <div class="logo-text">Musician's Friend <span class="app-version">v4.6.6-lucy-test</span></div>
+        <div class="logo-text">Musician's Friend <span class="app-version">v4.7.0</span></div>
         <div id="user-email">Your personal music manager</div>
       </div>
       <div class="sync-status">
@@ -332,6 +332,13 @@
 
           <div class="cl-group">
             <div class="cl-date-label">29 May 2026</div>
+            <div class="cl-entry">
+              <div class="cl-dot"></div>
+              <div class="cl-content">
+                <span class="cl-version">v4.7.0</span>
+                <div class="cl-item">Gigs can now carry a Morning / Afternoon / Evening slot — populates the hero Set Time field and prepends to Google Calendar event titles for at-a-glance scheduling. Rehearsals continue to use precise times.</div>
+              </div>
+            </div>
             <div class="cl-entry">
               <div class="cl-dot"></div>
               <div class="cl-content">
@@ -629,6 +636,17 @@
               <div class="icon-sq purple"><i class="ti ti-calendar"></i></div>
               <span class="ios-row-label">Date</span>
               <input class="ios-input" id="fd" type="date">
+            </div>
+            <div class="ios-row ios-row-chips">
+              <div class="ios-chip-label-row">
+                <div class="icon-sq purple"><i class="ti ti-clock"></i></div>
+                <span class="ios-row-label">Slot</span>
+              </div>
+              <div class="ios-chips">
+                <button class="sheet-chip" id="bs-morning">Morning</button>
+                <button class="sheet-chip" id="bs-afternoon">Afternoon</button>
+                <button class="sheet-chip" id="bs-evening">Evening</button>
+              </div>
             </div>
             <div class="ios-row">
               <div class="icon-sq purple"><i class="ti ti-map-pin"></i></div>

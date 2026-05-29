@@ -198,7 +198,7 @@ async function createCalendarEventNative(show) {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        summary: `🎵 ${cap(show.type)} Gig — ${show.artist}`,
+        summary: show.slot ? `🎵 ${cap(show.slot)} · ${cap(show.type)} Gig — ${show.artist}` : `🎵 ${cap(show.type)} Gig — ${show.artist}`,
         location: show.venue ? `${show.venue}, ${show.city}, India` : `${show.city}, India`,
         description: `Artist: ${show.artist}\nType: ${cap(show.type)}\nCity: ${show.city}${show.venue ? '\nVenue: ' + show.venue : ''}\nPayment: ₹${Number(show.pay).toLocaleString('en-IN')}\nStatus: ${cap(show.status)}${show.notes ? '\nNotes: ' + show.notes : ''}\n\nManaged by Musician's Friend`,
         start: { date: dateStr },
@@ -220,7 +220,7 @@ async function updateCalendarEventNative(show) {
       method: 'PUT',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        summary: `🎵 ${cap(show.type)} Gig — ${show.artist}`,
+        summary: show.slot ? `🎵 ${cap(show.slot)} · ${cap(show.type)} Gig — ${show.artist}` : `🎵 ${cap(show.type)} Gig — ${show.artist}`,
         location: show.venue ? `${show.venue}, ${show.city}, India` : `${show.city}, India`,
         description: `Artist: ${show.artist}\nType: ${cap(show.type)}\nCity: ${show.city}${show.venue ? '\nVenue: ' + show.venue : ''}\nPayment: ₹${Number(show.pay).toLocaleString('en-IN')}\nStatus: ${cap(show.status)}${show.notes ? '\nNotes: ' + show.notes : ''}\n\nManaged by Musician's Friend`,
         start: { date: dateStr },
