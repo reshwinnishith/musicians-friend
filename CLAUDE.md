@@ -1,3 +1,37 @@
+## Standing Rule: Version Bump on Every Change
+
+Every time you make ANY change to this project, you MUST also:
+
+1. Bump the version number in index.html in BOTH places:
+   - Line ~60: <span class="app-version">vX.X.X</span>
+   - Line ~338: <span class="cl-version">vX.X.X</span>
+   Use patch version bumps (e.g. v4.6.7 → v4.6.8) unless the change is 
+   significant, in which case bump the minor version (v4.6.x → v4.7.0).
+   Remove the -lucy-test suffix — use clean version numbers going forward.
+
+2. Add a new changelog entry in index.html immediately after line ~331 
+   (inside the .settings-whatsnew div), prepending a new .cl-group block 
+   in this exact format:
+
+   <div class="cl-group">
+     <div class="cl-date-label">DD Month YYYY</div>
+     <div class="cl-entry">
+       <div class="cl-dot"></div>
+       <div class="cl-content">
+         <span class="cl-version">vX.X.X</span>
+         <div class="cl-item">Brief description of what changed.</div>
+       </div>
+     </div>
+   </div>
+
+   Use today's date. Write the description in plain English, one sentence,
+   describing what actually changed from the user's perspective.
+
+This rule applies to every commit, no exceptions. Even small fixes must 
+bump the version and add a changelog entry.
+
+---
+
 # Musician's Friend — Project Context
 
 ## What this is
