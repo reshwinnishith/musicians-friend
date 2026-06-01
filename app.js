@@ -195,6 +195,18 @@ function closeFabMenu() {
   if (backdrop) backdrop.classList.remove('show');
 }
 
+// Hide the FAB while a gig/rehearsal sheet is open; otherwise show it based on the active tab.
+function updateFabVisibility() {
+  const fab = document.getElementById('fab');
+  if (!fab) return;
+  const modalOpen = document.getElementById('gig-overlay').classList.contains('show')
+    || document.getElementById('rehearsal-overlay').classList.contains('show');
+  if (modalOpen) { fab.style.display = 'none'; return; }
+  const active = document.querySelector('.panel.active');
+  const tab = active ? active.id.replace('panel-', '') : '';
+  fab.style.display = (tab === 'dashboard' || tab === 'calendar' || tab === 'earnings') ? 'flex' : 'none';
+}
+
 // ── CONFIRM POPUP ──
 function showConfirm(msg, anchorEl, cb) {
   confirmCallback = cb;
@@ -695,6 +707,7 @@ function openAdd(prefillDate) {
   document.getElementById('more-details-icon').className='ti ti-chevron-down';
   const lbl=document.getElementById('more-details-label'); if(lbl)lbl.textContent='More details';
   document.getElementById('gig-overlay').classList.add('show');
+  updateFabVisibility();
 }
 
 function openEdit(showId) {
@@ -717,6 +730,7 @@ function openEdit(showId) {
   // Rehearsal section
   renderGigRehearsalSection(s.id);
   document.getElementById('gig-overlay').classList.add('show');
+  updateFabVisibility();
 }
 
 function renderGigRehearsalSection(gigId) {
@@ -753,6 +767,7 @@ function closeSheet() {
   closeTypePicker();
   document.getElementById('gig-overlay').classList.remove('show');
   document.getElementById('rehearsal-overlay').classList.remove('show');
+  updateFabVisibility();
 }
 
 let gigSaving = false;
@@ -825,7 +840,7 @@ function openAddRehearsal(prefillDate, prefillGigId) {
     if (linkedId) linkedId.value = '';
     if (artistInput) artistInput.value = '';
   }
-  setTimeout(() => { document.getElementById('rehearsal-overlay').classList.add('show'); }, 0);
+  setTimeout(() => { document.getElementById('rehearsal-overlay').classList.add('show'); updateFabVisibility(); }, 0);
 }
 
 function openEditRehearsal(showId) {
@@ -865,6 +880,7 @@ function openEditRehearsal(showId) {
     if (artistInput) artistInput.value = s.artist || '';
   }
   document.getElementById('rehearsal-overlay').classList.add('show');
+  updateFabVisibility();
 }
 
 let rhSaving = false;
