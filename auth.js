@@ -26,33 +26,8 @@ function signOut() {
   localStorage.removeItem('mf_token');
   localStorage.removeItem('mf_expiry');
   localStorage.removeItem('mf_email');
-  localStorage.removeItem('mf_pin_auth');
-  localStorage.removeItem('mf_cached_shows');
-  localStorage.removeItem('mf_cache_time');
   document.getElementById('app').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
-}
-
-function checkPinLogin() {
-  if (localStorage.getItem('mf_pin_auth') === 'true') {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-    if (typeof initApp === 'function') initApp();
-    return true;
-  }
-  return false;
-}
-
-function attemptPinLogin(username, password) {
-  if (username === 'Reshwin' && password === '6969') {
-    localStorage.setItem('mf_pin_auth', 'true');
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-    if (typeof initApp === 'function') initApp();
-  } else {
-    const err = document.getElementById('pin-error');
-    if (err) err.textContent = 'Incorrect username or password.';
-  }
 }
 
 function getToken() {
@@ -268,18 +243,6 @@ async function deleteCalendarEventNative(calEventId) {
 document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('signin-btn')?.addEventListener('click', signInWithGoogle);
   document.getElementById('signout-btn')?.addEventListener('click', signOut);
-
-  document.getElementById('pin-signin-btn')?.addEventListener('click', () => {
-    const username = document.getElementById('pin-username')?.value.trim() || '';
-    const password = document.getElementById('pin-password')?.value || '';
-    attemptPinLogin(username, password);
-  });
-  document.getElementById('pin-password')?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') document.getElementById('pin-signin-btn')?.click();
-  });
-
-  if (checkPinLogin()) return;
-
   handleOAuthCallback();
   let token = getToken();
   if (!token) { token = await silentRefresh() ? getToken() : null; }
