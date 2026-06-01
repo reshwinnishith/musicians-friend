@@ -96,7 +96,16 @@ async function initApp() {
       localStorage.setItem('mf_cached_shows', JSON.stringify(shows));
       localStorage.setItem('mf_cache_time', Date.now().toString());
       setSyncStatus('saved', 'Synced ✓');
-    } else { shows = []; setSyncStatus('saved', 'Ready'); }
+    } else {
+      const cached = localStorage.getItem('mf_cached_shows');
+      if (cached) {
+        try {
+          shows = JSON.parse(cached);
+          nextId = shows.length > 0 ? Math.max(...shows.map(s => s.id)) + 1 : 1;
+          setSyncStatus('saved', 'Ready');
+        } catch(e2) { shows = []; setSyncStatus('saved', 'Ready'); }
+      } else { shows = []; setSyncStatus('saved', 'Ready'); }
+    }
   } catch(e) {
     console.log('Drive load failed, checking cache. Error:', e);
     const cached = localStorage.getItem('mf_cached_shows');
@@ -1190,11 +1199,13 @@ function setupEventListeners() {
     if(document.getElementById('gig-overlay').classList.contains('show')) return;
     if(document.getElementById('rehearsal-overlay').classList.contains('show')) return;
     if(Date.now()-lastFetchTime<MIN_REFETCH_INTERVAL) return;
+    if(typeof getToken==='function' && !getToken()){setSyncStatus('saved','Ready');return;}
     lastFetchTime=Date.now();
     try {
       setSyncStatus('saving','Syncing...');
       const data=await loadFromDrive();
       if(data&&data.shows){shows=data.shows;nextId=shows.length>0?Math.max(...shows.map(s=>s.id))+1:1;rebuildDashboard();if(document.getElementById('panel-calendar').classList.contains('active'))renderCal();if(document.getElementById('panel-earnings').classList.contains('active'))rebuildEarnings();setSyncStatus('saved','Synced ✓');}
+      else{setSyncStatus('saved','Ready');}
     } catch(e){setSyncStatus('error','Sync failed');}
   }
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refreshIfStale();});
